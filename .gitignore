@@ -1,0 +1,15 @@
+# Node.js (Frontend)
+node_modules/
+dist/
+.env
+.vscode/
+
+# Python (Backend)
+__pycache__/
+*.pyc
+venv/
+.env
+
+# IDEs y Sistema Operativo
+.DS_Store
+*.log
