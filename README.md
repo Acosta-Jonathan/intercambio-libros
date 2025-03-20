@@ -11,7 +11,7 @@ pip freeze > requirements.txt
 
 # Para ejecutar el backend
 cd ./backend
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 # Para finalizarlo
 Ctrl + C
 
