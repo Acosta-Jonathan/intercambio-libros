@@ -4,7 +4,7 @@ import logging
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 
-from app.routers import users
+from app.routers import users, books
 from app.database import engine, Base
 
 Base.metadata.create_all(bind=engine)
@@ -12,6 +12,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 app.include_router(users.router)
+app.include_router(books.router)
 
 # Configuración de logging
 logging.basicConfig(level=logging.INFO)
