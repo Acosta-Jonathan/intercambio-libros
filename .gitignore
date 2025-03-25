@@ -9,6 +9,7 @@ __pycache__/
 *.pyc
 venv/
 .env
+.coverage
 
 # IDEs y Sistema Operativo
 .DS_Store
