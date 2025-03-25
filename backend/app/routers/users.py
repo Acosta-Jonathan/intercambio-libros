@@ -5,8 +5,11 @@ from sqlalchemy.orm import Session
 from app import models, schemas, security
 from app.database import get_db
 
+import logging
+
 router = APIRouter()
 
+logging.basicConfig(level=logging.INFO)
 
 @router.post("/register/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(security.get_db)):
@@ -43,42 +46,46 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
 def read_users_me(current_user: models.User = Depends(security.get_current_user)):
     return current_user
 
-# ✅ **Cambio de contraseña**
-@router.post("/change-password/")
-def change_password(
-    password_data: schemas.ChangePassword,
-    current_user: models.User = Depends(security.get_current_user),
-    db: Session = Depends(get_db),
-):
-    if not security.verify_password(password_data.old_password, current_user.hashed_password):
-        raise HTTPException(status_code=400, detail="Incorrect old password")
+# # ✅ **Cambio de contraseña**
+# @router.post("/change-password/")
+# def change_password(
+#     password_data: schemas.ChangePassword,
+#     current_user: models.User = Depends(security.get_current_user),
+#     db: Session = Depends(get_db),
+# ):
+#     if not security.verify_password(password_data.old_password, current_user.hashed_password):
+#         raise HTTPException(status_code=400, detail="Incorrect old password")
     
-    new_hashed_password = security.get_password_hash(password_data.new_password)
-    current_user.hashed_password = new_hashed_password
-    db.commit()
-    return {"message": "Password updated successfully"}
+#     new_hashed_password = security.get_password_hash(password_data.new_password)
+#     current_user.hashed_password = new_hashed_password
+#     db.commit()
+#     return {"message": "Password updated successfully"}
 
-# ✅ **Verificación de email**
-@router.get("/verify-email/")
-def verify_email(token: str, db: Session = Depends(get_db)):
-    email = security.verify_access_token(token)
-    if not email:
-        raise HTTPException(status_code=400, detail="Invalid verification token")
+# # ✅ **Verificación de email**
+# @router.get("/verify-email/")
+# def verify_email(token: str, db: Session = Depends(get_db)):
+#     logging.info(f"Verifying email with token: {token}")
+#     email = security.verify_email_token(token)
+#     if not email:
+#         raise HTTPException(status_code=400, detail="Invalid verification token")
 
-    user = db.query(models.User).filter(models.User.email == email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+#     logging.info(f"Email from token: {email}")
+#     user = db.query(models.User).filter(models.User.email == email).first()
+#     if not user:
+#         logging.error(f"User not found for email: {email}")
+#         raise HTTPException(status_code=404, detail="User not found")
 
-    user.is_verified = True
-    db.commit()
-    return {"message": "Email verified successfully"}
+#     user.is_verified = True
+#     db.commit()
+#     logging.info(f"Email verified for user: {user.id}")
+#     return {"message": "Email verified successfully"}
 
-# ✅ **Renovación de token (Refresh Token)**
-@router.post("/refresh/")
-def refresh_access_token(refresh_token: str, db: Session = Depends(get_db)):
-    username = security.verify_access_token(refresh_token)
-    if not username:
-        raise HTTPException(status_code=401, detail="Invalid refresh token")
+# # ✅ **Renovación de token (Refresh Token)**
+# @router.post("/refresh/")
+# def refresh_access_token(refresh_token: str, db: Session = Depends(get_db)):
+#     username = security.verify_access_token(refresh_token)
+#     if not username:
+#         raise HTTPException(status_code=401, detail="Invalid refresh token")
 
-    new_access_token = security.create_access_token(subject=username)
-    return {"access_token": new_access_token, "token_type": "bearer"}
+#     new_access_token = security.create_access_token(subject=username)
+#     return {"access_token": new_access_token, "token_type": "bearer"}

@@ -12,11 +12,17 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models import User
 from app.schemas import TokenPayload
+from dotenv import load_dotenv
+import os
+
+# Cargar variables de entorno desde .env
+load_dotenv()
 
 # Configuración de JWT
-SECRET_KEY = "tu_clave_secreta"  # ¡Cambia esto en producción!
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+SECRET_KEY = os.getenv("SECRET_KEY")  # Obtener desde .env
+ALGORITHM = os.getenv("ALGORITHM")  # Obtener desde .env
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))  # Obtener desde .env y convertir a int
+
 
 # Configuración de hashing de contraseñas
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -63,6 +69,21 @@ def verify_access_token(token: str) -> Optional[str]:
         if username is None:
             raise credentials_exception
         return username
+    except (JWTError, ValidationError):
+        raise credentials_exception
+
+def verify_email_token(token: str) -> Optional[str]:
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="No se pudieron validar las credenciales.",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("email") #Obtiene el email del payload del token
+        if email is None:
+            raise credentials_exception
+        return email
     except (JWTError, ValidationError):
         raise credentials_exception
 
