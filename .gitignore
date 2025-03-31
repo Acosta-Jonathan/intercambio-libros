@@ -1,16 +1,11 @@
-<<<<<<< Updated upstream
-# Python
-=======
 # Node.js (Frontend)
 node_modules/
 dist/
 .env
 
 # Python (Backend)
-__pycache__/
 *.pyo
 *.pyc
-*.pyo
 __pycache__/
 *.log
 *.sqlite3
