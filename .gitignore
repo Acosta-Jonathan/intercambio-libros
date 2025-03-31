@@ -9,7 +9,6 @@ dist/
 # Python (Backend)
 __pycache__/
 *.pyo
->>>>>>> Stashed changes
 *.pyc
 *.pyo
 __pycache__/
@@ -24,23 +23,6 @@ venv/
 *.sqlite3
 *.sqlite
 
-<<<<<<< Updated upstream
-# Configuración de bases de datos
-database.db
-*.sqlite
-*.pgdata
-
-# Configuración de IDEs y editores
-.vscode/
-.idea/
-*.iml
-
-# Caché y dependencias
-pip-log.txt
-pip-delete-this-directory.txt
-poetry.lock
-node_modules/
-=======
 # IDEs y Sistema Operativo
 .DS_Store
 *.log
@@ -50,4 +32,3 @@ node_modules/
 database.db
 *.pgdata
 
->>>>>>> Stashed changes
