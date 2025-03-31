@@ -106,6 +106,25 @@ def mark_message_as_seen(message_id: int, current_user: models.User = Depends(se
     db.refresh(db_message)
     return db_message
 
+@router.get("/conversations/{conversation_id}/messages/search/", response_model=List[schemas.Message])
+def search_conversation_messages(
+    conversation_id: int,
+    query: str = Query(..., description="Texto de búsqueda"),
+    current_user: models.User = Depends(security.get_current_user),
+    db: Session = Depends(get_db),
+):
+    conversation = db.query(models.Conversation).filter(models.Conversation.id == conversation_id).first()
+    if not conversation:
+        raise HTTPException(status_code=404, detail="Conversación no encontrada")
+    if conversation.user1_id != current_user.id and conversation.user2_id != current_user.id:
+        raise HTTPException(status_code=403, detail="No autorizado para ver esta conversación")
+
+    messages = db.query(models.Message).filter(
+        models.Message.conversation_id == conversation_id,
+        models.Message.content.ilike(f"%{query}%")
+    ).all()
+    return messages
+
 @router.websocket("/ws/{conversation_id}")
 async def websocket_endpoint(websocket: WebSocket, conversation_id: int, current_user: models.User = Depends(security.get_current_user), db: Session = Depends(get_db)):
     await websocket.accept()
