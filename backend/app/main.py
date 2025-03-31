@@ -1,18 +1,28 @@
-# main.py
 import logging
 
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import users, books
+from app.routers import users, books, exchanges
 from app.database import engine, Base
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+# Configuración de CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Ajusta esto a los orígenes permitidos en producción
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(users.router)
 app.include_router(books.router)
+app.include_router(exchanges.router)
 
 # Configuración de logging
 logging.basicConfig(level=logging.INFO)

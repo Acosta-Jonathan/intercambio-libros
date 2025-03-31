@@ -7,7 +7,12 @@ from datetime import date
 
 from app import models, schemas, security
 from app.database import get_db
+import logging
+router = APIRouter()
 
+# Configuración del logger
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 router = APIRouter()
 
 
@@ -20,13 +25,26 @@ def save_image(file: UploadFile):
     return file_path
 
 
+# Endpoint para crear el libro (sin imagen)
 @router.post("/books/", response_model=schemas.Book)
-def create_book(book: schemas.BookCreate, image: Optional[UploadFile] = File(None), current_user: models.User = Depends(security.get_current_user), db: Session = Depends(get_db)):
-    image_url = None
-    if image:
-        image_url = save_image(image)
-    db_book = models.Book(**book.dict(), user_id=current_user.id, image_url=image_url)
+def create_book(book: schemas.BookCreate, current_user: models.User = Depends(security.get_current_user), db: Session = Depends(get_db)):
+    db_book = models.Book(**book.dict(), user_id=current_user.id)
     db.add(db_book)
+    db.commit()
+    db.refresh(db_book)
+    return db_book
+
+# Endpoint para cargar la imagen del libro
+@router.post("/books/{book_id}/image/", response_model=schemas.Book)
+def upload_book_image(book_id: int, image: UploadFile = File(...), current_user: models.User = Depends(security.get_current_user), db: Session = Depends(get_db)):
+    db_book = db.query(models.Book).filter(models.Book.id == book_id).first()
+    if not db_book:
+        raise HTTPException(status_code=404, detail="Libro no encontrado")
+    if db_book.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="No autorizado")
+
+    image_url = save_image(image)
+    db_book.image_url = image_url
     db.commit()
     db.refresh(db_book)
     return db_book
