@@ -4,12 +4,15 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import users, books, exchanges, messages
+from app.routers import users, books, exchanges, messages, conversations
 from app.database import engine, Base
+import socketio
 
 Base.metadata.create_all(bind=engine)
 
+sio = socketio.AsyncServer(cors_allowed_origins="*", async_mode="asgi")
 app = FastAPI()
+socket_app = socketio.ASGIApp(sio, app)
 
 # Configuración de CORS
 app.add_middleware(
@@ -24,6 +27,7 @@ app.include_router(users.router)
 app.include_router(books.router)
 app.include_router(exchanges.router)
 app.include_router(messages.router)
+app.include_router(conversations.router)
 
 # Configuración de logging
 logging.basicConfig(level=logging.INFO)
@@ -53,3 +57,16 @@ async def error_handling_middleware(request: Request, call_next):
             status_code=500,
             content={"detail": "Error interno del servidor."},
         )
+
+@sio.on("connect")
+async def connect(sid, environ):
+    print("connect ", sid)
+
+@sio.on("disconnect")
+async def disconnect(sid):
+    print("disconnect ", sid)
+
+@sio.on("message")
+async def message(sid, data):
+    print("message ", data)
+    await sio.emit("response", data, room=sid)
