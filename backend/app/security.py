@@ -19,9 +19,9 @@ import os
 load_dotenv()
 
 # Configuración de JWT
-SECRET_KEY = os.getenv("SECRET_KEY")  # Obtener desde .env
-ALGORITHM = os.getenv("ALGORITHM")  # Obtener desde .env
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))  # Obtener desde .env y convertir a int
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 
 # Configuración de hashing de contraseñas

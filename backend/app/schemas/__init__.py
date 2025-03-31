@@ -1,2 +1,3 @@
-from app.schemas.user import UserBase, UserCreate, User, Token, TokenPayload, ChangePassword
 from .book import Book, BookCreate
+from .user import User, UserCreate, TokenPayload, ChangePassword, Token
+from .exchange import Exchange, ExchangeCreate, ExchangeUpdate, ExchangeHistory
