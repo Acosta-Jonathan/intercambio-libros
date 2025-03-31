@@ -1,4 +1,15 @@
+<<<<<<< Updated upstream
 # Python
+=======
+# Node.js (Frontend)
+node_modules/
+dist/
+.env
+
+# Python (Backend)
+__pycache__/
+*.pyo
+>>>>>>> Stashed changes
 *.pyc
 *.pyo
 __pycache__/
@@ -8,8 +19,12 @@ __pycache__/
 # Entornos virtuales
 venv/
 .env
+*.env
 .coverage
+*.sqlite3
+*.sqlite
 
+<<<<<<< Updated upstream
 # Configuración de bases de datos
 database.db
 *.sqlite
@@ -25,3 +40,14 @@ pip-log.txt
 pip-delete-this-directory.txt
 poetry.lock
 node_modules/
+=======
+# IDEs y Sistema Operativo
+.DS_Store
+*.log
+.vscode/
+
+# Configuración de bases de datos
+database.db
+*.pgdata
+
+>>>>>>> Stashed changes
