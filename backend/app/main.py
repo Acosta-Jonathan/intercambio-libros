@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import users, books, exchanges
+from app.routers import users, books, exchanges, messages
 from app.database import engine, Base
 
 Base.metadata.create_all(bind=engine)
@@ -23,6 +23,7 @@ app.add_middleware(
 app.include_router(users.router)
 app.include_router(books.router)
 app.include_router(exchanges.router)
+app.include_router(messages.router)
 
 # Configuración de logging
 logging.basicConfig(level=logging.INFO)
