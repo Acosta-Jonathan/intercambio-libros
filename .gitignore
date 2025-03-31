@@ -1,15 +1,27 @@
-# Node.js (Frontend)
-node_modules/
-dist/
-.env
-.vscode/
-
-# Python (Backend)
-__pycache__/
+# Python
 *.pyc
+*.pyo
+__pycache__/
+*.log
+*.sqlite3
+
+# Entornos virtuales
 venv/
 .env
+*.env
 
-# IDEs y Sistema Operativo
-.DS_Store
-*.log
+# Configuración de bases de datos
+database.db
+*.sqlite
+*.pgdata
+
+# Configuración de IDEs y editores
+.vscode/
+.idea/
+*.iml
+
+# Caché y dependencias
+pip-log.txt
+pip-delete-this-directory.txt
+poetry.lock
+node_modules/
