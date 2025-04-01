@@ -2,15 +2,28 @@
 node_modules/
 dist/
 .env
-.vscode/
 
 # Python (Backend)
-__pycache__/
+*.pyo
 *.pyc
+__pycache__/
+*.log
+*.sqlite3
+
+# Entornos virtuales
 venv/
 .env
+*.env
 .coverage
+*.sqlite3
+*.sqlite
 
 # IDEs y Sistema Operativo
 .DS_Store
 *.log
+.vscode/
+
+# Configuración de bases de datos
+database.db
+*.pgdata
+

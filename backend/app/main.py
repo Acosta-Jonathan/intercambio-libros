@@ -70,3 +70,4 @@ async def disconnect(sid):
 async def message(sid, data):
     print("message ", data)
     await sio.emit("response", data, room=sid)
+
