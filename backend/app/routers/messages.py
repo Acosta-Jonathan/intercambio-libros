@@ -5,7 +5,7 @@ from datetime import datetime
 
 from app import models, schemas, security
 from app.database import get_db
-from main import sio
+from app.socket_manager import sio
 
 router = APIRouter()
 
@@ -43,18 +43,6 @@ def read_messages(
 
     messages = query.offset(skip).limit(limit).all()
     return messages
-
-@router.put("/messages/{message_id}/read/", response_model=schemas.Message)
-def mark_message_as_read(message_id: int, current_user: models.User = Depends(security.get_current_user), db: Session = Depends(get_db)):
-    db_message = db.query(models.Message).filter(models.Message.id == message_id).first()
-    if not db_message:
-        raise HTTPException(status_code=404, detail="Mensaje no encontrado")
-    if db_message.receiver_id != current_user.id:
-        raise HTTPException(status_code=403, detail="No autorizado para marcar este mensaje como leído")
-    db_message.read = True
-    db.commit()
-    db.refresh(db_message)
-    return db_message
 
 @router.put("/messages/{message_id}/read/", response_model=schemas.Message)
 def mark_message_as_read(message_id: int, current_user: models.User = Depends(security.get_current_user), db: Session = Depends(get_db)):

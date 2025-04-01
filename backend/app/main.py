@@ -7,10 +7,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers import users, books, exchanges, messages, conversations
 from app.database import engine, Base
 import socketio
+from app.socket_manager import sio
 
 Base.metadata.create_all(bind=engine)
 
-sio = socketio.AsyncServer(cors_allowed_origins="*", async_mode="asgi")
 app = FastAPI()
 socket_app = socketio.ASGIApp(sio, app)
 
