@@ -14,3 +14,5 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)
     books = relationship("Book", back_populates="owner")
+    sent_messages = relationship("Message", back_populates="sender", foreign_keys="[Message.sender_id]")
+    read_message_statuses = relationship("MessageReadStatus", back_populates="user")

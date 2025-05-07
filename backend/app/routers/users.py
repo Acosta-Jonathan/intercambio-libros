@@ -11,7 +11,7 @@ router = APIRouter()
 
 logging.basicConfig(level=logging.INFO)
 
-@router.post("/register/", response_model=schemas.User)
+@router.post("/register/", response_model=schemas.Token) #Se modifica el response model.
 def create_user(user: schemas.UserCreate, db: Session = Depends(security.get_db)):
     try:
         db_user_username = db.query(models.User).filter(models.User.username == user.username).first()
@@ -25,18 +25,25 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(security.get_db)
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
-        return db_user
+        access_token = security.create_access_token(subject=db_user.username) #Se genera el token.
+        return {"access_token": access_token, "token_type": "bearer"} #Se retorna el token.
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/login/", response_model=schemas.Token)
-def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(security.get_db)):
+def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(models.User).filter((models.User.username == form_data.username) | (models.User.email == form_data.username)).first()
-    if not user or not security.verify_password(form_data.password, user.hashed_password):
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="Incorrect username or email",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    if not security.verify_password(form_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect password",
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = security.create_access_token(subject=user.username)
