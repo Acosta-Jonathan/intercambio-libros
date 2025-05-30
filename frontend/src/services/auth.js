@@ -1,4 +1,4 @@
-import { api } from './api';
+import api from './api';
 
 export const loginUser = async (formData) => { // Recibimos formData
   const response = await api.post('/login/', formData, { // Enviamos formData

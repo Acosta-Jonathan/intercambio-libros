@@ -1,0 +1,113 @@
+/* src/styles/Chat.css */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-header {
+  padding: 15px 20px;
+  background-color: #e0e0e0;
+  border-bottom: 1px solid #ccc;
+  color: #333;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.chat-messages {
+  flex-grow: 1; /* Permite que ocupe el espacio restante */
+  padding: 20px;
+  overflow-y: auto; /* Para que los mensajes sean scrollable */
+  background-color: #e6e6e6;
+  display: flex;
+  flex-direction: column; /* Asegura que las burbujas de mensaje se apilen */
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 18px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  word-wrap: break-word; /* Para manejar textos largos */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.message-bubble.sent {
+  background-color: #007bff; /* Azul para mensajes enviados */
+  color: white;
+  align-self: flex-end; /* Alinear a la derecha */
+  border-bottom-right-radius: 2px; /* Pequeño ajuste para la esquina */
+}
+
+.message-bubble.received {
+  background-color: #ffffff; /* Blanco para mensajes recibidos */
+  color: #333;
+  align-self: flex-start; /* Alinear a la izquierda */
+  border-bottom-left-radius: 2px; /* Pequeño ajuste para la esquina */
+}
+
+.message-bubble p {
+  margin: 0;
+  padding: 0;
+}
+
+.message-timestamp {
+  display: block;
+  font-size: 0.75em;
+  color: #ccc; /* Un color más claro para las marcas de tiempo */
+  text-align: right;
+  margin-top: 5px;
+}
+.message-bubble.received .message-timestamp {
+  text-align: left;
+  color: #999;
+}
+
+
+.chat-input-form {
+  display: flex;
+  padding: 15px 20px;
+  border-top: 1px solid #ccc;
+  background-color: #ffffff;
+}
+
+.chat-input {
+  flex-grow: 1;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  font-size: 1em;
+  margin-right: 10px;
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.chat-send-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.2s ease;
+}
+
+.chat-send-button:hover {
+  background-color: #0056b3;
+}
+
+.chat-loading, .chat-error, .chat-placeholder, .no-messages {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.chat-error {
+  color: #dc3545;
+}

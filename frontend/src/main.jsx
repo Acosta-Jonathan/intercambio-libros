@@ -7,6 +7,7 @@ import { setTokenFromStorage } from './store/authSlice';
 import './styles/global.css';
 
 const token = localStorage.getItem('token');
+const storedUser = localStorage.getItem('user');
 if (token) {
   store.dispatch(setTokenFromStorage(token));
 }

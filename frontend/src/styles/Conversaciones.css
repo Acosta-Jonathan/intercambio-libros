@@ -1,0 +1,55 @@
+/* src/styles/Conversaciones.css */
+.conversations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.conversation-item {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  background-color: #fefefe;
+  border-radius: 5px;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.conversation-item:hover {
+  background-color: #e9ecef;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.conversation-item.active { /* Para resaltar la conversación seleccionada */
+  background-color: #d1ecf1;
+  border-left: 5px solid #007bff;
+}
+
+.conversation-user {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.conversation-last-message {
+  color: #666;
+  font-size: 0.9em;
+  display: block; /* Para que ocupe toda la línea */
+}
+
+.conversation-timestamp {
+  color: #999;
+  font-size: 0.8em;
+  text-align: right;
+  display: block;
+  margin-top: 5px;
+}
+
+.conversations-loading, .conversations-error, .no-conversations {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.conversations-error {
+  color: #dc3545; /* Rojo para errores */
+}
