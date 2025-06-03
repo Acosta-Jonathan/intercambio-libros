@@ -1,7 +1,8 @@
+// src/components/pages/LoginPage.jsx
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { login } from '../store/authSlice';
-import { loginUser } from '../services/auth';
+import { login } from '../store/authSlice'; // La ruta corregida es ../../store/authSlice
+import { loginUser } from '../services/auth'; // La ruta corregida es ../../services/auth
 import { Link, useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
@@ -13,33 +14,34 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const formData = new URLSearchParams(); // Creamos un objeto URLSearchParams
-      formData.append('username', usernameOrEmail); // Agregamos username
-      formData.append('password', password); // Agregamos password
+    setErrorMessage(''); // Limpiar cualquier mensaje de error previo
 
-      const user = await loginUser(formData); // Enviamos formData
-      dispatch(login(user));
+    try {
+      // *** CAMBIO: Pasa username y password directamente a loginUser ***
+      const data = await loginUser(usernameOrEmail, password);
+
+      // Asumiendo que `data` contiene { access_token: "...", user: { ... } }
+      // Asegúrate de que `login` en authSlice espera el token y el objeto user.
+      dispatch(login({ token: data.access_token, user: data.user })); // Envía el token y el user object
       navigate('/'); // Redirigimos al usuario a la página principal
     } catch (error) {
-      console.error('Error al iniciar sesión', error);
-      if (error.response && error.response.status === 401) {
-        if (error.response.data.detail === 'Incorrect username or password') {
-          // Asumimos que el backend devuelve un mensaje de error detallado
-          if (error.response.data.detail.includes('username')) {
-            setUsernameOrEmail('');
-            setErrorMessage('Nombre de usuario o email incorrecto.');
-          } else if (error.response.data.detail.includes('password')) {
-            setPassword('');
-            setErrorMessage('Contraseña incorrecta.');
-          } else {
-            setErrorMessage('Nombre de usuario o contraseña incorrectos.');
-          }
-        } else {
+      console.error('Error al iniciar sesión:', error);
+      // Mejorar el manejo de errores:
+      if (error.response) {
+        // El servidor respondió con un estado fuera del rango 2xx
+        if (error.response.status === 401) {
           setErrorMessage('Nombre de usuario o contraseña incorrectos.');
+        } else if (error.response.status === 400) {
+          setErrorMessage(error.response.data.detail || 'Solicitud incorrecta.');
+        } else {
+          setErrorMessage(`Error del servidor: ${error.response.status}. Inténtalo de nuevo.`);
         }
+      } else if (error.request) {
+        // La solicitud fue hecha pero no se recibió respuesta
+        setErrorMessage('No se pudo conectar con el servidor. Verifica tu conexión.');
       } else {
-        setErrorMessage('Error al iniciar sesión. Inténtalo de nuevo.');
+        // Algo más causó el error
+        setErrorMessage('Error inesperado. Inténtalo de nuevo.');
       }
     }
   };
@@ -47,15 +49,22 @@ const LoginPage = () => {
   return (
     <div className="container">
       <h1>Iniciar Sesión</h1>
-      {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Mostramos el mensaje de error */}
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Nombre de usuario o Email"
           value={usernameOrEmail}
           onChange={(e) => setUsernameOrEmail(e.target.value)}
+          required
         />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
         <button type="submit">Iniciar Sesión</button>
       </form>
       <p>

@@ -1,41 +1,77 @@
 // src/services/messageService.js
-import api from './api'; // Importa tu instancia configurada de Axios
+import api from './api'; // Tu instancia configurada de Axios que maneja el token
 
-// Función para obtener los usuarios con los que el usuario actual ha conversado (tus "conversaciones")
-export const getChatUsers = async () => {
+// --- Conversaciones ---
+// Endpoint: GET /conversations/
+// Devuelve una lista de objetos Conversation
+export const getUserConversations = async () => {
   try {
-    // Este endpoint debería devolver una lista de usuarios con los que hay chats
-    const response = await api.get('/messages/users/'); // Este es tu endpoint actual según tu código
-    return response.data; // Debería devolver una lista de objetos de usuario
+    const response = await api.get('/conversations/');
+    return response.data;
   } catch (error) {
-    console.error('Error fetching chat users:', error);
+    console.error('Error fetching user conversations:', error.response?.data || error.message);
     throw error;
   }
 };
 
-// Función para obtener los mensajes entre el usuario actual y un usuario destino
-export const getMessagesBetweenUsers = async (userId) => {
+// --- Mensajes ---
+// Endpoint: GET /conversations/{conversation_id}/messages/
+// Devuelve una lista de objetos Message para una conversación específica
+export const getConversationMessages = async (conversationId, skip = 0, limit = 100) => {
   try {
-    // Este endpoint debería devolver los mensajes entre el usuario autenticado y userId
-    const response = await api.get(`/messages/${userId}`); // Este es tu endpoint actual según tu código
-    return response.data; // Debería devolver una lista de objetos de mensaje
+    const response = await api.get(`/conversations/${conversationId}/messages/?skip=${skip}&limit=${limit}`);
+    return response.data;
   } catch (error) {
-    console.error(`Error fetching messages with user ${userId}:`, error);
+    console.error(`Error fetching messages for conversation ${conversationId}:`, error.response?.data || error.message);
     throw error;
   }
 };
 
-// Función para enviar un nuevo mensaje
-export const sendMessageToUser = async (receiverId, content) => {
+// Endpoint: POST /messages/
+// Envía un nuevo mensaje a una conversación
+export const sendMessage = async (conversationId, content) => {
   try {
-    // Este endpoint debería enviar un mensaje al receiverId
     const response = await api.post("/messages/", {
-      receptor_id: receiverId,
-      contenido: content, // Tu nombre de campo actual en el backend
+      conversation_id: conversationId,
+      content: content,
     });
-    return response.data; // Debería devolver el objeto del mensaje enviado
+    return response.data; // Debería devolver el objeto del mensaje enviado (con id, timestamps, etc.)
   } catch (error) {
-    console.error('Error sending message:', error);
+    console.error('Error sending message:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// --- Endpoints de estado de mensajes (PUT) ---
+// Endpoint: PUT /messages/{message_id}/delivered/
+export const markMessageAsDelivered = async (messageId) => {
+  try {
+    const response = await api.put(`/messages/${messageId}/delivered/`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error marking message ${messageId} as delivered:`, error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Endpoint: PUT /messages/{message_id}/seen/
+export const markMessageAsSeen = async (messageId) => {
+  try {
+    const response = await api.put(`/messages/${messageId}/seen/`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error marking message ${messageId} as seen:`, error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Endpoint: PUT /messages/{message_id}/read/
+export const markMessageAsRead = async (messageId) => {
+  try {
+    const response = await api.put(`/messages/${messageId}/read/`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error marking message ${messageId} as read:`, error.response?.data || error.message);
     throw error;
   }
 };

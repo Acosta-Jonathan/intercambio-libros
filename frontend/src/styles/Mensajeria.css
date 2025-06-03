@@ -1,34 +1,49 @@
-/* src/styles/Mensajeria.css */
-.mensajeria-container {
-  display: flex;
-  height: calc(100vh - 70px); /* Ajustar a la altura de la ventana menos el Navbar */
-  margin-top: 70px; /* Para que el contenido no quede debajo del Navbar fijo */
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  background-color: #f8f9fa;
+/* src/styles/Mensajeria.css (renombrado conceptualmente a MensajesPage.css para coincidir con JSX) */
+.messages-page-container { /* Coincide con la clase en MensajesPage.jsx */
+    display: flex;
+    height: calc(100vh - 70px); /* Ajustar a la altura de la ventana menos el Navbar */
+    width: 90%; /* Un ancho más razonable para un chat, o usa max-width */
+    max-width: 1200px; /* Limita el ancho en pantallas grandes */
+    margin-left: auto; /* Centra el contenedor horizontalmente */
+    margin-right: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra más definida */
 }
 
-.conversations-panel {
-  width: 30%;
-  border-right: 1px solid #e0e0e0;
-  padding: 20px;
-  background-color: #ffffff;
-  overflow-y: auto; /* Para que la lista de conversaciones sea scrollable */
+.conversations-sidebar { /* Cambié de .conversations-panel a .conversations-sidebar */
+    width: 300px; /* Un ancho fijo para la barra lateral */
+    flex-shrink: 0; /* No permite que la barra lateral se encoja */
+    border-right: 1px solid #e0e0e0;
+    padding: 20px;
+    background-color: #ffffff;
+    overflow-y: auto;
 }
 
-.conversations-panel h2 {
-  margin-top: 0;
-  color: #333;
-  font-size: 1.5em;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
+.current-user-info { /* Añadido en MensajesPage.jsx */
+    font-weight: bold;
+    padding: 10px 0;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px; /* Espacio después de la info del usuario */
+    color: #333;
+    font-size: 1.1em;
 }
 
-.chat-panel {
-  width: 70%;
-  display: flex;
-  flex-direction: column;
-  background-color: #f2f2f2;
+.conversations-sidebar h2 { /* Puedes eliminar esto si ya no lo usas en el JSX */
+    margin-top: 0;
+    color: #333;
+    font-size: 1.5em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.chat-main-area { /* Cambié de .chat-panel a .chat-main-area */
+    flex-grow: 1; /* Ocupa el espacio restante */
+    display: flex;
+    flex-direction: column;
+    background-color: #f2f2f2;
 }

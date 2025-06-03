@@ -1,3 +1,4 @@
+// src/main.jsx (o src/index.js)
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
@@ -6,8 +7,10 @@ import { store } from './store/store';
 import { setTokenFromStorage } from './store/authSlice';
 import './styles/global.css';
 
-const token = localStorage.getItem('token');
-const storedUser = localStorage.getItem('user');
+// *** CAMBIO AQUI: Usar 'access_token' si esa es la clave que ahora guardas ***
+const token = localStorage.getItem('access_token');
+const storedUser = localStorage.getItem('user'); // Este está bien
+
 if (token) {
   store.dispatch(setTokenFromStorage(token));
 }

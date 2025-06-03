@@ -1,61 +1,66 @@
 // src/components/mensajes/Conversaciones.jsx
 import React, { useEffect, useState } from "react";
-import { getChatUsers } from '../../services/messageService';
+import { getUserConversations } from '../../services/messageService'; // Importa la función correcta
 import '../../styles/Conversaciones.css';
 
-const Conversaciones = ({ onSelectUser }) => {
-  const [usuarios, setUsuarios] = useState([]);
+const Conversaciones = ({ onSelectConversation, selectedConversationId }) => {
+  const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedUserId, setSelectedUserId] = useState(null); 
 
   useEffect(() => {
-    const fetchUsuarios = async () => {
+    const fetchConversations = async () => {
       try {
-        const data = await getChatUsers();
+        const data = await getUserConversations();
         if (Array.isArray(data)) {
-            setUsuarios(data);
+            setConversations(data);
         } else {
-            console.error("La API no devolvió un array para los usuarios:", data);
-            setError("Formato de datos de usuarios inesperado.");
-            setUsuarios([]); // Asegurarse de que sea un array vacío
+            console.error("La API no devolvió un array para las conversaciones:", data);
+            setError("Formato de datos de conversaciones inesperado.");
+            setConversations([]);
         }
       } catch (err) {
         setError("Error al obtener las conversaciones.");
-        console.error(err);
+        console.error("Error completo al obtener conversaciones:", err.response?.data || err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUsuarios();
-  }, []); // El array vacío asegura que se ejecuta solo una vez
+    fetchConversations();
+  }, []); // Se ejecuta solo una vez al montar el componente
 
-  const handleUserClick = (user) => {
-    setSelectedUserId(user.id);
-    onSelectUser(user);
+  const handleConversationClick = (conversation) => {
+    onSelectConversation(conversation); // Pasa el objeto de conversación completo
   };
 
-  // Lógica de renderización - Esto siempre debería devolver *algo*
   return (
     <div className="conversations-list">
       {loading && <div className="conversations-loading">Cargando conversaciones...</div>}
       {error && <div className="conversations-error">{error}</div>}
 
-      {!loading && !error && usuarios.length === 0 && (
-        <p className="no-conversations">No tienes conversaciones.</p>
+      {!loading && !error && conversations.length === 0 && (
+        <p className="no-conversations">No tienes conversaciones aún.</p>
       )}
 
-      {!loading && !error && usuarios.length > 0 && (
-        usuarios.map((user) => (
-          // Asegúrate de que user.id y user.username estén siempre disponibles o maneja los nulos de forma segura
+      {!loading && !error && conversations.length > 0 && (
+        conversations.map((conv) => (
           <div
-            key={user.id || `user-${user.email}`} // Clave de respaldo si falta el id
-            className={`conversation-item ${selectedUserId === user.id ? 'active' : ''}`}
-            onClick={() => handleUserClick(user)}
+            key={conv.id} // Usa el ID de la conversación como clave
+            className={`conversation-item ${selectedConversationId === conv.id ? 'active' : ''}`}
+            onClick={() => handleConversationClick(conv)}
           >
-            <p className="conversation-user">{user.username || user.email || 'Usuario Desconocido'}</p>
-            {/* Agrega más información aquí si tu API la proporciona, p. ej., fragmento del último mensaje */}
+            {/* Muestra el username del 'other_user' */}
+            <p className="conversation-user">
+              {conv.other_user ? conv.other_user.username : 'Usuario desconocido'}
+            </p>
+            {/* Muestra el último mensaje y su timestamp */}
+            <p className="last-message">
+              {conv.last_message_content ? conv.last_message_content : "No hay mensajes."}
+            </p>
+            <small className="timestamp">
+              {conv.last_message_timestamp ? new Date(conv.last_message_timestamp).toLocaleString() : ''}
+            </small>
           </div>
         ))
       )}
