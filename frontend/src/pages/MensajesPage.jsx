@@ -22,8 +22,7 @@ const MensajesPage = () => {
   return (
     <div className="messages-page-container">
       <div className="conversations-sidebar">
-        {/* Muestra el nombre de usuario actual */}
-        <p className="current-user-info">Hola, {currentUser.username}</p>
+        <p className="current-user-info">Conversaciones</p>
         <Conversaciones
           onSelectConversation={setSelectedConversation}
           selectedConversationId={selectedConversation ? selectedConversation.id : null}

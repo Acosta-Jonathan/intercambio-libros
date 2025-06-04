@@ -2,50 +2,50 @@
 .chat-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100%; /* CRÍTICO: Asegura que el chat-container ocupe toda la altura disponible del .chat-main-area */
 }
 
 .chat-header {
-    padding: 15px 20px;
     background-color: #e0e0e0;
     border-bottom: 1px solid #ccc;
     color: #333;
-    font-size: 1.1em;
-    font-weight: bold;
+    flex-shrink: 0; /* Evita que el header se encoja */
+    text-align: center;
 }
 
 .chat-messages {
-    flex-grow: 1;
+    flex-grow: 1; /* CRÍTICO: Permite que este contenedor ocupe todo el espacio vertical disponible */
     padding: 20px;
-    overflow-y: auto;
+    overflow-y: auto; /* CRÍTICO: Permite el desplazamiento vertical cuando los mensajes exceden la altura */
     background-color: #e6e6e6;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Para apilar las burbujas de mensaje */
 }
 
 .message-bubble {
-    max-width: 70%;
+    max-width: 70%; /* Mantiene el límite del ancho de las burbujas */
     padding: 10px 15px;
     border-radius: 18px;
-    margin-bottom: 10px;
+    margin-bottom: 10px; /* Espacio entre burbujas */
     line-height: 1.4;
     word-wrap: break-word;
+    overflow-wrap: break-word; /* Para asegurar que las palabras largas se rompan */
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    position: relative; /* Importante para posicionar los ticks */
+    position: relative;
 }
 
 .message-bubble.sent {
-    background-color: #007bff;
+    background-color: #00c8ff;
     color: white;
-    align-self: flex-end;
-    border-bottom-right-radius: 2px;
+    align-self: flex-end; /* Alinea a la derecha */
+    border-bottom-right-radius: 2px; /* Pequeño ajuste para la "cola" */
 }
 
 .message-bubble.received {
     background-color: #ffffff;
     color: #333;
-    align-self: flex-start;
-    border-bottom-left-radius: 2px;
+    align-self: flex-start; /* Alinea a la izquierda */
+    border-bottom-left-radius: 2px; /* Pequeño ajuste para la "cola" */
 }
 
 .message-bubble p {
@@ -54,74 +54,65 @@
 }
 
 .message-timestamp {
-    display: flex; /* Cambiado a flex para alinear ticks */
-    align-items: center; /* Centra verticalmente el tiempo y los ticks */
-    justify-content: flex-end; /* Alinea el contenido a la derecha por defecto */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Alinea el tiempo y los ticks a la derecha para mensajes enviados */
     font-size: 0.75em;
-    color: #ccc;
+    color: #473d3d; /* Color un poco más oscuro para el timestamp */
     margin-top: 5px;
-    gap: 5px; /* Espacio entre el timestamp y los ticks */
+    gap: 5px;
+    /* Alineación de los ticks */
+    bottom: 5px; /* Ajusta la posición de los ticks */
+    right: 10px; /* Ajusta la posición para mensajes enviados */
 }
 
 .message-bubble.received .message-timestamp {
-    justify-content: flex-start; /* Alinea a la izquierda para mensajes recibidos */
-    color: #999;
+    justify-content: flex-start; /* Alinea el tiempo a la izquierda para mensajes recibidos */
+    left: 10px; /* Ajusta la posición para mensajes recibidos */
+    right: auto; /* Resetea el right para mensajes recibidos */
 }
 
 /* --- ESTILOS PARA LOS TICKS DE ESTADO --- */
+
 .message-status-icons {
-    display: flex; /* Para que los ticks estén uno al lado del otro */
+    display: flex;
     align-items: center;
-    margin-left: 5px; /* Espacio entre el timestamp y los ticks */
 }
 
 .status-icon {
-    font-size: 0.9em; /* Tamaño del icono */
-    color: #999; /* Color por defecto (gris) para todos los ticks */
-    margin-left: -5px; /* Superposición para simular un doble tick */
-    /* Animación opcional para cuando cambian de estado */
-    transition: color 0.3s ease;
+    font-size: 0.9em;
+    color: #ccc; /* Color por defecto */
+    margin-left: -5px; /* Para superponer los ticks y simular doble tick */
 }
 
 /* Estilos específicos para cada estado */
-.status-icon.delivered {
-    /* Color para el primer tick (delivered), puede ser un gris un poco más oscuro si lo deseas */
+/* .status-icon.delivered {
     color: #777;
-}
-
-.status-icon.seen {
-    /* Color para el segundo tick (seen), por ejemplo, un verde o azul claro */
-    color: #4CAF50; /* Verde */
-    /* Si quieres que se vea como doble tick de WhatsApp, el segundo debería tener el mismo color */
-}
-
-.status-icon.read {
-    /* Color para el tercer tick (read), o para el doble tick azul de WhatsApp */
-    color: #2196F3; /* Azul */
-    /* Para simular el doble tick azul de WhatsApp, puedes hacer que .seen y .read sean azules
-       y quitar el color de .delivered si solo quieres un color de "entregado" y un color de "visto/leído" */
-}
-
-/* Ejemplo si quieres doble tick azul:
-   .status-icon.seen { color: #2196F3; } // Ambos ticks azules
-   .status-icon.read { color: #2196F3; } // Ambos ticks azules
-*/
+} */
 
 
+
+   .status-icon.delivered { color: #2196F3; }
+   .status-icon.read { color: #2196F3; }
+
+
+/* Ajustes para la parte de entrada del mensaje */
 .chat-input-form {
     display: flex;
     padding: 15px 20px;
     border-top: 1px solid #ccc;
     background-color: #ffffff;
+    flex-shrink: 0; /* Evita que el formulario de entrada se encoja */
+    align-items: center; /* Alinea verticalmente el input y el botón */
+    gap: 10px; /* Espacio entre el input y el botón */
 }
 
 .chat-input {
-    flex-grow: 1;
+    flex-grow: 1; /* Ocupa todo el espacio disponible */
     padding: 10px 15px;
     border: 1px solid #ddd;
     border-radius: 20px;
     font-size: 1em;
-    margin-right: 10px;
 }
 
 .chat-input:focus {

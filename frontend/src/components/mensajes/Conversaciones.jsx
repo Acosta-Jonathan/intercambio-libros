@@ -55,12 +55,21 @@ const Conversaciones = ({ onSelectConversation, selectedConversationId }) => {
               {conv.other_user ? conv.other_user.username : 'Usuario desconocido'}
             </p>
             {/* Muestra el último mensaje y su timestamp */}
-            <p className="last-message">
-              {conv.last_message_content ? conv.last_message_content : "No hay mensajes."}
-            </p>
-            <small className="timestamp">
-              {conv.last_message_timestamp ? new Date(conv.last_message_timestamp).toLocaleString() : ''}
-            </small>
+            <div className="conversation-info-row">
+                <p className="last-message">
+                    {conv.last_message_content ? conv.last_message_content : "No hay mensajes."}
+                </p>
+                <small className="timestamp">
+                    {conv.last_message_timestamp ? new Date(conv.last_message_timestamp + 'Z').toLocaleString([], { 
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false
+                      }) : ''}
+                </small>
+            </div>
           </div>
         ))
       )}

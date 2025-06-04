@@ -5,20 +5,20 @@ import {
   sendMessage,
   markMessageAsSeen,
   markMessageAsRead,
-  markMessageAsDelivered // Aunque delivered suele ser del backend, lo mantenemos por si lo necesitas
+  markMessageAsDelivered
 } from '../../services/messageService';
 import { useSelector } from 'react-redux';
 import '../../styles/Chat.css';
 
-// Ahora recibe 'conversation' en lugar de 'usuarioDestino'
-const Chat = ({ conversation }) => {
+const Chat = ({ conversation, currentUser }) => {
   const [messages, setMessages] = useState([]);
   const [newMessageContent, setNewMessageContent] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const messagesEndRef = useRef(null);
 
-  // Obtener el ID del usuario actual del store de Redux
+  const messagesEndRef = useRef(null); // Ref para el div vacío al final
+  const chatMessagesContainerRef = useRef(null); // Ref para el contenedor real de mensajes
+
   const currentUserId = useSelector((state) => state.auth.user?.id);
 
   const loadMessages = async () => {
@@ -35,58 +35,45 @@ const Chat = ({ conversation }) => {
       if (Array.isArray(data)) {
         setMessages(data);
 
-        // --- Lógica para marcar mensajes como vistos/leídos/entregados ---
-        // Itera sobre los mensajes para marcar aquellos que son para el usuario actual
         data.forEach(async (msg) => {
-            // Solo procesa mensajes si el usuario actual es el RECEPTOR
-            // y el mensaje no ha sido marcado ya con ese estado.
-            if (msg.receiver_id === currentUserId) {
-                // Marcar como 'delivered' (entregado): el mensaje llegó al dispositivo del receptor.
-                // Esta lógica es opcional aquí, ya que a menudo se maneja en el backend al enviar a un dispositivo
-                // o al abrir la app. Pero si el backend no lo hace, el frontend puede enviarlo al cargar el chat.
-                if (!msg.delivered) {
-                    try {
-                        await markMessageAsDelivered(msg.id);
-                        setMessages(prevMessages =>
-                            prevMessages.map(m => m.id === msg.id ? { ...m, delivered: true } : m)
-                        );
-                    } catch (err) {
-                        console.error(`Error marcando mensaje ${msg.id} como entregado:`, err);
-                    }
-                }
-
-                // Marcar como 'seen' (visto): el mensaje apareció en la pantalla del receptor.
-                if (!msg.seen) {
-                    try {
-                        await markMessageAsSeen(msg.id);
-                        setMessages(prevMessages =>
-                            prevMessages.map(m => m.id === msg.id ? { ...m, seen: true } : m)
-                        );
-                    } catch (err) {
-                        console.error(`Error marcando mensaje ${msg.id} como visto:`, err);
-                    }
-                }
-
-                // Marcar como 'read' (leído): el mensaje fue activamente consumido por el receptor.
-                // Podrías decidir que 'seen' implica 'read', o que 'read' es un evento posterior (ej., después de X segundos).
-                // Aquí, lo marcamos junto con 'seen' para simplificar si tu app no tiene una distinción visual fuerte.
-                if (!msg.read) {
-                    try {
-                        await markMessageAsRead(msg.id);
-                        setMessages(prevMessages =>
-                            prevMessages.map(m => m.id === msg.id ? { ...m, read: true } : m)
-                        );
-                    } catch (err) {
-                        console.error(`Error marcando mensaje ${msg.id} como leído:`, err);
-                    }
-                }
+          if (msg.receiver_id === currentUserId) {
+            if (!msg.delivered) {
+              try {
+                await markMessageAsDelivered(msg.id);
+                setMessages(prevMessages =>
+                  prevMessages.map(m => m.id === msg.id ? { ...m, delivered: true } : m)
+                );
+              } catch (err) {
+                console.error(`Error marcando mensaje ${msg.id} como entregado:`, err);
+              }
             }
+            if (!msg.seen) {
+              try {
+                await markMessageAsSeen(msg.id);
+                setMessages(prevMessages =>
+                  prevMessages.map(m => m.id === msg.id ? { ...m, seen: true } : m)
+                );
+              } catch (err) {
+                console.error(`Error marcando mensaje ${msg.id} como visto:`, err);
+              }
+            }
+            if (!msg.read) {
+              try {
+                await markMessageAsRead(msg.id);
+                setMessages(prevMessages =>
+                  prevMessages.map(m => m.id === msg.id ? { ...m, read: true } : m)
+                );
+              } catch (err) {
+                console.error(`Error marcando mensaje ${msg.id} como leído:`, err);
+              }
+            }
+          }
         });
 
       } else {
-          console.error("La API no devolvió un array para los mensajes:", data);
-          setError("Formato de datos de mensajes inesperado.");
-          setMessages([]);
+        console.error("La API no devolvió un array para los mensajes:", data);
+        setError("Formato de datos de mensajes inesperado.");
+        setMessages([]);
       }
     } catch (err) {
       setError("No se pudieron cargar los mensajes.");
@@ -98,25 +85,34 @@ const Chat = ({ conversation }) => {
 
   useEffect(() => {
     loadMessages();
-  }, [conversation, currentUserId]); // Dependencia de 'conversation' y 'currentUserId'
+  }, [conversation, currentUserId]);
 
+  // Lógica de scroll mejorada
   useEffect(() => {
-    // Scroll al final de los mensajes cada vez que se actualizan
-    if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (chatMessagesContainerRef.current) {
+      const { scrollHeight, scrollTop, clientHeight } = chatMessagesContainerRef.current;
+
+      // Determina si el usuario estaba al final del scroll (o muy cerca)
+      // Un umbral de 100 píxeles es común para dar un poco de margen.
+      const isAtBottom = scrollHeight - scrollTop - clientHeight < 100;
+
+      // Solo desplaza si el usuario estaba en la parte inferior
+      // o si la lista de mensajes es muy corta (menos de 20 mensajes, por ejemplo, para una conversación nueva)
+      // La condición de 'messages.length < 20' es opcional y se puede ajustar o quitar.
+      if (isAtBottom || messages.length < 40) { // <-- Se puede ajustar el umbral o quitar la segunda parte
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }
     }
-  }, [messages]);
+  }, [messages]); // Se ejecuta cuando los mensajes cambian
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    // Asegurarse de que hay contenido y una conversación seleccionada
     if (!newMessageContent.trim() || !conversation || !conversation.id) return;
 
     try {
       const sentMessage = await sendMessage(conversation.id, newMessageContent);
-      // Añadir el mensaje enviado a la lista, ya que el backend lo devuelve completo
       setMessages((prevMessages) => [...prevMessages, sentMessage]);
-      setNewMessageContent(""); // Limpiar el input
+      setNewMessageContent("");
     } catch (err) {
       console.error("Error al enviar mensaje:", err.response?.data || err.message);
       alert("Error al enviar mensaje: " + (err.response?.data?.detail || err.message));
@@ -132,35 +128,29 @@ const Chat = ({ conversation }) => {
   return (
     <div className="chat-container">
       <div className="chat-header">
-        <h2>Chat con {conversation.other_user ? conversation.other_user.username : 'Cargando...'}</h2>
+        <h2>{conversation.other_user ? conversation.other_user.username : 'Cargando...'}</h2>
       </div>
-      <div className="chat-messages">
+      {/* Asigna la ref `chatMessagesContainerRef` aquí */}
+      <div className="chat-messages" ref={chatMessagesContainerRef}>
         {messages.length === 0 && (
           <p className="no-messages">Aún no hay mensajes en esta conversación.</p>
         )}
         {messages.length > 0 && (
           messages.map((msg) => (
             <div
-              key={msg.id} // Usa el ID del mensaje
-              className={`message-bubble ${msg.sender_id === currentUserId ? 'sent' : 'received'}`}
+              key={msg.id}
+              className={`message-bubble ${msg.sender_id === currentUser.id ? 'sent' : 'received'}`}
             >
               <p>{msg.content}</p>
-              <small className="message-timestamp">
-                {new Date(msg.timestamp).toLocaleTimeString()}
-                {/* --- Mostrar los ticks de estado para los mensajes ENVIADOS por el usuario actual --- */}
-                {msg.sender_id === currentUserId && (
+              <div className="message-timestamp">
+                <span>{new Date(msg.timestamp + 'Z').toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false})}</span>
+                {msg.sender_id === currentUser.id && (
                   <span className="message-status-icons">
-                    {/* Un tick para Delivered (entregado al dispositivo del receptor) */}
                     <span className={`status-icon ${msg.delivered ? 'delivered' : ''}`}>✓</span>
-                    {/* Doble tick para Seen (visto por el receptor en la pantalla) */}
-                    <span className={`status-icon ${msg.seen ? 'seen' : ''}`}>✓</span>
-                    {/* Tercer tick o doble azul para Read (leído activamente por el receptor) */}
                     <span className={`status-icon ${msg.read ? 'read' : ''}`}>✓</span>
-                    {/* NOTA: Para los ticks azules, deberías aplicar un CSS específico para .read.
-                        Ejemplo: .message-status-icons .read { color: blue; } */}
                   </span>
                 )}
-              </small>
+              </div>
             </div>
           ))
         )}

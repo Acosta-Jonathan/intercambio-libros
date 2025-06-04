@@ -3,7 +3,9 @@ import AppRouter from './routes/AppRouter';
 
 function App() {
   return (
-    <AppRouter />
+    <div className="app-container">
+      <AppRouter />
+    </div>
   );
 }
 

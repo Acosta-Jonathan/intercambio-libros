@@ -8,7 +8,7 @@
 }
 
 .conversation-item {
-    padding: 15px;
+    padding: 0px 15px;
     border-bottom: 1px solid #eee;
     cursor: pointer;
     background-color: #fefefe;
@@ -28,6 +28,7 @@
 
 .conversation-user {
     font-weight: bold;
+    margin-top: 0;
     margin-bottom: 5px;
     color: #333;
 }
@@ -35,18 +36,20 @@
 .last-message { /* Cambié de .conversation-last-message a .last-message para coherencia con JSX */
     color: #666;
     font-size: 0.9em;
-    display: block;
     white-space: nowrap; /* Evita que el texto del último mensaje se rompa */
     overflow: hidden; /* Oculta el exceso de texto */
     text-overflow: ellipsis; /* Añade puntos suspensivos si el texto es muy largo */
+    flex-grow: 1;
+    margin-right: 10px; /* Espacio entre el mensaje y el timestamp */
+    margin-top: auto;
 }
 
 .timestamp { /* Cambié de .conversation-timestamp a .timestamp para coherencia con JSX */
+    display: flex;
     color: #999;
     font-size: 0.8em;
-    text-align: right;
-    display: block;
-    margin-top: 5px;
+    flex-shrink: 0; /* Evita que el timestamp se encoja si el mensaje es muy largo */
+    margin-top: 0;
 }
 
 .conversations-loading, .conversations-error, .no-conversations {
@@ -57,4 +60,11 @@
 
 .conversations-error {
     color: #dc3545;
+}
+
+.conversation-info-row {
+    display: flex; /* Hacemos este contenedor flex */
+    justify-content: space-between; /* Distribuye los ítems a los extremos (mensaje a la izquierda, timestamp a la derecha) */
+    align-items: baseline; /* Alinea los ítems por la línea base del texto (opcional, experimenta con 'center' o 'flex-end') */
+    margin-top: 5px; /* Pequeño margen superior para separarlo del nombre de usuario */
 }

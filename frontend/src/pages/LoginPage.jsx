@@ -47,29 +47,31 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container">
-      <h1>Iniciar Sesión</h1>
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Nombre de usuario o Email"
-          value={usernameOrEmail}
-          onChange={(e) => setUsernameOrEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Iniciar Sesión</button>
-      </form>
-      <p>
-        ¿No tienes una cuenta? <Link to="/register">Regístrate aquí</Link>
-      </p>
+    <div className="auth-page-wrapper">
+      <div className="container">
+        <h1>Iniciar Sesión</h1>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Nombre de usuario o Email"
+            value={usernameOrEmail}
+            onChange={(e) => setUsernameOrEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit">Iniciar Sesión</button>
+        </form>
+        <p>
+          ¿No tienes una cuenta? <Link to="/register">Regístrate aquí</Link>
+        </p>
+      </div>
     </div>
   );
 };
