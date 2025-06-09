@@ -1,4 +1,4 @@
-# schemas/conversation.py
+# app/schemas/conversation.py
 from pydantic import BaseModel
 from typing import Optional # Necesario para Optional
 from datetime import datetime # Necesario para datetime

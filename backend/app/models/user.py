@@ -1,3 +1,4 @@
+# app/models/user.py
 from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 

@@ -1,4 +1,4 @@
-# routers/messages.py
+# app/routers/messages.py
 from fastapi import APIRouter, Depends, HTTPException, status, WebSocket, Query
 from sqlalchemy.orm import Session, joinedload # Importamos joinedload para cargar relaciones
 from typing import List, Optional

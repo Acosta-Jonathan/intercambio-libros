@@ -1,4 +1,4 @@
-# schemas/user.py
+# app/schemas/user.py
 from pydantic import BaseModel, Field
 from typing import Optional # Importar Optional
 

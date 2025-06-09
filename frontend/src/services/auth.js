@@ -3,12 +3,12 @@ import api from './api';
 
 export const loginUser = async (username, password) => {
   try {
-    const formData = new URLSearchParams(); // <-- Volvemos a usar URLSearchParams
-    formData.append('username', username);
+    const formData = new URLSearchParams();
     formData.append('password', password);
+    formData.append('username', username);
 
     // Envía formData con Content-Type: application/x-www-form-urlencoded
-    const response = await api.post('/login/', formData, { // <-- CAMBIO: Envía formData y setea el header
+    const response = await api.post('/login/', formData, { 
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
