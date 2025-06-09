@@ -1,3 +1,4 @@
+# app/routers/users.py
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -11,7 +12,7 @@ router = APIRouter()
 
 logging.basicConfig(level=logging.INFO)
 
-@router.post("/register/", response_model=schemas.Token) #Se modifica el response model.
+@router.post("/register/", response_model=schemas.Token)
 def create_user(user: schemas.UserCreate, db: Session = Depends(security.get_db)):
     try:
         db_user_username = db.query(models.User).filter(models.User.username == user.username).first()
@@ -26,7 +27,11 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(security.get_db)
         db.commit()
         db.refresh(db_user)
         access_token = security.create_access_token(subject=db_user.username) #Se genera el token.
-        return {"access_token": access_token, "token_type": "bearer"} #Se retorna el token.
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": user
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -47,7 +52,11 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = security.create_access_token(subject=user.username)
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": user
+    }
 
 @router.get("/me/", response_model=schemas.User)
 def read_users_me(current_user: models.User = Depends(security.get_current_user)):

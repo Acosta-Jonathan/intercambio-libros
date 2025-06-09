@@ -1,0 +1,52 @@
+/* src/styles/Mensajeria.css (renombrado conceptualmente a MensajesPage.css para coincidir con JSX) */
+.messages-page-container {
+    display: flex;
+    /* Ajusta la altura para que el chat ocupe la pantalla, restando el Navbar */
+    height: calc(100vh - 70px); /* 100vh - altura del Navbar */
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 8px;
+    overflow: hidden; /* Importante para que los hijos no se desborden de este contenedor */
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.conversations-sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    border-right: 1px solid #e0e0e0;
+    padding: 20px;
+    background-color: #ffffff;
+    overflow-y: auto; /* Si las conversaciones son muchas, se desplazan */
+    display: flex; /* Añadir display flex */
+    flex-direction: column; /* Para que sus hijos ocupen el espacio verticalmente */
+}
+
+.current-user-info { /* Añadido en MensajesPage.jsx */
+    font-weight: bold;
+    padding-bottom: 10px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    color: #333;
+    font-size: 1.1em;
+}
+
+.conversations-sidebar h2 { /* Puedes eliminar esto si ya no lo usas en el JSX */
+    margin-top: 0;
+    color: #333;
+    font-size: 1.5em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.chat-main-area {
+    flex-grow: 1; /* Ocupa el espacio restante */
+    display: flex;
+    flex-direction: column; /* CRÍTICO: Para que el header, messages y input se apilen verticalmente */
+    background-color: #f2f2f2;
+}

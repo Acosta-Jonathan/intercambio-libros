@@ -1,3 +1,4 @@
+# app/models/user.py
 from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -15,4 +16,8 @@ class User(Base):
     is_verified = Column(Boolean, default=False)
     books = relationship("Book", back_populates="owner")
     sent_messages = relationship("Message", back_populates="sender", foreign_keys="[Message.sender_id]")
+    # --- OPCIONAL: Relación para mensajes recibidos ---
+    # Si quieres esta relación inversa en User, añádela aquí
+    received_messages = relationship("Message", back_populates="receiver", foreign_keys="[Message.receiver_id]")
+    # ------------------------------------------------
     read_message_statuses = relationship("MessageReadStatus", back_populates="user")

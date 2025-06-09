@@ -1,0 +1,147 @@
+/* src/styles/Chat.css */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* CRÍTICO: Asegura que el chat-container ocupe toda la altura disponible del .chat-main-area */
+}
+
+.chat-header {
+    background-color: #e0e0e0;
+    border-bottom: 1px solid #ccc;
+    color: #333;
+    flex-shrink: 0; /* Evita que el header se encoja */
+    text-align: center;
+}
+
+.chat-messages {
+    flex-grow: 1; /* CRÍTICO: Permite que este contenedor ocupe todo el espacio vertical disponible */
+    padding: 20px;
+    overflow-y: auto; /* CRÍTICO: Permite el desplazamiento vertical cuando los mensajes exceden la altura */
+    background-color: #e6e6e6;
+    display: flex;
+    flex-direction: column; /* Para apilar las burbujas de mensaje */
+}
+
+.message-bubble {
+    max-width: 70%; /* Mantiene el límite del ancho de las burbujas */
+    padding: 10px 15px;
+    border-radius: 18px;
+    margin-bottom: 10px; /* Espacio entre burbujas */
+    line-height: 1.4;
+    word-wrap: break-word;
+    overflow-wrap: break-word; /* Para asegurar que las palabras largas se rompan */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.message-bubble.sent {
+    background-color: #00c8ff;
+    color: white;
+    align-self: flex-end; /* Alinea a la derecha */
+    border-bottom-right-radius: 2px; /* Pequeño ajuste para la "cola" */
+}
+
+.message-bubble.received {
+    background-color: #ffffff;
+    color: #333;
+    align-self: flex-start; /* Alinea a la izquierda */
+    border-bottom-left-radius: 2px; /* Pequeño ajuste para la "cola" */
+}
+
+.message-bubble p {
+    margin: 0;
+    padding: 0;
+}
+
+.message-timestamp {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Alinea el tiempo y los ticks a la derecha para mensajes enviados */
+    font-size: 0.75em;
+    color: #473d3d; /* Color un poco más oscuro para el timestamp */
+    margin-top: 5px;
+    gap: 5px;
+    /* Alineación de los ticks */
+    bottom: 5px; /* Ajusta la posición de los ticks */
+    right: 10px; /* Ajusta la posición para mensajes enviados */
+}
+
+.message-bubble.received .message-timestamp {
+    justify-content: flex-start; /* Alinea el tiempo a la izquierda para mensajes recibidos */
+    left: 10px; /* Ajusta la posición para mensajes recibidos */
+    right: auto; /* Resetea el right para mensajes recibidos */
+}
+
+/* --- ESTILOS PARA LOS TICKS DE ESTADO --- */
+
+.message-status-icons {
+    display: flex;
+    align-items: center;
+}
+
+.status-icon {
+    font-size: 0.9em;
+    color: #ccc; /* Color por defecto */
+    margin-left: -5px; /* Para superponer los ticks y simular doble tick */
+}
+
+/* Estilos específicos para cada estado */
+/* .status-icon.delivered {
+    color: #777;
+} */
+
+
+
+   .status-icon.delivered { color: #2196F3; }
+   .status-icon.read { color: #2196F3; }
+
+
+/* Ajustes para la parte de entrada del mensaje */
+.chat-input-form {
+    display: flex;
+    padding: 15px 20px;
+    border-top: 1px solid #ccc;
+    background-color: #ffffff;
+    flex-shrink: 0; /* Evita que el formulario de entrada se encoja */
+    align-items: center; /* Alinea verticalmente el input y el botón */
+    gap: 10px; /* Espacio entre el input y el botón */
+}
+
+.chat-input {
+    flex-grow: 1; /* Ocupa todo el espacio disponible */
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 1em;
+}
+
+.chat-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.chat-send-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+.chat-send-button:hover {
+    background-color: #0056b3;
+}
+
+.chat-loading, .chat-error, .chat-placeholder, .no-messages {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.chat-error {
+    color: #dc3545;
+}
