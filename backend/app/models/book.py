@@ -12,7 +12,12 @@ class Book(Base):
     author = Column(String, index=True)
     publication_date = Column(Date)
     description = Column(String)
+    image_url = Column(String, nullable=True)
+    category = Column(String, nullable=True)
+    tags = Column(String, nullable=True)
+    idioma = Column(String, nullable=True)
+    estado = Column(String, nullable=True)
+
     user_id = Column(Integer, ForeignKey("users.id"))
-    image_url = Column(String, nullable=True) 
 
     owner = relationship("User", back_populates="books")

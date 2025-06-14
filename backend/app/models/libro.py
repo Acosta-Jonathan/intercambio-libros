@@ -1,35 +1,22 @@
 # app/models/libro.py
-from sqlalchemy import Column, Integer, String
-from database import Base
-from pydantic import BaseModel
 
-# Modelo SQLAlchemy
+from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy.orm import relationship
+from database import Base
+
 class Libro(Base):
-    __tablename__ = 'libros'
+    __tablename__ = "libros"
 
     id = Column(Integer, primary_key=True, index=True)
-    titulo = Column(String, index=True)
-    autor = Column(String)
+    titulo = Column(String, nullable=False)
+    autor = Column(String, nullable=False)
     descripcion = Column(String)
+    fecha_publicacion = Column(Date, nullable=False)
+    imagen_url = Column(String)
+    categoria = Column(String)
+    etiquetas = Column(String)
+    idioma = Column(String)
+    estado = Column(String)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"))
 
-# Modelos Pydantic
-
-# Base para compartir las validaciones
-class LibroBase(BaseModel):
-    titulo: str
-    autor: str
-    descripcion: str
-
-    class Config:
-        orm_mode = True  # Permite que Pydantic trabaje con modelos de SQLAlchemy
-
-# Para la creación de un libro
-class LibroCreate(LibroBase):
-    pass
-
-# Para la respuesta con el ID del libro (cambiamos el nombre de la clase)
-class LibroResponse(LibroBase):
-    id: int
-
-    class Config:
-        orm_mode = True
+    usuario = relationship("Usuario", back_populates="libros")
