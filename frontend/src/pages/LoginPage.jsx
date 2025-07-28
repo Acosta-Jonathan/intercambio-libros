@@ -13,38 +13,24 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage(''); // Limpiar cualquier mensaje de error previo
+  e.preventDefault();
+  setErrorMessage('');
 
-    try {
-      // *** CAMBIO: Pasa username y password directamente a loginUser ***
-      const data = await loginUser(usernameOrEmail, password);
+  try {
+    const data = await loginUser(usernameOrEmail, password);
 
-      // Asumiendo que `data` contiene { access_token: "...", user: { ... } }
-      // Asegúrate de que `login` en authSlice espera el token y el objeto user.
-      dispatch(login({ token: data.access_token, user: data.user })); // Envía el token y el user object
-      navigate('/'); // Redirigimos al usuario a la página principal
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-      // Mejorar el manejo de errores:
-      if (error.response) {
-        // El servidor respondió con un estado fuera del rango 2xx
-        if (error.response.status === 401) {
-          setErrorMessage('Nombre de usuario o contraseña incorrectos.');
-        } else if (error.response.status === 400) {
-          setErrorMessage(error.response.data.detail || 'Solicitud incorrecta.');
-        } else {
-          setErrorMessage(`Error del servidor: ${error.response.status}. Inténtalo de nuevo.`);
-        }
-      } else if (error.request) {
-        // La solicitud fue hecha pero no se recibió respuesta
-        setErrorMessage('No se pudo conectar con el servidor. Verifica tu conexión.');
-      } else {
-        // Algo más causó el error
-        setErrorMessage('Error inesperado. Inténtalo de nuevo.');
-      }
+    console.log("Respuesta de backend:", data);
+    dispatch(login({ access_token: data.access_token, user: data.user }));
+    navigate('/');
+  } catch (error) {
+    console.error('Error al iniciar sesión:', error);
+    if (error.response?.status === 401) {
+      setErrorMessage('Nombre de usuario o contraseña incorrectos.');
+    } else {
+      setErrorMessage('Error al conectar con el servidor.');
     }
-  };
+  }
+};
 
   return (
     <div className="auth-page-wrapper">

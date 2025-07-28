@@ -1,12 +1,8 @@
-// src/App.jsx
+import React from 'react';
 import AppRouter from './routes/AppRouter';
 
 function App() {
-  return (
-    <div className="app-container">
-      <AppRouter />
-    </div>
-  );
+  return <AppRouter />;
 }
 
 export default App;

@@ -11,7 +11,7 @@ import './styles/global.css';
 const token = localStorage.getItem('access_token');
 const storedUser = localStorage.getItem('user'); // Este está bien
 
-if (token) {
+if (token && token !== 'undefined') {
   store.dispatch(setTokenFromStorage(token));
 }
 

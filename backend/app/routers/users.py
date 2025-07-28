@@ -21,20 +21,24 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(security.get_db)
             raise HTTPException(status_code=400, detail="Username already registered")
         if db_user_email:
             raise HTTPException(status_code=400, detail="Email already registered")
+        
         hashed_password = security.get_password_hash(user.password)
-        db_user = models.User(username=user.username, email=user.email, hashed_password=hashed_password) # Email agregado
+        db_user = models.User(username=user.username, email=user.email, hashed_password=hashed_password)
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
-        access_token = security.create_access_token(subject=db_user.username) #Se genera el token.
+        
+        access_token = security.create_access_token(subject=db_user.username)
         return {
             "access_token": access_token,
             "token_type": "bearer",
-            "user": user
+            "user": schemas.User.from_orm(db_user)
         }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
+    except HTTPException as e:
+        raise e  # errores 400 llegan como están
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error: " + str(e))
 
 @router.post("/login/", response_model=schemas.Token)
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
