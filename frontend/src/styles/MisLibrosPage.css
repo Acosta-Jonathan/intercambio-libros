@@ -1,0 +1,39 @@
+.mis-libros-container {
+    padding: 2rem;
+}
+
+.libros-grid {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.libro-card {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    width: 200px;
+    text-align: center;
+}
+
+.libro-card img {
+    width: 100%;
+    height: auto;
+}
+
+.acciones {
+    margin-top: 0.5rem;
+}
+
+.acciones button {
+    margin: 0 0.25rem;
+}
+
+.editor input {
+  display: block;
+  margin: 0.5rem 0;
+  width: 100%;
+  padding: 0.25rem;
+}
+.editor button {
+  margin-right: 0.5rem;
+}

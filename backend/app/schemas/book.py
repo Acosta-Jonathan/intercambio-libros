@@ -7,7 +7,7 @@ from typing import Optional
 class BookBase(BaseModel):
  title: str
  author: str
- publication_date: date
+ publication_date: Optional[date] = None
  description: Optional[str] = None
  image_url: Optional[str] = None
  category: Optional[str] = None
@@ -21,7 +21,7 @@ class BookCreate(BookBase):
 class BookUpdate(BaseModel):
  title: str
  author: str
- publication_date: date
+ publication_date: Optional[date] = None
  description: Optional[str] = None
  image_url: Optional[str] = None
  category: Optional[str] = None

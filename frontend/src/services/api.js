@@ -1,32 +1,84 @@
-// src/services/api.js
-import axios from 'axios';
-import { store } from '../store/store';
+import axios from "axios";
 
-const API_URL = 'http://localhost:8000';
+const API_URL = "http://127.0.0.1:8000";
 
 const api = axios.create({
   baseURL: API_URL,
 });
 
-api.interceptors.request.use(
-  (config) => {
-    console.log("Axios Interceptor: Requesting URL", config.url);
-    const rawToken = store.getState().auth.token; // Obtiene el token como está
-    const token = typeof rawToken === 'string' && rawToken.length > 0 ? rawToken : null; // Asegura que sea un string no vacío
+// 🔍 Obtener todos los libros
+export const getAllBooks = async () => {
+  const response = await api.get("/books/");
+  return response.data;
+};
 
-    console.log("Axios Interceptor: Token from Redux store (processed):", token); // Log del token procesado
+// 🔍 Obtener un libro por ID
+export const getBookById = async (id) => {
+  const response = await api.get(`/books/${id}`);
+  return response.data;
+};
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-      console.log("Axios Interceptor: Authorization header set.");
-    } else {
-      console.log("Axios Interceptor: No valid token found in Redux store.");
+export const getMyBooks = async (token) => {
+  const response = await api.get('/books/my-books', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
+export const deleteBook = async (bookId, token) => {
+  await api.delete(`/books/${bookId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};
+
+export const updateBook = async (bookId, updatedData, token) => {
+  const response = await api.put(`/books/${bookId}`, updatedData, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+// 📝 Agregar un libro
+export const createBook = async (data, token) => {
+  const response = await api.post("/books/", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+// 📸 Subir imagen del libro
+export const uploadBookImage = async (bookId, imageFile, token) => {
+  const formData = new FormData();
+  formData.append("file", imageFile); // <-- importante: "file"
+
+  const response = await api.post(`/books/${bookId}/image/`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
+// 💬 Iniciar conversación con otro usuario
+export const iniciarConversacion = async (receiverId) => {
+  const token = localStorage.getItem("token");
+  const response = await api.post(
+    "/conversations/",
+    { receiver_id: receiverId },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+  );
+  return response.data;
+};
 
 export default api;

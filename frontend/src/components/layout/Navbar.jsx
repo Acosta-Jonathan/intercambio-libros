@@ -1,56 +1,49 @@
-// src/components/layout/Navbar.jsx
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../../store/authSlice'; // Asegúrate de que la ruta a authSlice sea correcta
-import '../../styles/Navbar.css'; // Asegúrate de que la ruta a Navbar.css sea correcta
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../store/authSlice";
+import "../../styles/Navbar.css";
 
 const Navbar = () => {
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const user = useSelector((state) => state.auth.user); // Para mostrar el nombre del usuario si lo deseas
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch(logout()); // Despacha la acción de logout de Redux
-    navigate('/login'); // Redirige al usuario a la página de login
+    dispatch(logout());
+    navigate("/login");
   };
 
   return (
     <nav className="navbar">
-      <div className="navbar-brand">
-        <Link to="/">Intercambio de Libros</Link>
-      </div>
-      <ul className="navbar-links">
-        {isAuthenticated ? (
+      <div className="navbar__logo img">
+  <Link to="/">
+    <img src="/Intercambio-libros.png" alt="Intercambio de Libros"/>
+  </Link>
+</div>
+
+      <ul className="navbar__links">
+        <li><NavLink to="/">Inicio</NavLink></li>
+        {isAuthenticated && (
           <>
-            {/* Si está autenticado */}
-            <li>
-              <Link to="/">Libros</Link>
-            </li>
-            <li>
-              <Link to="/profile">Mi Perfil</Link> {/* Asumiendo que tendrás una página de perfil */}
-            </li>
-            <li>
-              <Link to="/messages">Mensajes</Link> {/* Asumiendo que tendrás una página de mensajes */}
-            </li>
-            {user && <li className="navbar-username">Hola, {user.username || user.email}!</li>} {/* Mostrar nombre/email del usuario */}
-            <li>
-              <button onClick={handleLogout} className="navbar-button">Cerrar Sesión</button>
-            </li>
-          </>
-        ) : (
-          <>
-            {/* Si NO está autenticado */}
-            <li>
-              <Link to="/login">Iniciar Sesión</Link>
-            </li>
-            <li>
-              <Link to="/register">Registrarse</Link>
-            </li>
+            <li><NavLink to="/mis-libros">Mis Libros</NavLink></li>
+            <li><NavLink to="/crear-libro">Publicar Libro</NavLink></li>
+            <li><NavLink to="/mensajes">Mensajes</NavLink></li>
           </>
         )}
       </ul>
+
+      <div className="navbar__actions">
+  {isAuthenticated ? (
+    <button onClick={handleLogout} className="btn-secondary">
+      Cerrar sesión
+    </button>
+  ) : (
+    <>
+      <Link to="/login" className="btn-outline">Iniciar sesión</Link>
+      <Link to="/register" className="btn-primary">Registrarse</Link>
+    </>
+  )}
+</div>
     </nav>
   );
 };

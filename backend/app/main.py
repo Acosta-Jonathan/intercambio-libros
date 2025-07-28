@@ -1,5 +1,7 @@
 # app/main.py
 import logging
+from fastapi.staticfiles import StaticFiles
+import os
 
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
@@ -18,11 +20,18 @@ socket_app = socketio.ASGIApp(sio, app)
 # Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Ajusta esto a los orígenes permitidos en producción
+    allow_origins=["http://localhost:5173"],  # Ajusta esto a los orígenes permitidos en producción
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Crear carpeta static/images si no existe
+os.makedirs("static/images", exist_ok=True)
+
+# Montar archivos estáticos
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 app.include_router(users.router)
 app.include_router(books.router)
