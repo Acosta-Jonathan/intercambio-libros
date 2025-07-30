@@ -42,7 +42,7 @@ const HomePage = () => {
         <div className="search-bar">
           <input
             type="text"
-            placeholder="Buscá por título, autor o categoría..."
+            placeholder="Buscá por título o autor"
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
           />
@@ -55,39 +55,39 @@ const HomePage = () => {
         <aside className="sidebar-filtros">
           <h3>Filtros</h3>
           <label>Categoría</label>
-<select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
-  <option value="">Todas las categorías</option>
-  <option value="Ficción">Ficción</option>
-  <option value="No ficción">No ficción</option>
-  <option value="Infantil">Infantil</option>
-  <option value="Juvenil">Juvenil</option>
-  <option value="Ciencia ficción">Ciencia ficción</option>
-  <option value="Fantasía">Fantasía</option>
-  <option value="Romance">Romance</option>
-  <option value="Misterio">Misterio</option>
-  <option value="Biografía">Biografía</option>
-  <option value="Educativo">Educativo</option>
-  <option value="Otros">Otros</option>
-</select>
+          <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
+            <option value="">Todas las categorías</option>
+            <option value="Ficción">Ficción</option>
+            <option value="No ficción">No ficción</option>
+            <option value="Infantil">Infantil</option>
+            <option value="Juvenil">Juvenil</option>
+            <option value="Ciencia ficción">Ciencia ficción</option>
+            <option value="Fantasía">Fantasía</option>
+            <option value="Romance">Romance</option>
+            <option value="Misterio">Misterio</option>
+            <option value="Biografía">Biografía</option>
+            <option value="Educativo">Educativo</option>
+            <option value="Otros">Otros</option>
+          </select>
 
-<label>Idioma</label>
-<select value={idioma} onChange={(e) => setIdioma(e.target.value)}>
-  <option value="">Todos los idiomas</option>
-  <option value="Español">Español</option>
-  <option value="Inglés">Inglés</option>
-  <option value="Portugués">Portugués</option>
-  <option value="Francés">Francés</option>
-  <option value="Italiano">Italiano</option>
-</select>
+          <label>Idioma</label>
+          <select value={idioma} onChange={(e) => setIdioma(e.target.value)}>
+            <option value="">Todos los idiomas</option>
+            <option value="Español">Español</option>
+            <option value="Inglés">Inglés</option>
+            <option value="Portugués">Portugués</option>
+            <option value="Francés">Francés</option>
+            <option value="Italiano">Italiano</option>
+          </select>
 
-<label>Estado</label>
-<select value={estado} onChange={(e) => setEstado(e.target.value)}>
-  <option value="">Cualquier estado</option>
-  <option value="Nuevo">Nuevo</option>
-  <option value="Muy bueno">Muy bueno</option>
-  <option value="Bueno">Bueno</option>
-  <option value="Usado">Usado</option>
-</select>
+          <label>Estado</label>
+          <select value={estado} onChange={(e) => setEstado(e.target.value)}>
+            <option value="">Cualquier estado</option>
+            <option value="Nuevo">Nuevo</option>
+            <option value="Muy bueno">Muy bueno</option>
+            <option value="Bueno">Bueno</option>
+            <option value="Usado">Usado</option>
+          </select>
         </aside>
 
         <section className="libros-section">
@@ -102,14 +102,19 @@ const HomePage = () => {
             ) : (
               filtrarLibros.map((libro) => (
                 <div key={libro.id} className="libro-card">
-                  <img
-                    src={libro.image_url ? `http://localhost:8000${libro.image_url}` : "https://via.placeholder.com/150"}
-                    alt={libro.title}
-                  />
+                  <div className="img-wrapper">
+                    <img
+                      src={libro.image_url ? `http://localhost:8000${libro.image_url}` : "https://via.placeholder.com/150"}
+                      alt={libro.title}
+                    />
+                  </div>
                   <h4>{libro.title}</h4>
-                  <p>{libro.author}</p>
-                  <span className="estado-label">{libro.estado || "Sin estado"}</span>
-                  <p><strong>{libro.usuario_nombre}</strong></p>
+                  <p className="autor">{libro.author}</p>
+                  <p className="idioma">{libro.idioma}</p>
+                  <span className={`estado-label ${libro.estado?.toLowerCase().replace(" ", "-")}`}>
+                    {libro.estado || "Sin estado"}
+                  </span>
+                  <p className="usuario"><strong>{libro.usuario_nombre}</strong></p>
                   <button onClick={() => navigate(`/libros/${libro.id}`)}>Ver detalles</button>
                 </div>
               ))

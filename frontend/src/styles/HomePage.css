@@ -8,7 +8,6 @@
   text-align: center;
   padding: 3rem 1rem;
 }
-
 .hero-section h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
@@ -81,19 +80,28 @@
 
 .cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 3rem;
+  align-items: stretch;
 }
 
 .libro-card {
   background: white;
+  width: 220px;
+  height: 360px;
   padding: 1rem;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
+  transition: transform 0.2s ease;
+  overflow: hidden;
+}
+
+.libro-card:hover {
+  transform: translateY(-4px);
 }
 
 .libro-card img {
@@ -101,6 +109,7 @@
   height: 150px;
   object-fit: cover;
   border-radius: 8px;
+  margin-bottom: 0.6rem;
 }
 
 .estado-label {
@@ -116,11 +125,12 @@
   background: #6C63FF;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  margin-top: 0.8rem;
-  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  margin-top: auto;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  width: 100%;
 }
 
 .libro-card button:hover {
@@ -149,4 +159,86 @@
 .libros-header span {
   font-size: 0.95rem;
   color: #666;
+}
+
+.libro-icon {
+  font-size: 1.8rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.8rem;
+  color: white;
+}
+
+.libro-icon.nuevo {
+  background: #a084dc;
+}
+
+.libro-icon.muy-bueno {
+  background: #6dd47e;
+}
+
+.libro-icon.bueno {
+  background: #ffd966;
+}
+
+
+.estado-label {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  margin: 0.4rem 0;
+  font-weight: 500;
+}
+
+.estado-label.nuevo {
+  background: #e0d4ff;
+  color: #6a0dad;
+}
+
+.estado-label.muy-bueno {
+  background: #d4f8e8;
+  color: #218c74;
+}
+
+.estado-label.bueno {
+  background: #fff4cc;
+  color: #b37b00;
+}
+
+.autor {
+  color: #555;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+
+.idioma {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.usuario {
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.img-wrapper {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 0.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f4f4f4;
+}
+
+.img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
