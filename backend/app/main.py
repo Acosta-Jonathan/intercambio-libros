@@ -7,11 +7,10 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import users, books, exchanges #, messages, conversations
+from app.routers import users, books, exchanges, messages, conversations
 from app.database import engine, Base
 import socketio
 from app.socket_manager import sio
-
 
 Base.metadata.create_all(bind=engine)
 
@@ -37,8 +36,8 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(users.router)
 app.include_router(books.router)
 app.include_router(exchanges.router)
-# app.include_router(messages.router)
-# app.include_router(conversations.router)
+app.include_router(messages.router)
+app.include_router(conversations.router)
 
 # Configuración de logging
 logging.basicConfig(level=logging.INFO)
@@ -77,8 +76,8 @@ async def connect(sid, environ):
 async def disconnect(sid):
     print("disconnect ", sid)
 
-# @sio.on("message")
-# async def message(sid, data):
-#     print("message ", data)
-#     await sio.emit("response", data, room=sid)
+@sio.on("message")
+async def message(sid, data):
+    print("message ", data)
+    await sio.emit("response", data, room=sid)
 
