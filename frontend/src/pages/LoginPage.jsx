@@ -1,8 +1,8 @@
 // src/components/pages/LoginPage.jsx
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { login } from '../store/authSlice'; // La ruta corregida es ../../store/authSlice
-import { loginUser } from '../services/auth'; // La ruta corregida es ../../services/auth
+import { login } from '../store/authSlice';
+import { loginUser } from '../services/auth';
 import { Link, useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {

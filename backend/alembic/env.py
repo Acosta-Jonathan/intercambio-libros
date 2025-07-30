@@ -25,8 +25,8 @@ if config.config_file_name is not None:
 from app.database import Base
 from app.models.user import User
 from app.models.book import Book
-from app.models.conversation import Conversation
-from app.models.message import Message, MessageReadStatus
+# from app.models.conversation import Conversation
+# from app.models.message import Message, MessageReadStatus
 from app.models.exchange import Exchange, ExchangeHistory
 target_metadata = Base.metadata
 

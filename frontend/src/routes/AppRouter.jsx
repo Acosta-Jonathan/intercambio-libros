@@ -4,7 +4,7 @@ import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import BookDetailsPage from "../pages/BookDetailsPage";
-import MensajesPage from "../pages/MensajesPage";
+// import MensajesPage from "../pages/MensajesPage";
 import MisLibrosPage from "../pages/MisLibrosPage";
 import CrearLibroPage from "../pages/CrearLibroPage";
 import ProtectedRoute from "./ProtectedRoute";
@@ -20,7 +20,7 @@ const AppRouter = () => (
         <Route path="/libros/:id" element={<BookDetailsPage />} />
 
         <Route element={<ProtectedRoute />}>
-          <Route path="/mensajes" element={<MensajesPage />} />
+          {/* <Route path="/mensajes" element={<MensajesPage />} /> */}
           <Route path="/mis-libros" element={<MisLibrosPage />} />
           <Route path="/crear-libro" element={<CrearLibroPage />} />
         </Route>
