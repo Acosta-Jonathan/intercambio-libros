@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app import models, schemas, security
 from app.database import get_db
+from app.schemas.user import UpdateTelefono
 
 import logging
 
@@ -65,6 +66,17 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
 @router.get("/me/", response_model=schemas.User)
 def read_users_me(current_user: models.User = Depends(security.get_current_user)):
     return current_user
+
+@router.put("/update-telefono/")
+def update_telefono(
+    telefono_data: UpdateTelefono,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(security.get_current_user),
+):
+    current_user.telefono = telefono_data.telefono
+    db.commit()
+    db.refresh(current_user)
+    return {"message": "Teléfono actualizado", "telefono": current_user.telefono}
 
 # # ✅ **Cambio de contraseña**
 # @router.post("/change-password/")
