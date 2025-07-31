@@ -23,6 +23,7 @@
   padding: 1rem;
   text-align: center;
   transition: transform 0.2s ease;
+  color: #000;
 }
 
 .libro-card:hover {
@@ -177,4 +178,108 @@
 
 .perfil-actions button:hover {
   background: #dbe0ff;
+}
+
+.libros-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: start;
+}
+
+.libro-card {
+  background: linear-gradient(135deg, #f3f4ff, #fdfbff);
+  border-radius: 16px;
+  width: 240px;
+  padding: 1.2rem;
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.libro-card:hover {
+  transform: translateY(-6px);
+}
+
+.libro-imagen-container {
+  width: 100%;
+  height: 180px;
+  background-color: #eaeaff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.libro-imagen-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.libro-titulo {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0.25rem 0;
+}
+
+.libro-autor {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.libro-etiquetas {
+  margin-bottom: 0.8rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.etiqueta {
+  background: #def4e5;
+  color: #22a35e;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+.etiqueta-secundaria {
+  background: #edf2f7;
+  color: #666;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+}
+
+.acciones {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.acciones button {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.acciones button:first-child {
+  background-color: #eef0ff;
+  color: #4c4cf1;
+}
+
+.acciones button:last-child {
+  background-color: #ffecec;
+  color: #f14c4c;
 }

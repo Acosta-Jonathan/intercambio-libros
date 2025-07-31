@@ -44,3 +44,11 @@ class UpdateTelefono(BaseModel):
     telefono: str = Field(..., min_length=10, pattern=r'^\d{10,}$')
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class UserContactSchema(BaseModel):
+    email: str
+    telefono: str | None
+
+    class Config:
+        orm_mode = True

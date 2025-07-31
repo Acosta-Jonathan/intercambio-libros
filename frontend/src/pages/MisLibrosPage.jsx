@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { deleteBook, getMyBooks, updateBook, actualizarTelefono } from "../services/api";
 import "../styles/MisLibrosPage.css";
 import { useNavigate } from 'react-router-dom';
+import { setUser } from "../store/authSlice";
 
 const MisLibrosPage = () => {
   const token = useSelector((state) => state.auth.token);
@@ -20,6 +21,7 @@ const MisLibrosPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [telefonoError, setTelefonoError] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleConsultarClick = () => navigate('/crear-libro');
 
@@ -82,10 +84,10 @@ const MisLibrosPage = () => {
     }
 
     try {
-      await actualizarTelefono( telefono , token);
+      const updatedUser = await actualizarTelefono(telefono, token);
+      dispatch(setUser(updatedUser));
       setShowModal(false);
       setTelefonoError("");
-      window.location.reload(); // Para recargar el número actualizado
     } catch (error) {
       console.error("Error al actualizar teléfono:", error);
       alert("No se pudo actualizar el teléfono.");
@@ -150,18 +152,22 @@ const MisLibrosPage = () => {
           <i className="fas fa-plus me-2"></i>Publicar nuevo libro
         </button>
       </div>
-<br />
+
+      <br />
       <div className="libros-grid">
         {libros.map((libro) => (
           <div key={libro.id} className="libro-card">
-            <img
-              src={
-                libro.image_url
-                  ? `http://localhost:8000${libro.image_url}`
-                  : "https://via.placeholder.com/150"
-              }
-              alt={libro.title}
-            />
+            <div className="libro-imagen-container">
+              <img
+                src={
+                  libro.image_url
+                    ? `http://localhost:8000${libro.image_url}`
+                    : "/default-book.svg"
+                }
+                alt={libro.title}
+              />
+            </div>
+
             {editandoId === libro.id ? (
               <div className="editor">
                 <input name="title" value={formData.title} onChange={handleEditarChange} />
@@ -173,12 +179,21 @@ const MisLibrosPage = () => {
               </div>
             ) : (
               <>
-                <h3>{libro.title}</h3>
-                <p>{libro.author}</p>
-                <p>{libro.estado || "Estado no especificado"} - {libro.category || "Sin categoría"}</p>
+                <h3 className="libro-titulo">{libro.title}</h3>
+                <p className="libro-autor">{libro.author}</p>
+
+                <div className="libro-etiquetas">
+                  {libro.estado && <span className="etiqueta">{libro.estado}</span>}
+                  {libro.category && <span className="etiqueta-secundaria">{libro.category}</span>}
+                </div>
+
                 <div className="acciones">
-                  <button onClick={() => handleEditarClick(libro)}>Editar</button>
-                  <button onClick={() => handleEliminar(libro.id)}>Eliminar</button>
+                  <button onClick={() => handleEditarClick(libro)}>
+                    <i className="fas fa-pen"></i> Editar
+                  </button>
+                  <button onClick={() => handleEliminar(libro.id)}>
+                    <i className="fas fa-trash"></i> Eliminar
+                  </button>
                 </div>
               </>
             )}

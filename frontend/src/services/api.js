@@ -88,7 +88,7 @@ export const actualizarTelefono = async (telefono, token) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ telefono }), // ✅ Correcto formato
+    body: JSON.stringify({ telefono }), // seguimos enviando sólo el teléfono
   });
 
   if (!response.ok) {
@@ -96,7 +96,12 @@ export const actualizarTelefono = async (telefono, token) => {
     throw new Error(errorText);
   }
 
-  return await response.json();
+  return await response.json(); // este JSON será el user completo actualizado
+};
+
+export const getUserContact = async (userId) => {
+  const response = await api.get(`/users/${userId}`);
+  return response.data; // { email, telefono }
 };
 
 export default api;

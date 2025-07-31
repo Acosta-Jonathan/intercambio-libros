@@ -2,7 +2,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-
+from app.models import User
+from app.schemas.user import UserContactSchema
 from app import models, schemas, security
 from app.database import get_db
 from app.schemas.user import UpdateTelefono
@@ -67,16 +68,33 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
 def read_users_me(current_user: models.User = Depends(security.get_current_user)):
     return current_user
 
-@router.put("/update-telefono/")
+@router.put("/update-telefono/", response_model=schemas.User)
 def update_telefono(
     telefono_data: UpdateTelefono,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(security.get_current_user),
 ):
-    current_user.telefono = telefono_data.telefono
+    # Este user ahora está "adjunto" a la sesión activa
+    user = db.query(models.User).filter(models.User.id == current_user.id).first()
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    
+    user.telefono = telefono_data.telefono
     db.commit()
-    db.refresh(current_user)
-    return {"message": "Teléfono actualizado", "telefono": current_user.telefono}
+    db.refresh(user)
+    
+    return user
+
+
+@router.get("/users/{user_id}", response_model=UserContactSchema)
+def get_user_contact(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    return user
+
+
 
 # # ✅ **Cambio de contraseña**
 # @router.post("/change-password/")

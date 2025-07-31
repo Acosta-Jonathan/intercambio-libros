@@ -34,7 +34,7 @@ const Navbar = () => {
 
       <div className="navbar__actions">
   {isAuthenticated ? (
-    <button onClick={handleLogout} className="btn-secondary">
+    <button onClick={handleLogout} className="btn-secondary me-5 ">
       Cerrar sesión
     </button>
   ) : (
