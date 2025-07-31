@@ -1,4 +1,9 @@
 /* src/index.css */
+/* Removed Tailwind directives because Tailwind is not configured or supported in the current build process. */
+/* If you want to use Tailwind, make sure to install and configure it properly. */
+
+/* Tu clase personalizada opcional */
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
