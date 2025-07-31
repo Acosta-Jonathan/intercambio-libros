@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { deleteBook, getMyBooks, updateBook } from "../services/api";
 import "../styles/MisLibrosPage.css";
-
+import { useNavigate } from 'react-router-dom';
 
 const MisLibrosPage = () => {
   const token = useSelector((state) => state.auth.token);
@@ -16,6 +16,13 @@ const MisLibrosPage = () => {
     category: "",
   });
 
+  const navigate = useNavigate(); // Inicializa el hook useNavigate
+
+  // Puedes definir una función separada o usar una función en línea directamente en onClick
+  const handleConsultarClick = () => {
+    navigate('/crear-libro'); // Usa navigate para ir a la ruta deseada
+  };
+  
   useEffect(() => {
     const fetchLibros = async () => {
       try {
@@ -69,70 +76,103 @@ const MisLibrosPage = () => {
     }
   };
 
- return (
-  <div className="container perfil-container mb-4">
-  <div className="row align-items-center">
-    {/* Avatar y datos */}
-    <div className="col-md-9 d-flex align-items-center gap-3">
-      <div className="perfil-avatar d-flex align-items-center justify-content-center">
-        <i className="fas fa-user fa-2x text-white"></i>
-      </div>
-      <div>
-        <h2 className="mb-1">{user?.username}</h2>
-        <p className="mb-1"><i className="fas fa-envelope me-2 text-muted"></i>{user?.email}</p>
-        <p className="mb-0"><i className="fas fa-phone me-2 text-muted"></i>{user?.telefono || "+54 11 1234-5678"}</p>
-      </div>
-    </div>
-
-    {/* Botón editar */}
-    <div className="col-md-3 text-md-end mt-3 mt-md-0">
-      <button className="btn btn-outline-primary">
-        <i className="fas fa-edit me-2"></i>Editar perfil
-      </button>
-    </div>
-  </div>
-<br/>
-    <div className="d-flex justify-content-between align-items-center mb-4">
-      <h2 className="h4 fw-bold text-dark">Mis libros publicados</h2>
-      <button className="btn btn-primary text-white gradient-bg border-0">
-        <i className="fas fa-plus me-2"></i>Publicar nuevo libro
-      </button>
-    </div>
-
-    <div className="libros-grid">
-      {libros.map((libro) => (
-        <div key={libro.id} className="libro-card">
-          <img
-            src={libro.image_url ? `http://localhost:8000${libro.image_url}` : "https://via.placeholder.com/150"}
-            alt={libro.title}
-          />
-          {editandoId === libro.id ? (
-            <div className="editor">
-              <input name="title" value={formData.title} onChange={handleEditarChange} />
-              <input name="author" value={formData.author} onChange={handleEditarChange} />
-              <input name="estado" value={formData.estado} onChange={handleEditarChange} />
-              <input name="category" value={formData.category} onChange={handleEditarChange} />
-              <button onClick={() => handleGuardarEdicion(libro.id)}>Guardar</button>
-              <button onClick={() => setEditandoId(null)}>Cancelar</button>
-            </div>
-          ) : (
-            <>
-              <h3>{libro.title}</h3>
-              <p>{libro.author}</p>
-              <p>
-                {libro.estado || "Estado no especificado"} - {libro.category || "Sin categoría"}
-              </p>
-              <div className="acciones">
-                <button onClick={() => handleEditarClick(libro)}>Editar</button>
-                <button onClick={() => handleEliminar(libro.id)}>Eliminar</button>
-              </div>
-            </>
-          )}
+  return (
+    <div className="container perfil-container mb-4">
+      <div className="row align-items-center">
+        {/* Avatar y datos */}
+        <div className="col-md-9 d-flex align-items-center gap-3">
+          <div className="perfil-avatar d-flex align-items-center justify-content-center">
+            <i className="fas fa-user fa-2x text-white"></i>
+          </div>
+          <div>
+            <h2 className="mb-1">{user?.username}</h2>
+            <p className="mb-1">
+              <i className="fas fa-envelope me-2 text-muted"></i>
+              {user?.email}
+            </p>
+            <p className="mb-0">
+              <i className="fas fa-phone me-2 text-muted"></i>
+              {user?.telefono || "+54 11 1234-5678"}
+            </p>
+          </div>
         </div>
-      ))}
+
+        {/* Botón editar */}
+        <div className="col-md-3 text-md-end mt-3 mt-md-0">
+          <button className="btn btn-outline-primary">
+            <i className="fas fa-edit me-2"></i>Editar perfil
+          </button>
+        </div>
+      </div>
+      <hr />
+      <div className="d-flex justify-content-between align-items-center mt-4">
+        <h2 className="h4 fw-bold text-dark">Mis libros publicados</h2>
+        <button className="btn btn-primary text-white gradient-bg border-0" onClick={handleConsultarClick}>
+          <i className="fas fa-plus me-2"></i>Publicar nuevo libro
+        </button>
+      </div>
+
+      <div className="libros-grid">
+        {libros.map((libro) => (
+          <div key={libro.id} className="libro-card">
+            <img
+              src={
+                libro.image_url
+                  ? `http://localhost:8000${libro.image_url}`
+                  : "https://via.placeholder.com/150"
+              }
+              alt={libro.title}
+            />
+            {editandoId === libro.id ? (
+              <div className="editor">
+                <input
+                  name="title"
+                  value={formData.title}
+                  onChange={handleEditarChange}
+                />
+                <input
+                  name="author"
+                  value={formData.author}
+                  onChange={handleEditarChange}
+                />
+                <input
+                  name="estado"
+                  value={formData.estado}
+                  onChange={handleEditarChange}
+                />
+                <input
+                  name="category"
+                  value={formData.category}
+                  onChange={handleEditarChange}
+                />
+                <button onClick={() => handleGuardarEdicion(libro.id)}>
+                  Guardar
+                </button>
+                <button onClick={() => setEditandoId(null)}>Cancelar</button>
+              </div>
+            ) : (
+              <>
+                <h3>{libro.title}</h3>
+                <p>{libro.author}</p>
+                <p>
+                  {libro.estado || "Estado no especificado"} -{" "}
+                  {libro.category || "Sin categoría"}
+                </p>
+                <div className="acciones">
+                  <button onClick={() => handleEditarClick(libro)}>
+                    Editar
+                  </button>
+                  <button onClick={() => handleEliminar(libro.id)}>
+                    Eliminar
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
-);
-}
+  );
+};
 
 export default MisLibrosPage;

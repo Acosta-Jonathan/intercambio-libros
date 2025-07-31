@@ -20,7 +20,7 @@ const AppRouter = () => (
         <Route path="/libros/:id" element={<BookDetailsPage />} />
 
         <Route element={<ProtectedRoute />}>
-          <Route path="/mensajes" element={<MensajesPage />} />
+          {/* <Route path="/mensajes" element={<MensajesPage />} /> */}
           <Route path="/mis-libros" element={<MisLibrosPage />} />
           <Route path="/crear-libro" element={<CrearLibroPage />} />
         </Route>

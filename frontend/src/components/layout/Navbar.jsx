@@ -25,9 +25,9 @@ const Navbar = () => {
         <li><NavLink to="/">Inicio</NavLink></li>
         {isAuthenticated && (
           <>
-            <li><NavLink to="/mis-libros">Mis Libros</NavLink></li>
+            <li><NavLink to="/mis-libros">Mi Perfil</NavLink></li>
             <li><NavLink to="/crear-libro">Publicar Libro</NavLink></li>
-            <li><NavLink to="/mensajes">Mensajes</NavLink></li>
+            {/* <li><NavLink to="/mensajes">Mensajes</NavLink></li> */}
           </>
         )}
       </ul>

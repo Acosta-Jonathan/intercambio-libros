@@ -7,6 +7,9 @@ body {
   background-color: #f0f8ff; /* Tu color de fondo */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: url('frontend/src/assets/20250730_2219_Book Exchange Moment_simple_compose_01k1f0yhqqfc199k7zqz1nxb56.png');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
   
 
