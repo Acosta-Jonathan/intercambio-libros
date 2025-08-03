@@ -172,8 +172,44 @@ const MisLibrosPage = () => {
               <div className="editor">
                 <input name="title" value={formData.title} onChange={handleEditarChange} />
                 <input name="author" value={formData.author} onChange={handleEditarChange} />
-                <input name="estado" value={formData.estado} onChange={handleEditarChange} />
-                <input name="category" value={formData.category} onChange={handleEditarChange} />
+
+                {/* Cambiar input por select para estado */}
+                <select
+                  name="estado"
+                  value={formData.estado}
+                  onChange={handleEditarChange}
+                >
+                  <option value="">Seleccionar estado</option>
+                  <option value="Nuevo">Nuevo</option>
+                  <option value="Muy bueno">Muy bueno</option>
+                  <option value="Bueno">Bueno</option>
+                  <option value="Usado">Usado</option>
+                </select>
+
+                {/* Cambiar input por select para categoría */}
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleEditarChange}
+                >
+                  <option value="">Seleccionar categoría</option>
+                  <option value="Ciencia ficción">Ciencia ficción</option>
+                  <option value="Fantasía">Fantasía</option>
+                  <option value="Misterio">Misterio</option>
+                  <option value="Biografía">Biografía</option>
+                  <option value="Educativo">Educativo</option>
+                  <option value="Ficción">Ficción</option>
+                  <option value="No ficción">No ficción</option>
+                  <option value="Infantil">Infantil</option>
+                  <option value="Juvenil">Juvenil</option>
+                  <option value="Ciencia">Ciencia</option>
+                  <option value="Historia">Historia</option>
+                  <option value="Romance">Romance</option>
+                  <option value="Terror">Terror</option>
+                  <option value="Autoayuda">Autoayuda</option>
+                  <option value="Otros">Otros</option>
+                </select>
+
                 <button onClick={() => handleGuardarEdicion(libro.id)}>Guardar</button>
                 <button onClick={() => setEditandoId(null)}>Cancelar</button>
               </div>
