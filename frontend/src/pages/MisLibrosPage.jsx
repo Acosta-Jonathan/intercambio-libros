@@ -2,8 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteBook, getMyBooks, updateBook, actualizarTelefono } from "../services/api";
 import "../styles/MisLibrosPage.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { setUser } from "../store/authSlice";
+
+const TODAS_LAS_CATEGORIAS = [
+  { id: "ficcion", nombre: "Ficción" },
+  { id: "no-ficcion", nombre: "No Ficción" },
+  { id: "fantasia", nombre: "Fantasía" },
+  { id: "aventura", nombre: "Aventura" },
+  { id: "infantil", nombre: "Infantil" },
+  // ...agrega el resto
+];
 
 const MisLibrosPage = () => {
   const token = useSelector((state) => state.auth.token);
@@ -14,7 +23,10 @@ const MisLibrosPage = () => {
     title: "",
     author: "",
     estado: "",
-    category: "",
+    categorias: [],
+    descripcion: "",
+    idioma: "",
+    // Puedes agregar otros campos si los editas
   });
 
   const [telefono, setTelefono] = useState(user?.telefono || "");
@@ -51,10 +63,15 @@ const MisLibrosPage = () => {
   const handleEditarClick = (libro) => {
     setEditandoId(libro.id);
     setFormData({
-      title: libro.title,
-      author: libro.author,
+      title: libro.title || "",
+      author: libro.author || "",
       estado: libro.estado || "",
-      category: libro.category || "",
+      categorias: libro.categories
+        ? libro.categories.map((cat) => (typeof cat === "string" ? cat : cat.id))
+        : [],
+      descripcion: libro.description || "",
+      idioma: libro.idioma || "",
+      // Ajusta otros campos si es necesario
     });
   };
 
@@ -63,9 +80,24 @@ const MisLibrosPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleCategoriaCheckbox = (e) => {
+    const { value, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      categorias: checked
+        ? [...prev.categorias, value]
+        : prev.categorias.filter((catId) => catId !== value),
+    }));
+  };
+
   const handleGuardarEdicion = async (id) => {
     try {
-      const updated = await updateBook(id, formData, token);
+      const payload = {
+        ...formData,
+        categories: formData.categorias,
+      };
+      delete payload.categorias; // el backend espera 'categories'
+      const updated = await updateBook(id, payload, token);
       setLibros((prevLibros) =>
         prevLibros.map((libro) => (libro.id === id ? updated : libro))
       );
@@ -170,10 +202,19 @@ const MisLibrosPage = () => {
 
             {editandoId === libro.id ? (
               <div className="editor">
-                <input name="title" value={formData.title} onChange={handleEditarChange} />
-                <input name="author" value={formData.author} onChange={handleEditarChange} />
+                <input
+                  name="title"
+                  value={formData.title}
+                  onChange={handleEditarChange}
+                  placeholder="Título"
+                />
+                <input
+                  name="author"
+                  value={formData.author}
+                  onChange={handleEditarChange}
+                  placeholder="Autor"
+                />
 
-                {/* Cambiar input por select para estado */}
                 <select
                   name="estado"
                   value={formData.estado}
@@ -186,29 +227,39 @@ const MisLibrosPage = () => {
                   <option value="Usado">Usado</option>
                 </select>
 
-                {/* Cambiar input por select para categoría */}
-                <select
-                  name="category"
-                  value={formData.category}
+                {/* Selección múltiple de categorías */}
+                <fieldset>
+                  <legend>Categorías:</legend>
+                  <div className="categorias-checkboxes">
+                    {TODAS_LAS_CATEGORIAS.map((cat) => (
+                      <label className="categoria-checkbox" key={cat.id}>
+                        <input
+                          type="checkbox"
+                          value={cat.id}
+                          checked={formData.categorias.includes(cat.id)}
+                          onChange={handleCategoriaCheckbox}
+                        />
+                        <span>{cat.nombre}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <input
+                  name="idioma"
+                  value={formData.idioma}
                   onChange={handleEditarChange}
-                >
-                  <option value="">Seleccionar categoría</option>
-                  <option value="Ciencia ficción">Ciencia ficción</option>
-                  <option value="Fantasía">Fantasía</option>
-                  <option value="Misterio">Misterio</option>
-                  <option value="Biografía">Biografía</option>
-                  <option value="Educativo">Educativo</option>
-                  <option value="Ficción">Ficción</option>
-                  <option value="No ficción">No ficción</option>
-                  <option value="Infantil">Infantil</option>
-                  <option value="Juvenil">Juvenil</option>
-                  <option value="Ciencia">Ciencia</option>
-                  <option value="Historia">Historia</option>
-                  <option value="Romance">Romance</option>
-                  <option value="Terror">Terror</option>
-                  <option value="Autoayuda">Autoayuda</option>
-                  <option value="Otros">Otros</option>
-                </select>
+                  placeholder="Idioma"
+                />
+
+                <textarea
+                  name="descripcion"
+                  value={formData.descripcion}
+                  onChange={handleEditarChange}
+                  placeholder="Descripción"
+                  rows={3}
+                  style={{ width: "100%", borderRadius: 8, border: "1px solid #ccc", padding: "8px" }}
+                />
 
                 <button onClick={() => handleGuardarEdicion(libro.id)}>Guardar</button>
                 <button onClick={() => setEditandoId(null)}>Cancelar</button>
@@ -217,12 +268,17 @@ const MisLibrosPage = () => {
               <>
                 <h3 className="libro-titulo">{libro.title}</h3>
                 <p className="libro-autor">{libro.author}</p>
-
                 <div className="libro-etiquetas">
                   {libro.estado && <span className="etiqueta">{libro.estado}</span>}
-                  {libro.category && <span className="etiqueta-secundaria">{libro.category}</span>}
+                  {/* Mostramos todas las categorías */}
+                  {libro.categories &&
+                    Array.isArray(libro.categories) &&
+                    libro.categories.map((cat) =>
+                      <span className="etiqueta-secundaria" key={typeof cat === "string" ? cat : cat.id}>
+                        {typeof cat === "string" ? cat : cat.nombre || cat.name}
+                      </span>
+                    )}
                 </div>
-
                 <div className="acciones">
                   <button onClick={() => handleEditarClick(libro)}>
                     <i className="fas fa-pen"></i> Editar

@@ -4,18 +4,35 @@ import { useNavigate } from "react-router-dom";
 import { createBook, uploadBookImage } from "../services/api";
 import "../styles/CrearLibroPage.css";
 
+const TODAS_LAS_CATEGORIAS = [
+  { id: "ficcion", nombre: "Ficción" },
+  { id: "no-ficcion", nombre: "No Ficción" },
+  { id: "fantasia", nombre: "Fantasía" },
+  { id: "aventura", nombre: "Aventura" },
+  { id: "infantil", nombre: "Infantil" },
+  // ...agrega el resto
+];
+
 const CrearLibroPage = () => {
   const [titulo, setTitulo] = useState("");
   const [autor, setAutor] = useState("");
-  const [categoria, setCategoria] = useState("");
   const [idioma, setIdioma] = useState("");
   const [estado, setEstado] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [imagenPreview, setImagenPreview] = useState(null);
   const [imagenFile, setImagenFile] = useState(null);
-
+  const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
+  const [error, setError] = useState("");
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  function handleCategoriaCheckbox(e) {
+    const { value, checked } = e.target;
+    setCategoriasSeleccionadas((prev) =>
+      checked ? [...prev, value] : prev.filter((catId) => catId !== value)
+    );
+  }
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -27,72 +44,84 @@ const CrearLibroPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    if (categoriasSeleccionadas.length === 0) {
+      setError("Selecciona al menos una categoría.");
+      return;
+    }
+    setLoading(true);
     try {
       const libro = {
         title: titulo,
         author: autor,
-        category: categoria,
+        category: categoriasSeleccionadas,
         idioma,
         estado,
         description: descripcion,
       };
-
       const nuevoLibro = await createBook(libro, token);
-
       if (imagenFile) {
         await uploadBookImage(nuevoLibro.id, imagenFile, token);
       }
-
       alert("Libro publicado con éxito");
       navigate("/mis-libros");
     } catch (error) {
+      setError("Error al publicar libro. Ver consola.");
       console.error("Error al publicar libro:", error);
-      alert("Error al publicar libro. Ver consola.");
     }
+    setLoading(false);
   };
 
   return (
     <div className="crear-libro-container">
       <h2>Publicar un libro</h2>
       <p className="subtitulo">Compartí tu libro con la comunidad</p>
-
       <form onSubmit={handleSubmit}>
         <div className="fila-doble">
           <div>
             <label>Título del libro</label>
-            <input type="text" value={titulo} onChange={(e) => setTitulo(e.target.value)} required />
+            <input
+              type="text"
+              value={titulo}
+              onChange={(e) => setTitulo(e.target.value)}
+              required
+            />
           </div>
           <div>
             <label>Autor</label>
-            <input type="text" value={autor} onChange={(e) => setAutor(e.target.value)} required />
+            <input
+              type="text"
+              value={autor}
+              onChange={(e) => setAutor(e.target.value)}
+              required
+            />
           </div>
         </div>
-
         <div className="fila-doble">
-          <div>
-            <label>Categoría</label>
-            <select value={categoria} onChange={(e) => setCategoria(e.target.value)} required>
-              <option value="">Seleccionar categoría</option>
-              <option value="Ciencia ficción">Ciencia ficción</option>
-              <option value="Fantasía">Fantasía</option>
-              <option value="Misterio">Misterio</option>
-              <option value="Biografía">Biografía</option>
-              <option value="Educativo">Educativo</option>
-              <option value="Ficción">Ficción</option>
-              <option value="No ficción">No ficción</option>
-              <option value="Infantil">Infantil</option>
-              <option value="Juvenil">Juvenil</option>
-              <option value="Ciencia">Ciencia</option>
-              <option value="Historia">Historia</option>
-              <option value="Romance">Romance</option>
-              <option value="Terror">Terror</option>
-              <option value="Autoayuda">Autoayuda</option>
-              <option value="Otros">Otros</option>
-            </select>
-          </div>
+          <fieldset>
+            <legend>Categorías:</legend>
+            <div className="categorias-checkboxes">
+              {TODAS_LAS_CATEGORIAS.map((cat) => (
+                <label className="categoria-checkbox">
+                  <input
+                    type="checkbox"
+                    value={cat.id}
+                    checked={categoriasSeleccionadas.includes(cat.id)}
+                    onChange={handleCategoriaCheckbox}
+                  />
+                  <span>{cat.nombre}</span>
+                </label>
+              ))}
+            </div>
+            {error && <div className="error-message">{error}</div>}
+          </fieldset>
           <div>
             <label>Idioma</label>
-            <select value={idioma} onChange={(e) => setIdioma(e.target.value)} required>
+            <select
+              value={idioma}
+              onChange={(e) => setIdioma(e.target.value)}
+              required
+            >
               <option value="">Seleccionar idioma</option>
               <option value="Español">Español</option>
               <option value="Inglés">Inglés</option>
@@ -102,7 +131,6 @@ const CrearLibroPage = () => {
             </select>
           </div>
         </div>
-
         <div>
           <label>Estado del libro</label>
           <div className="estado-opciones">
@@ -114,13 +142,13 @@ const CrearLibroPage = () => {
                   value={opcion}
                   checked={estado === opcion}
                   onChange={(e) => setEstado(e.target.value)}
+                  required
                 />
                 {opcion}
               </label>
             ))}
           </div>
         </div>
-
         <div>
           <label>Descripción (opcional)</label>
           <textarea
@@ -129,19 +157,29 @@ const CrearLibroPage = () => {
             onChange={(e) => setDescripcion(e.target.value)}
           />
         </div>
-
         <div className="subir-imagen">
           <label htmlFor="imagen">📤seleccioná un archivo</label>
-          <input type="file" id="imagen" accept="image/*" onChange={handleImageChange} />
-          {imagenPreview && <img src={imagenPreview} alt="Preview" className="preview-img" />}
+          <input
+            type="file"
+            id="imagen"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+          {imagenPreview && (
+            <img src={imagenPreview} alt="Preview" className="preview-img" />
+          )}
         </div>
-
+        {error && <div className="error-message">{error}</div>}
         <div className="botones">
-          <button type="button" className="cancelar" onClick={() => navigate("/")}>
+          <button
+            type="button"
+            className="cancelar"
+            onClick={() => navigate("/")}
+          >
             Cancelar
           </button>
-          <button type="submit" className="publicar">
-            Publicar libro
+          <button type="submit" className="publicar" disabled={loading}>
+            {loading ? "Publicando..." : "Publicar libro"}
           </button>
         </div>
       </form>
