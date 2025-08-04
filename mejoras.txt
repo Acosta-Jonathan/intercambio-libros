@@ -1,0 +1,27 @@
+Proyecto final mejoras por hacer:
+
+perfil
+- No duplicado de nombre de Usuarios (tal vez con recomendaciones disponibles)
+- Si se vence el token y no hay usuario logueado debería actualizarse la pagina y llevar al formulario de logueo
+
+libro
+- Permitir más de una categoría por libro
+- En los detalles del libro, marcar autor, editorial, año, etc.
+
+sección contacto
+- Al contactar por mail, debe permitir elegir si abrir Gmail, Outlook u otro.
+- Al abrir el mail para enviar, que precargue el asunto con "Intercambio de Libro - " + nombre del libro
+- Si un usuario no tiene cargado el nro de teléfono que el botón de comunicarse por wsp no esté disponible
+
+NUEVA perfil otro usuario
+- Poder ver el perfil de otro usuario, y si es posible también poder buscarlo desde el buscador, y dentro del perfil poder ver sus libros publicados
+
+mensajería
+- Intentar nuevamente si se puede hacer funcionar la mensajería interna
+
+
+
+Mejoras ya realizadas:
+
+Cambios menores
+- La imagen de fondo sea fija
