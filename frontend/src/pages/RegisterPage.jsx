@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // <-- Link agregado
 import { login } from '../store/authSlice';
 import { registerUser } from '../services/auth';
 
@@ -18,8 +18,6 @@ const RegisterPage = () => {
 
     try {
       const user = await registerUser({ email, password, username });
-
-       console.log("✅ Respuesta completa del backend al registrar:", user);
 
       if (user?.access_token && user?.user) {
         dispatch(login({ access_token: user.access_token, user: user.user }));
@@ -43,37 +41,44 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="container">
-      <h1>Registrarse</h1>
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Nombre de usuario"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <small style={{ color: '#666', fontSize: '0.85rem' }}>
-          La contraseña debe tener al menos 8 caracteres.
-        </small>
-        <br />
-        <button type="submit">Registrarse</button>
-      </form>
+    <div className="auth-page-wrapper">
+      <div className="container">
+        <h1>Registrarse</h1>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Nombre de usuario"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <small style={{ color: '#666', fontSize: '0.85rem' }}>
+            La contraseña debe tener al menos 8 caracteres.
+          </small>
+          <br />
+          <button type="submit">Registrarse</button>
+        </form>
+
+        {/* Agregado: redirección a login */}
+        <p>
+          ¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link>
+        </p>
+      </div>
     </div>
   );
 };

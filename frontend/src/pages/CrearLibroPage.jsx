@@ -73,6 +73,11 @@ const CrearLibroPage = () => {
             <label>Categoría</label>
             <select value={categoria} onChange={(e) => setCategoria(e.target.value)} required>
               <option value="">Seleccionar categoría</option>
+              <option value="Ciencia ficción">Ciencia ficción</option>
+              <option value="Fantasía">Fantasía</option>
+              <option value="Misterio">Misterio</option>
+              <option value="Biografía">Biografía</option>
+              <option value="Educativo">Educativo</option>
               <option value="Ficción">Ficción</option>
               <option value="No ficción">No ficción</option>
               <option value="Infantil">Infantil</option>

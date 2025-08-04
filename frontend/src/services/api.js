@@ -81,4 +81,27 @@ export const iniciarConversacion = async (receiverId) => {
   return response.data;
 };
 
+export const actualizarTelefono = async (telefono, token) => {
+  const response = await fetch("http://localhost:8000/update-telefono/", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ telefono }), // seguimos enviando sólo el teléfono
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText);
+  }
+
+  return await response.json(); // este JSON será el user completo actualizado
+};
+
+export const getUserContact = async (userId) => {
+  const response = await api.get(`/users/${userId}`);
+  return response.data; // { email, telefono }
+};
+
 export default api;

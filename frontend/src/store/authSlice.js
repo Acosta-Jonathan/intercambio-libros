@@ -12,9 +12,6 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      // action.payload es el objeto completo de respuesta del backend:
-      // { access_token: "...", token_type: "bearer", user: {...} }
-
       console.log("authSlice: login action payload received:", action.payload);
       console.log("authSlice: access_token in payload:", action.payload?.access_token);
       console.log("authSlice: user in payload:", action.payload?.user);
@@ -34,7 +31,6 @@ export const authSlice = createSlice({
       localStorage.removeItem('user');
     },
     setTokenFromStorage: (state, action) => {
-      // action.payload aquí es el token string
       state.token = action.payload;
       state.isAuthenticated = true;
       const storedUser = localStorage.getItem('user');
@@ -42,8 +38,16 @@ export const authSlice = createSlice({
         state.user = JSON.parse(storedUser);
       }
     },
+    // ✨✨✨ AÑADIMOS LA ACCIÓN setUser AQUÍ ✨✨✨
+    setUser: (state, action) => {
+      // El payload de esta acción será el objeto de usuario actualizado
+      state.user = action.payload;
+      // También es buena idea actualizarlo en localStorage para persistencia
+      localStorage.setItem('user', JSON.stringify(action.payload));
+    },
   },
 });
 
-export const { login, logout, setTokenFromStorage } = authSlice.actions;
+// Asegúrate de exportar la nueva acción
+export const { login, logout, setTokenFromStorage, setUser } = authSlice.actions;
 export default authSlice.reducer;

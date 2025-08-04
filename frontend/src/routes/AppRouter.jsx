@@ -13,13 +13,15 @@ import MainLayout from "../components/layout/MainLayout";
 const AppRouter = () => (
   <BrowserRouter>
     <Routes>
-      <Route element={<MainLayout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/libros/:id" element={<BookDetailsPage />} />
+      {/* Rutas públicas */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
 
-        <Route element={<ProtectedRoute />}>
+      {/* Rutas protegidas */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/libros/:id" element={<BookDetailsPage />} />
           <Route path="/mensajes" element={<MensajesPage />} />
           <Route path="/mis-libros" element={<MisLibrosPage />} />
           <Route path="/crear-libro" element={<CrearLibroPage />} />

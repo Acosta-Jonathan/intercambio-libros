@@ -57,16 +57,19 @@ const HomePage = () => {
           <label>Categoría</label>
           <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
             <option value="">Todas las categorías</option>
+            <option value="Fantasía">Fantasía</option>
+            <option value="Misterio">Misterio</option>
+            <option value="Biografía">Biografía</option>
+            <option value="Educativo">Educativo</option>
             <option value="Ficción">Ficción</option>
             <option value="No ficción">No ficción</option>
             <option value="Infantil">Infantil</option>
             <option value="Juvenil">Juvenil</option>
-            <option value="Ciencia ficción">Ciencia ficción</option>
-            <option value="Fantasía">Fantasía</option>
+            <option value="Ciencia">Ciencia</option>
+            <option value="Historia">Historia</option>
             <option value="Romance">Romance</option>
-            <option value="Misterio">Misterio</option>
-            <option value="Biografía">Biografía</option>
-            <option value="Educativo">Educativo</option>
+            <option value="Terror">Terror</option>
+            <option value="Autoayuda">Autoayuda</option>
             <option value="Otros">Otros</option>
           </select>
 

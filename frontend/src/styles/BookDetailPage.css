@@ -6,60 +6,123 @@
   min-height: 100vh;
 }
 
-.book-detail-card {
+.book-detail-card-horizontal {
   display: flex;
-  flex-direction: column;
-  max-width: 900px;
-  background-color: #ffffff;
+  gap: 2rem;
+  max-width: 1000px;
+  width: 100%;
+  background-color: #fff;
   border-radius: 16px;
   padding: 2rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  flex-wrap: wrap;
+}
+
+.book-image-column {
+  flex: 1 1 300px;
+  max-width: 300px;
 }
 
 .book-detail-img {
   width: 100%;
-  max-height: 400px;
-  object-fit: cover;
   border-radius: 12px;
-  margin-bottom: 1.5rem;
+  object-fit: cover;
+  background-color: #eef0ff;
+  height: auto;
 }
 
-.book-info {
+.book-info-column {
+  flex: 2 1 400px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  justify-content: space-between;
 }
 
-.book-info h2 {
+.book-title {
   font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: #222;
+}
+
+.book-author {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.book-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.35em 0.75em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  color: #fff;
+  text-transform: capitalize;
+}
+
+.badge-strong {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.badge-purple {
+  background-color: #7c3aed; /* violeta fuerte */
+}
+
+.badge-green {
+  background-color: #22c55e; /* verde fuerte */
+}
+
+.badge-gray {
+  background-color: #6b7280; /* gris oscuro */
+}
+
+.book-description h4 {
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
   color: #333;
 }
 
-.book-info p {
-  font-size: 1rem;
+.book-description p {
+  font-size: 0.95rem;
   color: #555;
-}
-
-.description {
-  margin-top: 1rem;
-  font-style: italic;
-  color: #666;
+  line-height: 1.5;
 }
 
 .contact-btn {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
   padding: 0.75rem 1.5rem;
-  background-color: #6C63FF;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  background: linear-gradient(90deg, #6c63ff, #8d74ff);
+  color: #fff;
   font-weight: bold;
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
-  align-self: flex-start;
-  transition: background 0.3s ease;
+  font-size: 1rem;
+  align-self: start;
+  transition: background 0.2s ease;
 }
 
 .contact-btn:hover {
-  background-color: #574fd6;
+  background: linear-gradient(90deg, #574fd6, #745df6);
+}
+
+.book-owner {
+  font-size: 0.95rem;
+  color: #444;
+  margin-bottom: 1rem;
+}
+
+.book-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.5rem 0 1rem;
+  flex-wrap: wrap;
 }

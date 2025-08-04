@@ -25,16 +25,16 @@ const Navbar = () => {
         <li><NavLink to="/">Inicio</NavLink></li>
         {isAuthenticated && (
           <>
-            <li><NavLink to="/mis-libros">Mis Libros</NavLink></li>
+            <li><NavLink to="/mis-libros">Mi Perfil</NavLink></li>
             <li><NavLink to="/crear-libro">Publicar Libro</NavLink></li>
-            <li><NavLink to="/mensajes">Mensajes</NavLink></li>
+            {/* <li><NavLink to="/mensajes">Mensajes</NavLink></li> */}
           </>
         )}
       </ul>
 
       <div className="navbar__actions">
   {isAuthenticated ? (
-    <button onClick={handleLogout} className="btn-secondary">
+    <button onClick={handleLogout} className="btn-secondary me-5 ">
       Cerrar sesión
     </button>
   ) : (
