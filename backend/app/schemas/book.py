@@ -27,7 +27,7 @@ class BookBase(BaseModel):
 
 class BookCreate(BookBase):
     # Recibe una lista de ids de categorías
-    categories: List[int]
+    categories: List[str]
     
 class BookUpdate(BaseModel):
     title: str
@@ -35,7 +35,7 @@ class BookUpdate(BaseModel):
     publication_date: Optional[date] = None
     description: Optional[str] = None
     image_url: Optional[str] = None
-    categories: Optional[List[int]] = None
+    categories: Optional[List[str]] = None
     tags: Optional[str] = None
     idioma: Optional[str] = None
     estado: Optional[str] = None

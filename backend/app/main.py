@@ -20,7 +20,7 @@ socket_app = socketio.ASGIApp(sio, app)
 # Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Ajusta esto a los orígenes permitidos en producción
+    allow_origins=["http://localhost:5173","http://127.0.0.1:5173",],  # Ajusta esto a los orígenes permitidos en producción
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

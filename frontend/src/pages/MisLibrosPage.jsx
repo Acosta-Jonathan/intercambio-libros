@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteBook, getMyBooks, updateBook, actualizarTelefono } from "../services/api";
+import {
+  deleteBook,
+  getMyBooks,
+  updateBook,
+  actualizarTelefono,
+} from "../services/api";
 import "../styles/MisLibrosPage.css";
 import { useNavigate } from "react-router-dom";
 import { setUser } from "../store/authSlice";
+import BookEditModal from "../components/BookEditModal";
 
 const TODAS_LAS_CATEGORIAS = [
   { id: "ficcion", nombre: "Ficción" },
@@ -18,6 +24,7 @@ const MisLibrosPage = () => {
   const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.auth.user);
   const [libros, setLibros] = useState([]);
+  const [editandoLibro, setEditandoLibro] = useState(null);
   const [editandoId, setEditandoId] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
@@ -35,7 +42,7 @@ const MisLibrosPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleConsultarClick = () => navigate('/crear-libro');
+  const handleConsultarClick = () => navigate("/crear-libro");
 
   useEffect(() => {
     const fetchLibros = async () => {
@@ -61,18 +68,7 @@ const MisLibrosPage = () => {
   };
 
   const handleEditarClick = (libro) => {
-    setEditandoId(libro.id);
-    setFormData({
-      title: libro.title || "",
-      author: libro.author || "",
-      estado: libro.estado || "",
-      categorias: libro.categories
-        ? libro.categories.map((cat) => (typeof cat === "string" ? cat : cat.id))
-        : [],
-      descripcion: libro.description || "",
-      idioma: libro.idioma || "",
-      // Ajusta otros campos si es necesario
-    });
+    setEditandoLibro(libro);
   };
 
   const handleEditarChange = (e) => {
@@ -90,18 +86,13 @@ const MisLibrosPage = () => {
     }));
   };
 
-  const handleGuardarEdicion = async (id) => {
+  const handleGuardarEdicion = async (id, updatedData) => {
     try {
-      const payload = {
-        ...formData,
-        categories: formData.categorias,
-      };
-      delete payload.categorias; // el backend espera 'categories'
-      const updated = await updateBook(id, payload, token);
+      const updated = await updateBook(id, updatedData, token);
       setLibros((prevLibros) =>
         prevLibros.map((libro) => (libro.id === id ? updated : libro))
       );
-      setEditandoId(null);
+      setEditandoLibro(null); // <-- Cerrar el modal al guardar
     } catch (error) {
       console.error("Error al actualizar libro:", error);
       alert("No se pudo actualizar el libro.");
@@ -111,7 +102,9 @@ const MisLibrosPage = () => {
   const handleGuardarTelefono = async () => {
     const soloNumeros = /^\d{10,}$/;
     if (!soloNumeros.test(telefono)) {
-      setTelefonoError("El teléfono debe tener al menos 10 dígitos y solo números.");
+      setTelefonoError(
+        "El teléfono debe tener al menos 10 dígitos y solo números."
+      );
       return;
     }
 
@@ -136,12 +129,16 @@ const MisLibrosPage = () => {
           <div>
             <h2 className="mb-1">{user?.username}</h2>
             <p className="mb-1">
-              <i className="fas fa-envelope me-2 text-muted"></i>{user?.email}
+              <i className="fas fa-envelope me-2 text-muted"></i>
+              {user?.email}
             </p>
             <p className="mb-0 d-flex align-items-center">
               <i className="fas fa-phone me-2 text-muted"></i>
               {user?.telefono || "-"}
-              <button className="btn btn-sm btn-outline-secondary ms-2" onClick={() => setShowModal(true)}>
+              <button
+                className="btn btn-sm btn-outline-secondary ms-2"
+                onClick={() => setShowModal(true)}
+              >
                 <i className="fas fa-edit"></i>
               </button>
             </p>
@@ -156,7 +153,11 @@ const MisLibrosPage = () => {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Editar Teléfono</h5>
-                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowModal(false)}
+                ></button>
               </div>
               <div className="modal-body">
                 <input
@@ -166,11 +167,23 @@ const MisLibrosPage = () => {
                   onChange={(e) => setTelefono(e.target.value)}
                   placeholder="Ingrese su número"
                 />
-                {telefonoError && <div className="text-danger mt-2">{telefonoError}</div>}
+                {telefonoError && (
+                  <div className="text-danger mt-2">{telefonoError}</div>
+                )}
               </div>
               <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>
-                <button className="btn btn-primary" onClick={handleGuardarTelefono}>Guardar cambios</button>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={handleGuardarTelefono}
+                >
+                  Guardar cambios
+                </button>
               </div>
             </div>
           </div>
@@ -180,7 +193,10 @@ const MisLibrosPage = () => {
       <hr />
       <div className="d-flex justify-content-between align-items-center mt-4">
         <h2 className="h4 fw-bold text-dark">Mis libros publicados</h2>
-        <button className="btn btn-primary text-white gradient-bg border-0" onClick={handleConsultarClick}>
+        <button
+          className="btn btn-primary text-white gradient-bg border-0"
+          onClick={handleConsultarClick}
+        >
           <i className="fas fa-plus me-2"></i>Publicar nuevo libro
         </button>
       </div>
@@ -199,99 +215,32 @@ const MisLibrosPage = () => {
                 alt={libro.title}
               />
             </div>
-
-            {editandoId === libro.id ? (
-              <div className="editor">
-                <input
-                  name="title"
-                  value={formData.title}
-                  onChange={handleEditarChange}
-                  placeholder="Título"
-                />
-                <input
-                  name="author"
-                  value={formData.author}
-                  onChange={handleEditarChange}
-                  placeholder="Autor"
-                />
-
-                <select
-                  name="estado"
-                  value={formData.estado}
-                  onChange={handleEditarChange}
-                >
-                  <option value="">Seleccionar estado</option>
-                  <option value="Nuevo">Nuevo</option>
-                  <option value="Muy bueno">Muy bueno</option>
-                  <option value="Bueno">Bueno</option>
-                  <option value="Usado">Usado</option>
-                </select>
-
-                {/* Selección múltiple de categorías */}
-                <fieldset>
-                  <legend>Categorías:</legend>
-                  <div className="categorias-checkboxes">
-                    {TODAS_LAS_CATEGORIAS.map((cat) => (
-                      <label className="categoria-checkbox" key={cat.id}>
-                        <input
-                          type="checkbox"
-                          value={cat.id}
-                          checked={formData.categorias.includes(cat.id)}
-                          onChange={handleCategoriaCheckbox}
-                        />
-                        <span>{cat.nombre}</span>
-                      </label>
-                    ))}
-                  </div>
-                </fieldset>
-
-                <input
-                  name="idioma"
-                  value={formData.idioma}
-                  onChange={handleEditarChange}
-                  placeholder="Idioma"
-                />
-
-                <textarea
-                  name="descripcion"
-                  value={formData.descripcion}
-                  onChange={handleEditarChange}
-                  placeholder="Descripción"
-                  rows={3}
-                  style={{ width: "100%", borderRadius: 8, border: "1px solid #ccc", padding: "8px" }}
-                />
-
-                <button onClick={() => handleGuardarEdicion(libro.id)}>Guardar</button>
-                <button onClick={() => setEditandoId(null)}>Cancelar</button>
+            <>
+              <h3>{libro.title}</h3>
+              <p>{libro.author}</p>
+              <p>
+                {libro.estado || "Estado no especificado"} -{" "}
+                {libro.category || "Sin categoría"}
+              </p>
+              <div className="acciones">
+                <button onClick={() => handleEditarClick(libro)}>Editar</button>
+                <button onClick={() => handleEliminar(libro.id)}>
+                  Eliminar
+                </button>
               </div>
-            ) : (
-              <>
-                <h3 className="libro-titulo">{libro.title}</h3>
-                <p className="libro-autor">{libro.author}</p>
-                <div className="libro-etiquetas">
-                  {libro.estado && <span className="etiqueta">{libro.estado}</span>}
-                  {/* Mostramos todas las categorías */}
-                  {libro.categories &&
-                    Array.isArray(libro.categories) &&
-                    libro.categories.map((cat) =>
-                      <span className="etiqueta-secundaria" key={typeof cat === "string" ? cat : cat.id}>
-                        {typeof cat === "string" ? cat : cat.nombre || cat.name}
-                      </span>
-                    )}
-                </div>
-                <div className="acciones">
-                  <button onClick={() => handleEditarClick(libro)}>
-                    <i className="fas fa-pen"></i> Editar
-                  </button>
-                  <button onClick={() => handleEliminar(libro.id)}>
-                    <i className="fas fa-trash"></i> Eliminar
-                  </button>
-                </div>
-              </>
-            )}
+            </>
           </div>
         ))}
       </div>
+
+      {/* Renderizar el modal si hay un libro en edición */}
+      {editandoLibro && (
+        <BookEditModal
+          book={editandoLibro}
+          onClose={() => setEditandoLibro(null)}
+          onSave={handleGuardarEdicion}
+        />
+      )}
     </div>
   );
 };

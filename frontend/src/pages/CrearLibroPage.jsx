@@ -54,7 +54,7 @@ const CrearLibroPage = () => {
       const libro = {
         title: titulo,
         author: autor,
-        category: categoriasSeleccionadas,
+        categories: categoriasSeleccionadas,
         idioma,
         estado,
         description: descripcion,
