@@ -13,7 +13,7 @@ class Category(CategoryBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class BookBase(BaseModel):
     title: str
@@ -46,4 +46,4 @@ class Book(BookBase):
     categories: List[Category]
 
     class Config:
-        orm_mode = True
+        from_attributes = True

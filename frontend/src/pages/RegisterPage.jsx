@@ -71,7 +71,7 @@ const RegisterPage = () => {
             La contraseña debe tener al menos 8 caracteres.
           </small>
           <br />
-          <button type="submit">Registrarse</button>
+          <button className='btn btn-outline-primary' type="submit">Registrarse</button>
         </form>
 
         {/* Agregado: redirección a login */}

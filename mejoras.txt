@@ -1,9 +1,12 @@
                                             Proyecto final 
 mejoras por hacer:
 
+HomePage:
+- Arreglar filtro por categoría
+- No mostrar los libros que pertenecen al usuario
+
 perfil
 - No duplicado de nombre de Usuarios (tal vez con recomendaciones disponibles)
-- Si se vence el token y no hay usuario logueado debería actualizarse la pagina y llevar al formulario de logueo
 
 Libro
 - agregar editorial, año, etc.
@@ -32,3 +35,6 @@ libro
 
 Modal editar libro
 - arreglar el campo "estado"
+
+Perfil:
+- Si se vence el token y no hay usuario logueado debería actualizarse la pagina y llevar al formulario de logueo
