@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllBooks } from "../services/api";
 import "../styles/HomePage.css";
+import { TODAS_LAS_CATEGORIAS, TODOS_LOS_ESTADOS, TODOS_LOS_IDIOMAS } from "../data/constants";
 
 const HomePage = () => {
   const [libros, setLibros] = useState([]);
@@ -38,7 +39,10 @@ const HomePage = () => {
       {/* Hero / Header */}
       <div className="hero-section">
         <h1>Intercambiá libros con tu comunidad</h1>
-        <p>Descubrí nuevas historias y compartí las tuyas con lectores apasionados</p>
+        <p>
+          Descubrí nuevas historias y compartí las tuyas con lectores
+          apasionados
+        </p>
         <div className="search-bar">
           <input
             type="text"
@@ -54,49 +58,43 @@ const HomePage = () => {
       <div className="main-section">
         <aside className="sidebar-filtros">
           <h3>Filtros</h3>
+
           <label>Categoría</label>
-          <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
+          <select
+            value={categoria}
+            onChange={(e) => setCategoria(e.target.value)}
+          >
             <option value="">Todas las categorías</option>
-            <option value="Fantasía">Fantasía</option>
-            <option value="Misterio">Misterio</option>
-            <option value="Biografía">Biografía</option>
-            <option value="Educativo">Educativo</option>
-            <option value="Ficción">Ficción</option>
-            <option value="No ficción">No ficción</option>
-            <option value="Infantil">Infantil</option>
-            <option value="Juvenil">Juvenil</option>
-            <option value="Ciencia">Ciencia</option>
-            <option value="Historia">Historia</option>
-            <option value="Romance">Romance</option>
-            <option value="Terror">Terror</option>
-            <option value="Autoayuda">Autoayuda</option>
-            <option value="Otros">Otros</option>
+            {TODAS_LAS_CATEGORIAS.map((cat) => (
+              <option key={cat.id} value={cat.nombre}>
+                {cat.nombre}
+              </option>
+            ))}
           </select>
 
           <label>Idioma</label>
           <select value={idioma} onChange={(e) => setIdioma(e.target.value)}>
             <option value="">Todos los idiomas</option>
-            <option value="Español">Español</option>
-            <option value="Inglés">Inglés</option>
-            <option value="Portugués">Portugués</option>
-            <option value="Francés">Francés</option>
-            <option value="Italiano">Italiano</option>
+            {TODOS_LOS_IDIOMAS.map((idiomaOpcion) => (
+              <option key={idiomaOpcion.id} value={idiomaOpcion.nombre}>
+                {idiomaOpcion.nombre}
+              </option>
+            ))}
           </select>
 
           <label>Estado</label>
           <select value={estado} onChange={(e) => setEstado(e.target.value)}>
             <option value="">Cualquier estado</option>
-            <option value="Nuevo">Nuevo</option>
-            <option value="Muy bueno">Muy bueno</option>
-            <option value="Bueno">Bueno</option>
-            <option value="Usado">Usado</option>
+            {TODOS_LOS_ESTADOS.map((estadoOpcion) => (
+              <option key={estadoOpcion.id} value={estadoOpcion.nombre}>
+                {estadoOpcion.nombre}
+              </option>
+            ))}
           </select>
         </aside>
-
         <section className="libros-section">
           <div className="libros-header">
             <h3>Libros disponibles</h3>
-            <span>{filtrarLibros.length} libros encontrados</span>
           </div>
 
           <div className="cards-container">
@@ -112,13 +110,44 @@ const HomePage = () => {
                     />
                   </div>
                   <h4>{libro.title}</h4>
-                  <p className="autor">{libro.author}</p>
-                  <p className="idioma">{libro.idioma}</p>
-                  <span className={`estado-label ${libro.estado?.toLowerCase().replace(" ", "-")}`}>
-                    {libro.estado || "Sin estado"}
+                  <p className="autor">
+                    <strong>Autor:</strong> {libro.author}
+                  </p>
+                  <p className="idioma">
+                    <strong>Idioma:</strong> {libro.idioma}</p>
+                  <span
+                    className={`estado-label ${libro.estado
+                      ?.toLowerCase()
+                      .replace(" ", "-")}`}
+                  >
+                    <strong>Estado:</strong> {libro.estado || "No definido"}
                   </span>
-                  <p className="usuario"><strong>{libro.usuario_nombre}</strong></p>
-                  <button onClick={() => navigate(`/libros/${libro.id}`)}>Ver detalles</button>
+
+                  <div className="categorias-container">
+                    <p className="etiqueta-categoria-titulo">
+                      <strong>Categorías:</strong>
+                    </p>
+                    <div className="categorias-list">
+                      {libro.categories && libro.categories.length > 0 ? (
+                        libro.categories.map((categoria, index) => (
+                          <span key={index} className="categoria-label">
+                            {categoria.name}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="categoria-label">Sin categoría</span>
+                      )}
+                    </div>
+                  </div>
+                  <p className="usuario">
+                    <strong>{libro.usuario_nombre}</strong>
+                  </p>
+                  <button
+                    className="detalles-btn"
+                    onClick={() => navigate(`/libros/${libro.id}`)}
+                  >
+                    Ver detalles
+                  </button>
                 </div>
               ))
             )}

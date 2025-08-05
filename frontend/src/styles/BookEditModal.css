@@ -1,4 +1,5 @@
 /* components/BookEditModal.css */
+
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -12,18 +13,25 @@
   z-index: 1000;
 }
 
-body .modal-open{
-  overflow: hidden !important;
-}
 .modal-content {
   background-color: white !important;
   padding: 20px;
-  border-radius: 10px !important;
+  border-radius: 8px;
   width: 90%;
   max-width: 500px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
+  flex-direction: column; /* Contenedor principal en columna */
+  max-height: 90vh; /* Altura máxima del modal, ajusta según necesidad */
+  overflow: hidden; /* Oculta el scroll del modal en sí */
+}
+
+/* Estilo para el formulario dentro del modal */
+.modal-form {
+  display: flex;
   flex-direction: column;
+  flex-grow: 1; /* Permite que el formulario ocupe el espacio restante */
+  overflow: hidden; /* Oculta el scroll del formulario si lo hay */
 }
 
 .modal-header {
@@ -33,6 +41,7 @@ body .modal-open{
   border-bottom: 1px solid #ccc;
   padding-bottom: 10px;
   margin-bottom: 15px;
+  flex-shrink: 0; /* Evita que el header se encoja */
 }
 
 .modal-header h2 {
@@ -40,28 +49,59 @@ body .modal-open{
   font-size: 1.5rem;
 }
 
-.close-button {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
+
+/* Estilo para el contenido scrollable */
+.modal-scrollable-content {
+  flex-grow: 1; /* Permite que este div ocupe el espacio restante */
+  overflow-y: auto; /* Habilita el scroll vertical si el contenido excede la altura */
+  padding-right: 15px; /* Espacio para la barra de scroll si aparece */
+  margin-right: -15px; /* Compensa el padding-right para que el contenido no se desplace */
+}
+
+.modal-body {
+  padding-bottom: 15px; /* Padding para el contenido dentro del scroll */
 }
 
 .modal-body label {
   display: block;
-  margin-bottom: 10px;
 }
 
-.modal-body input {
+.modal-body input,
+.modal-body select,
+.modal-body textarea {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
+  margin-bottom: 0 !important;
   box-sizing: border-box;
+}
+
+.modal-row-fields {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.modal-row-fields label {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.categorias-checkboxes-edit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0rem 0.3rem;
+  max-height: 90px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  padding: 0.5rem;
+  border-radius: 6px;
 }
 
 .modal-footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-evenly !important;
   gap: 10px;
   margin-top: 20px;
+  flex-shrink: 0; /* Evita que el footer se encoja */
 }

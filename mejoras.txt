@@ -1,4 +1,5 @@
-Proyecto final mejoras por hacer:
+                                            Proyecto final 
+mejoras por hacer:
 
 perfil
 - No duplicado de nombre de Usuarios (tal vez con recomendaciones disponibles)
@@ -6,9 +7,6 @@ perfil
 
 Libro
 - agregar editorial, año, etc.
-
-Modal editar libro
-- arreglar el campo "estado"
 
 sección contacto
 - Al contactar por mail, debe permitir elegir si abrir Gmail, Outlook u otro.
@@ -31,3 +29,6 @@ Cambios menores
 libro
 - Permitir más de una categoría por libro
 - En los detalles del libro poner etiquetas de los campos (autor, estado, etc.)
+
+Modal editar libro
+- arreglar el campo "estado"

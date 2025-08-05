@@ -4,14 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { createBook, uploadBookImage } from "../services/api";
 import "../styles/CrearLibroPage.css";
 
-const TODAS_LAS_CATEGORIAS = [
-  { id: "ficcion", nombre: "Ficción" },
-  { id: "no-ficcion", nombre: "No Ficción" },
-  { id: "fantasia", nombre: "Fantasía" },
-  { id: "aventura", nombre: "Aventura" },
-  { id: "infantil", nombre: "Infantil" },
-  // ...agrega el resto
-];
+import {
+  TODAS_LAS_CATEGORIAS,
+  TODOS_LOS_ESTADOS,
+  TODOS_LOS_IDIOMAS,
+} from "../data/constants";
 
 const CrearLibroPage = () => {
   const [titulo, setTitulo] = useState("");
@@ -101,22 +98,21 @@ const CrearLibroPage = () => {
         </div>
         <div className="fila-doble">
           <fieldset>
-            <legend>Categorías:</legend>
-            <div className="categorias-checkboxes">
-              {TODAS_LAS_CATEGORIAS.map((cat) => (
-                <label key={cat.id} className="categoria-checkbox">
-                  <input
-                    type="checkbox"
-                    value={cat.nombre}
-                    checked={categoriasSeleccionadas.includes(cat.nombre)}
-                    onChange={handleCategoriaCheckbox}
-                  />
-                  <span>{cat.nombre}</span>
-                </label>
-              ))}
-            </div>
-            {error && <div className="error-message">{error}</div>}
-          </fieldset>
+              <legend>Categorías:</legend>
+              <div className="categorias-checkboxes">
+                {TODAS_LAS_CATEGORIAS.map((cat) => (
+                  <label key={cat.id} className="categoria-checkbox">
+                    <input
+                      type="checkbox"
+                      value={cat.nombre}
+                      checked={categoriasSeleccionadas.includes(cat.nombre)}
+                      onChange={handleCategoriaCheckbox}
+                    />
+                    <span>{cat.nombre}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
           <div>
             <label htmlFor="idioma">Idioma</label>
             <select
@@ -126,28 +122,28 @@ const CrearLibroPage = () => {
               required
             >
               <option value="">Seleccionar idioma</option>
-              <option value="Español">Español</option>
-              <option value="Inglés">Inglés</option>
-              <option value="Portugués">Portugués</option>
-              <option value="Francés">Francés</option>
-              <option value="Italiano">Italiano</option>
+              {TODOS_LOS_IDIOMAS.map((idiomaOpcion) => (
+                <option key={idiomaOpcion.id} value={idiomaOpcion.nombre}>
+                  {idiomaOpcion.nombre}
+                </option>
+              ))}
             </select>
           </div>
         </div>
         <div>
           <label>Estado del libro</label>
           <div className="estado-opciones">
-            {["Nuevo", "Muy bueno", "Bueno", "Usado"].map((opcion) => (
-              <label key={opcion}>
+            {TODOS_LOS_ESTADOS.map((estadoOpcion) => (
+              <label key={estadoOpcion.id}>
                 <input
                   type="radio"
                   name="estado"
-                  value={opcion}
-                  checked={estado === opcion}
+                  value={estadoOpcion.nombre}
+                  checked={estado === estadoOpcion.nombre}
                   onChange={(e) => setEstado(e.target.value)}
                   required
                 />
-                {opcion}
+                {estadoOpcion.nombre}
               </label>
             ))}
           </div>

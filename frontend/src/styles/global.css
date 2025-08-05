@@ -22,33 +22,6 @@ body {
   --text-light: #fff;
 }
 
-/* Utilidades globales */
-.btn {
-  border-radius: 8px;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background 0.25s, border-color 0.25s;
-  border: 1px solid transparent;
-}
-.btn-primary {
-  background-color: var(--primary-color);
-  color: var(--text-light);
-}
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-.btn-outline {
-  background: transparent;
-  color: var(--primary-color);
-  border: 1px solid var(--primary-color);
-}
-.btn-secondary {
-  background-color: var(--secondary-color);
-  color: var(--text-light);
-}
 
 input,
 select,
@@ -105,19 +78,6 @@ textarea:focus {
   outline: none;
 }
 
-.container form button {
-  padding: 12px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.container form button:hover {
-  background-color: #0056b3;
-}
 .error-message {
   color: red;
   margin-bottom: 10px;
