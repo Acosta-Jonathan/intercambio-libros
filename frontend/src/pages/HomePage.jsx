@@ -107,7 +107,7 @@ const HomePage = () => {
                 <div key={libro.id} className="libro-card">
                   <div className="img-wrapper">
                     <img
-                      src={libro.image_url ? `http://localhost:8000${libro.image_url}` : "https://via.placeholder.com/150"}
+                      src={`http://localhost:8000${libro.image_url}`}
                       alt={libro.title}
                     />
                   </div>

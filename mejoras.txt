@@ -4,9 +4,11 @@ perfil
 - No duplicado de nombre de Usuarios (tal vez con recomendaciones disponibles)
 - Si se vence el token y no hay usuario logueado debería actualizarse la pagina y llevar al formulario de logueo
 
-libro
-- Permitir más de una categoría por libro
-- En los detalles del libro, marcar autor, editorial, año, etc.
+Libro
+- agregar editorial, año, etc.
+
+Modal editar libro
+- arreglar el campo "estado"
 
 sección contacto
 - Al contactar por mail, debe permitir elegir si abrir Gmail, Outlook u otro.
@@ -25,3 +27,7 @@ Mejoras ya realizadas:
 
 Cambios menores
 - La imagen de fondo sea fija
+
+libro
+- Permitir más de una categoría por libro
+- En los detalles del libro poner etiquetas de los campos (autor, estado, etc.)

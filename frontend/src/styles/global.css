@@ -7,12 +7,11 @@ body {
   background-color: #f0f8ff; /* Tu color de fondo */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url('frontend/src/assets/20250730_2219_Book Exchange Moment_simple_compose_01k1f0yhqqfc199k7zqz1nxb56.png');
+  background-image: url("frontend/src/assets/20250730_2219_Book Exchange Moment_simple_compose_01k1f0yhqqfc199k7zqz1nxb56.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
 }
-  
 
 :root {
   --primary-color: #007bff;
@@ -51,7 +50,9 @@ body {
   color: var(--text-light);
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   padding: 0.6rem;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -59,11 +60,12 @@ input, select, textarea {
   font-family: inherit;
   transition: border-color 0.3s;
 }
-input:focus, select:focus, textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
   border-color: var(--primary-color);
   outline: none;
 }
-
 
 /* Tus estilos existentes para .container */
 .container {
@@ -72,6 +74,7 @@ input:focus, select:focus, textarea:focus {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
+  background-color: #fff;
 }
 
 .container:hover {
@@ -130,10 +133,9 @@ input:focus, select:focus, textarea:focus {
 }
 
 .app-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    width: 100%;
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
 }
-

@@ -10,32 +10,13 @@ import "../styles/MisLibrosPage.css";
 import { useNavigate } from "react-router-dom";
 import { setUser } from "../store/authSlice";
 import BookEditModal from "../components/BookEditModal";
-
-const TODAS_LAS_CATEGORIAS = [
-  { id: "ficcion", nombre: "Ficción" },
-  { id: "no-ficcion", nombre: "No Ficción" },
-  { id: "fantasia", nombre: "Fantasía" },
-  { id: "aventura", nombre: "Aventura" },
-  { id: "infantil", nombre: "Infantil" },
-  // ...agrega el resto
-];
+import BookCard from "../components/BookCard";
 
 const MisLibrosPage = () => {
   const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.auth.user);
   const [libros, setLibros] = useState([]);
   const [editandoLibro, setEditandoLibro] = useState(null);
-  const [editandoId, setEditandoId] = useState(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    author: "",
-    estado: "",
-    categorias: [],
-    descripcion: "",
-    idioma: "",
-    // Puedes agregar otros campos si los editas
-  });
-
   const [telefono, setTelefono] = useState(user?.telefono || "");
   const [showModal, setShowModal] = useState(false);
   const [telefonoError, setTelefonoError] = useState("");
@@ -56,6 +37,20 @@ const MisLibrosPage = () => {
     fetchLibros();
   }, [token]);
 
+  // Nuevo useEffect para manejar el scroll
+  useEffect(() => {
+    if (editandoLibro || showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    // La función de limpieza se ejecuta cuando el componente se desmonta o los estados cambian
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [editandoLibro, showModal]);
+
+
   const handleEliminar = async (id) => {
     if (!confirm("¿Estás seguro de eliminar este libro?")) return;
     try {
@@ -71,28 +66,13 @@ const MisLibrosPage = () => {
     setEditandoLibro(libro);
   };
 
-  const handleEditarChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleCategoriaCheckbox = (e) => {
-    const { value, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      categorias: checked
-        ? [...prev.categorias, value]
-        : prev.categorias.filter((catId) => catId !== value),
-    }));
-  };
-
   const handleGuardarEdicion = async (id, updatedData) => {
     try {
       const updated = await updateBook(id, updatedData, token);
       setLibros((prevLibros) =>
         prevLibros.map((libro) => (libro.id === id ? updated : libro))
       );
-      setEditandoLibro(null); // <-- Cerrar el modal al guardar
+      setEditandoLibro(null);
     } catch (error) {
       console.error("Error al actualizar libro:", error);
       alert("No se pudo actualizar el libro.");
@@ -107,7 +87,6 @@ const MisLibrosPage = () => {
       );
       return;
     }
-
     try {
       const updatedUser = await actualizarTelefono(telefono, token);
       dispatch(setUser(updatedUser));
@@ -146,7 +125,6 @@ const MisLibrosPage = () => {
         </div>
       </div>
 
-      {/* Modal para editar teléfono */}
       {showModal && (
         <div className="modal d-block bg-dark bg-opacity-50" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
@@ -204,36 +182,15 @@ const MisLibrosPage = () => {
       <br />
       <div className="libros-grid">
         {libros.map((libro) => (
-          <div key={libro.id} className="libro-card">
-            <div className="libro-imagen-container">
-              <img
-                src={
-                  libro.image_url
-                    ? `http://localhost:8000${libro.image_url}`
-                    : "/default-book.svg"
-                }
-                alt={libro.title}
-              />
-            </div>
-            <>
-              <h3>{libro.title}</h3>
-              <p>{libro.author}</p>
-              <p>
-                {libro.estado || "Estado no especificado"} -{" "}
-                {libro.category || "Sin categoría"}
-              </p>
-              <div className="acciones">
-                <button onClick={() => handleEditarClick(libro)}>Editar</button>
-                <button onClick={() => handleEliminar(libro.id)}>
-                  Eliminar
-                </button>
-              </div>
-            </>
-          </div>
+          <BookCard
+            key={libro.id}
+            book={libro}
+            onDelete={handleEliminar}
+            onEdit={handleEditarClick}
+          />
         ))}
       </div>
 
-      {/* Renderizar el modal si hay un libro en edición */}
       {editandoLibro && (
         <BookEditModal
           book={editandoLibro}

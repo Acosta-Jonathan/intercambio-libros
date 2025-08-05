@@ -133,19 +133,19 @@ textarea {
 .categorias-checkboxes {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 0rem 0.3rem;
   max-height: 120px;
   overflow-y: auto;
   border: 1px solid #eee;
   padding: 0.5rem;
+  border-radius: 6px;
 }
 
 .categoria-checkbox {
   position: relative;
-  background: rgba(255,255,255,0.85);
+  background: rgba(252, 245, 255, 0.85);
   border-radius: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.441);
   display: flex;
   align-items: center;
   gap: 0.5em;

@@ -30,7 +30,7 @@ const CrearLibroPage = () => {
   function handleCategoriaCheckbox(e) {
     const { value, checked } = e.target;
     setCategoriasSeleccionadas((prev) =>
-      checked ? [...prev, value] : prev.filter((catId) => catId !== value)
+      checked ? [...prev, value] : prev.filter((catName) => catName !== value)
     );
   }
 
@@ -75,12 +75,13 @@ const CrearLibroPage = () => {
   return (
     <div className="crear-libro-container">
       <h2>Publicar un libro</h2>
-      <p className="subtitulo">Compartí tu libro con la comunidad</p>
+      <p className="subtitulo">Comparte tu libro con la comunidad</p>
       <form onSubmit={handleSubmit}>
         <div className="fila-doble">
           <div>
-            <label>Título del libro</label>
+            <label htmlFor="titulo">Título del libro</label>
             <input
+              id="titulo"
               type="text"
               value={titulo}
               onChange={(e) => setTitulo(e.target.value)}
@@ -88,8 +89,9 @@ const CrearLibroPage = () => {
             />
           </div>
           <div>
-            <label>Autor</label>
+            <label htmlFor="autor">Autor</label>
             <input
+              id="autor"
               type="text"
               value={autor}
               onChange={(e) => setAutor(e.target.value)}
@@ -102,11 +104,11 @@ const CrearLibroPage = () => {
             <legend>Categorías:</legend>
             <div className="categorias-checkboxes">
               {TODAS_LAS_CATEGORIAS.map((cat) => (
-                <label className="categoria-checkbox">
+                <label key={cat.id} className="categoria-checkbox">
                   <input
                     type="checkbox"
-                    value={cat.id}
-                    checked={categoriasSeleccionadas.includes(cat.id)}
+                    value={cat.nombre}
+                    checked={categoriasSeleccionadas.includes(cat.nombre)}
                     onChange={handleCategoriaCheckbox}
                   />
                   <span>{cat.nombre}</span>
@@ -116,8 +118,9 @@ const CrearLibroPage = () => {
             {error && <div className="error-message">{error}</div>}
           </fieldset>
           <div>
-            <label>Idioma</label>
+            <label htmlFor="idioma">Idioma</label>
             <select
+              id="idioma"
               value={idioma}
               onChange={(e) => setIdioma(e.target.value)}
               required
@@ -150,15 +153,16 @@ const CrearLibroPage = () => {
           </div>
         </div>
         <div>
-          <label>Descripción (opcional)</label>
+          <label htmlFor="descripcion">Descripción (opcional)</label>
           <textarea
-            placeholder="Contanos más sobre el libro, su estado, por qué lo querés intercambiar..."
+            id="descripcion"
+            placeholder="Cuéntanos más sobre el libro, su estado, por qué lo quieres intercambiar..."
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
           />
         </div>
         <div className="subir-imagen">
-          <label htmlFor="imagen">📤seleccioná un archivo</label>
+          <label htmlFor="imagen">📤 Selecciona un archivo</label>
           <input
             type="file"
             id="imagen"

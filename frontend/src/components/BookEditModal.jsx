@@ -63,7 +63,6 @@ const BookEditModal = ({ book, onClose, onSave }) => {
       <div className="modal-content">
         <div className="modal-header">
           <h2>Editar Libro: {book.title}</h2>
-          <button className="close-button" onClick={onClose}>&times;</button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
@@ -86,7 +85,7 @@ const BookEditModal = ({ book, onClose, onSave }) => {
                   <label key={cat.id} className="categoria-checkbox">
                     <input
                       type="checkbox"
-                      value={cat.nombre} // <-- Usamos el nombre de la categoría
+                      value={cat.nombre}
                       checked={categoriasSeleccionadas.includes(cat.nombre)}
                       onChange={handleCategoriaCheckbox}
                     />
