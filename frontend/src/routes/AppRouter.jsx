@@ -1,3 +1,4 @@
+// src/routes/AppRouter.js
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "../pages/HomePage";
@@ -9,26 +10,32 @@ import MisLibrosPage from "../pages/MisLibrosPage";
 import CrearLibroPage from "../pages/CrearLibroPage";
 import ProtectedRoute from "./ProtectedRoute";
 import MainLayout from "../components/layout/MainLayout";
+import AuthServiceInitializer from "../components/AuthServiceInitializer"; // Import the new component
 
-const AppRouter = () => (
-  <BrowserRouter>
-    <Routes>
-      {/* Rutas públicas */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+const AppRouter = () => {
+  return (
+    <BrowserRouter>
+      {/* Render the initializer component inside BrowserRouter */}
+      <AuthServiceInitializer /> 
 
-      {/* Rutas protegidas */}
-      <Route element={<ProtectedRoute />}>
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/libros/:id" element={<BookDetailsPage />} />
-          <Route path="/mensajes" element={<MensajesPage />} />
-          <Route path="/mis-libros" element={<MisLibrosPage />} />
-          <Route path="/crear-libro" element={<CrearLibroPage />} />
+      <Routes>
+        {/* Rutas públicas */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        {/* Rutas protegidas */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/libros/:id" element={<BookDetailsPage />} />
+            <Route path="/mensajes" element={<MensajesPage />} />
+            <Route path="/mis-libros" element={<MisLibrosPage />} />
+            <Route path="/crear-libro" element={<CrearLibroPage />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
-  </BrowserRouter>
-);
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
 export default AppRouter;

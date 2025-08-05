@@ -7,12 +7,11 @@ import { store } from './store/store';
 import { setTokenFromStorage } from './store/authSlice';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // Incluye Popper.js
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './styles/global.css'
 
-// *** CAMBIO AQUI: Usar 'access_token' si esa es la clave que ahora guardas ***
 const token = localStorage.getItem('access_token');
-const storedUser = localStorage.getItem('user'); // Este está bien
+const storedUser = localStorage.getItem('user');
 
 if (token && token !== 'undefined') {
   store.dispatch(setTokenFromStorage(token));
