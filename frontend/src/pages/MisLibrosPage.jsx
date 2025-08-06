@@ -1,3 +1,4 @@
+// src/pages/MisLibrosPage.jsx
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -11,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { setUser } from "../store/authSlice";
 import BookEditModal from "../components/BookEditModal";
 import BookCard from "../components/BookCard";
+import BookDetailsModal from "../components/BookDetailsModal";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 const MisLibrosPage = () => {
   const token = useSelector((state) => state.auth.token);
@@ -18,10 +21,14 @@ const MisLibrosPage = () => {
   const [libros, setLibros] = useState([]);
   const [editandoLibro, setEditandoLibro] = useState(null);
   const [telefono, setTelefono] = useState(user?.telefono || "");
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false); // Modal para editar teléfono
   const [telefonoError, setTelefonoError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // Estados para el modal de detalles de libro
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
 
   const handleConsultarClick = () => navigate("/crear-libro");
 
@@ -37,28 +44,26 @@ const MisLibrosPage = () => {
     fetchLibros();
   }, [token]);
 
-  // Nuevo useEffect para manejar el scroll
   useEffect(() => {
-    if (editandoLibro || showModal) {
+    if (editandoLibro || showModal || showDetailsModal) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
-    // La función de limpieza se ejecuta cuando el componente se desmonta o los estados cambian
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [editandoLibro, showModal]);
+  }, [editandoLibro, showModal, showDetailsModal]);
 
 
   const handleEliminar = async (id) => {
-    if (!confirm("¿Estás seguro de eliminar este libro?")) return;
+    if (!window.confirm("¿Estás seguro de eliminar este libro?")) return;
     try {
       await deleteBook(id, token);
       setLibros((prev) => prev.filter((libro) => libro.id !== id));
     } catch (error) {
       console.error("Error al eliminar libro:", error);
-      alert("No se pudo eliminar el libro.");
+      window.alert("No se pudo eliminar el libro.");
     }
   };
 
@@ -75,7 +80,7 @@ const MisLibrosPage = () => {
       setEditandoLibro(null);
     } catch (error) {
       console.error("Error al actualizar libro:", error);
-      alert("No se pudo actualizar el libro.");
+      window.alert("No se pudo actualizar el libro.");
     }
   };
 
@@ -94,8 +99,18 @@ const MisLibrosPage = () => {
       setTelefonoError("");
     } catch (error) {
       console.error("Error al actualizar teléfono:", error);
-      alert("No se pudo actualizar el teléfono.");
+      window.alert("No se pudo actualizar el teléfono.");
     }
+  };
+
+  const handleViewDetails = (libro) => {
+    setSelectedBook(libro);
+    setShowDetailsModal(true);
+  };
+
+  const handleCloseDetailsModal = () => {
+    setShowDetailsModal(false);
+    setSelectedBook(null);
   };
 
   return (
@@ -185,9 +200,24 @@ const MisLibrosPage = () => {
           <BookCard
             key={libro.id}
             book={libro}
-            onDelete={handleEliminar}
-            onEdit={handleEditarClick}
-          />
+            isOwnedByCurrentUser={true} // Sigue siendo true porque son sus libros
+            showHighlight={false} // ✨✨✨ Pasamos showHighlight como false aquí ✨✨✨
+          >
+            <button
+              className="detalles-btn full-width-btn"
+              onClick={() => handleViewDetails(libro)}
+            >
+              Ver detalles
+            </button>
+            <div className="acciones-secundarias">
+              <button onClick={() => handleEditarClick(libro)}>
+                <FaEdit className="me-1" /> Editar
+              </button>
+              <button onClick={() => handleEliminar(libro.id)}>
+                <FaTrash className="me-1" /> Eliminar
+              </button>
+            </div>
+          </BookCard>
         ))}
       </div>
 
@@ -196,6 +226,14 @@ const MisLibrosPage = () => {
           book={editandoLibro}
           onClose={() => setEditandoLibro(null)}
           onSave={handleGuardarEdicion}
+        />
+      )}
+
+      {showDetailsModal && selectedBook && (
+        <BookDetailsModal
+          book={selectedBook}
+          onClose={handleCloseDetailsModal}
+          loggedInUserId={user?.id || null}
         />
       )}
     </div>

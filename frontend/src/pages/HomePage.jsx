@@ -5,7 +5,8 @@ import { getAllBooks } from "../services/api";
 import "../styles/HomePage.css";
 import { TODAS_LAS_CATEGORIAS, TODOS_LOS_ESTADOS, TODOS_LOS_IDIOMAS } from "../data/constants";
 import { useSelector } from 'react-redux';
-import BookCard from "../components/BookCard"; // Asegúrate de importar BookCard
+import BookCard from "../components/BookCard";
+import BookDetailsModal from "../components/BookDetailsModal";
 
 const HomePage = () => {
   const [libros, setLibros] = useState([]);
@@ -13,11 +14,12 @@ const HomePage = () => {
   const [categoria, setCategoria] = useState("");
   const [idioma, setIdioma] = useState("");
   const [estado, setEstado] = useState("");
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
   const navigate = useNavigate();
 
   const loggedInUser = useSelector((state) => state.auth.user);
-  // Acceso más seguro a loggedInUser.id
-  const loggedInUserId = loggedInUser?.id || null; // Usa optional chaining (?.)
+  const loggedInUserId = loggedInUser?.id || null;
 
   useEffect(() => {
     const fetchLibros = async () => {
@@ -30,6 +32,18 @@ const HomePage = () => {
     };
     fetchLibros();
   }, []);
+
+  useEffect(() => {
+    if (showDetailsModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showDetailsModal]);
+
 
   const filtrarLibros = libros.filter((libro) => {
     const coincideBusqueda =
@@ -46,6 +60,16 @@ const HomePage = () => {
 
     return coincideBusqueda && coincideCategoria && coincideIdioma && coincideEstado;
   });
+
+  const handleViewDetails = (book) => {
+    setSelectedBook(book);
+    setShowDetailsModal(true);
+  };
+
+  const handleCloseDetailsModal = () => {
+    setShowDetailsModal(false);
+    setSelectedBook(null);
+  };
 
   return (
     <div className="home-wrapper">
@@ -116,15 +140,29 @@ const HomePage = () => {
                 <BookCard
                   key={libro.id}
                   book={libro}
-                  // Acceso más seguro a libro.user_id
                   isOwnedByCurrentUser={libro.user_id === loggedInUserId}
-                  onDetailsClick={() => navigate(`/libros/${libro.id}`)} // Pasa la función de navegación
-                />
+                  showHighlight={true} // ✨✨✨ Pasamos showHighlight como true ✨✨✨
+                >
+                  <button
+                    className="detalles-btn"
+                    onClick={() => handleViewDetails(libro)}
+                  >
+                    Ver detalles
+                  </button>
+                </BookCard>
               ))
             )}
           </div>
         </section>
       </div>
+
+      {showDetailsModal && selectedBook && (
+        <BookDetailsModal
+          book={selectedBook}
+          onClose={handleCloseDetailsModal}
+          loggedInUserId={loggedInUserId}
+        />
+      )}
     </div>
   );
 };

@@ -1,8 +1,5 @@
-                                            Proyecto final 
+                                            Proyecto final
 mejoras por hacer:
-
-HomePage:
-- ver detalles ahora es un modal
 
 perfil
 - No duplicado de nombre de Usuarios (tal vez con recomendaciones disponibles)
@@ -41,3 +38,4 @@ Perfil:
 HomePage:
 - Arreglar filtro por categoría
 - Destacar los libros que pertenecen al usuario
+- ver detalles ahora es un modal

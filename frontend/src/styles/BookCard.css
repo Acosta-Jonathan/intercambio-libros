@@ -2,14 +2,11 @@
 
 /* Nuevas variables para el color dorado */
 :root {
-  --gold-solid: #ffd700; /* Oro sólido */
-  --gold-gradient: linear-gradient(
-    45deg,
-    #ffd700,
-    #ffc107
-  ); /* Degradado de oro a ámbar */
-  --gold-text: #8b4513; /* Color de texto para contraste con el oro */
+  --gold-solid: #FFD700; /* Oro sólido */
+  --gold-gradient: linear-gradient(45deg, #FFD700, #FFC107); /* Degradado de oro a ámbar */
+  --gold-text: #8B4513; /* Color de texto para contraste con el oro */
 }
+
 
 .libro-card {
   background: #fff;
@@ -168,17 +165,45 @@
   white-space: nowrap;
 }
 
-/* Estilos para los botones (generales) */
+/* Estilos para el contenedor de acciones (botones) */
 .acciones {
-  margin-top: auto;
+  margin-top: auto; /* Empuja los botones al fondo de la tarjeta */
   display: flex;
-  justify-content: center;
-  gap: 0.75rem;
-  align-items: stretch;
+  flex-direction: column; /* Apila los elementos verticalmente */
+  gap: 0.75rem; /* Espacio entre filas de botones */
   padding-top: 10px;
 }
 
-.acciones button {
+/* Estilo para el botón "Ver detalles" (HomePage y MisLibrosPage) */
+.acciones .detalles-btn { /* Apunta al botón dentro de .acciones */
+  width: 100%; /* Ocupa todo el ancho */
+  padding: 0.6rem 1rem; /* Ajusta el padding si es necesario */
+  font-size: 0.9rem; /* Ajusta el tamaño de fuente */
+  background-color: #6C63FF; /* Color primario */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.acciones .detalles-btn:hover:not(:disabled) {
+  background-color: #574fd6; /* Color de hover */
+}
+
+/* Contenedor para los botones "Editar" y "Eliminar" */
+.acciones-secundarias {
+  display: flex;
+  gap: 0.75rem; /* Espacio entre los botones */
+  width: 100%; /* Ocupa todo el ancho disponible */
+}
+
+/* Estilos para los botones dentro de acciones-secundarias */
+.acciones-secundarias button {
+  flex: 1; /* Cada botón ocupa la mitad del espacio */
   padding: 0.4rem 0.8rem;
   font-size: 0.85rem;
   border: none;
@@ -188,32 +213,32 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
 }
 
-/* Estilo para el botón deshabilitado */
-.acciones button:disabled {
-  background-color: #cccccc;
-  color: #666666;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-/* Estilos específicos para los botones de MisLibrosPage si los usas */
-.acciones button:first-child {
+.acciones-secundarias button:first-child { /* Botón Editar */
   background-color: #eef0ff;
   color: #4c4cf1;
 }
 
-.acciones button:first-child:hover:not(:disabled) {
+.acciones-secundarias button:first-child:hover:not(:disabled) {
   background-color: #dbe0ff;
 }
 
-.acciones button:last-child {
+.acciones-secundarias button:last-child { /* Botón Eliminar */
   background-color: #ffecec;
   color: #f14c4c;
 }
 
-.acciones button:last-child:hover:not(:disabled) {
+.acciones-secundarias button:last-child:hover:not(:disabled) {
   background-color: #ffd3d3;
+}
+
+
+/* Estilo para el botón deshabilitado (general) */
+.acciones button:disabled,
+.acciones-secundarias button:disabled {
+  background-color: #cccccc !important;
+  color: #666666 !important;
+  cursor: not-allowed !important;
+  opacity: 0.7;
 }

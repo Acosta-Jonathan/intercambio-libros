@@ -49,6 +49,7 @@ class UpdateTelefono(BaseModel):
 class UserContactSchema(BaseModel):
     email: str
     telefono: str | None
+    username: str | None
 
     class Config:
         from_attributes = True

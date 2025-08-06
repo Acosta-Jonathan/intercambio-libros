@@ -1,0 +1,202 @@
+/* src/styles/BookDetailsModal.css */
+
+.modal-backdrop-details {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content-details {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px; /* Un poco más ancho para detalles */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh; /* Para que no se desborde verticalmente */
+  overflow-y: auto; /* Habilita el scroll si el contenido es largo */
+}
+
+.modal-header-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.modal-header-details h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.close-button-details {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.2s;
+}
+
+.close-button-details:hover {
+  color: #333;
+}
+
+.modal-body-details {
+  flex-grow: 1;
+  padding-bottom: 20px;
+  line-height: 1.6;
+  color: #555;
+}
+
+.modal-book-image-container {
+  width: 100%;
+  max-height: 300px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-book-image-container img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+.modal-body-details h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.modal-body-details p {
+  margin-bottom: 8px;
+}
+
+.modal-body-details strong {
+  color: #333;
+}
+
+/* Estilos para los badges (comunes) */
+.book-badges { /* Contenedor para los badges de estado e idioma */
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.35em 0.75em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  color: #fff;
+  text-transform: capitalize;
+  white-space: nowrap; /* Evita que el texto del badge se rompa */
+}
+
+.badge-strong {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Colores de los badges */
+.badge-purple {
+  background-color: #7c3aed; /* violeta fuerte */
+}
+
+.badge-green {
+  background-color: #22c55e; /* verde fuerte */
+}
+
+.badge-gray {
+  background-color: #6b7280; /* gris oscuro */
+}
+
+.badge-orange { /* Nuevo color para el estado "Bueno" */
+  background-color: #f97316; /* Naranja fuerte */
+}
+
+.badge-red { /* Nuevo color para el estado "Con algunos daños" */
+  background-color: #ef4444; /* Rojo fuerte */
+}
+
+
+/* Estilos para la sección de categorías en el modal */
+.categorias-section-details {
+  margin-bottom: 1rem;
+}
+
+.categorias-section-details h4 {
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+  color: #333;
+}
+
+.categorias-list-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+
+.book-description h4 {
+  font-size: 1rem;
+  padding-top: 1rem;
+  margin-bottom: 0.4rem;
+  color: #333;
+}
+
+.book-description p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+
+.modal-footer-details {
+  display: flex;
+  justify-content: flex-end; /* Alinea los botones a la derecha */
+  gap: 10px; /* Espacio entre los botones */
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+  margin-top: 20px;
+}
+
+.contactar-btn {
+  background-color: #6C63FF; /* Un color primario */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.contactar-btn:hover:not(:disabled) {
+  background-color: #574fd6;
+}
+
+.contactar-btn:disabled {
+  background-color: #cccccc !important; /* Gris claro */
+  color: #666666 !important; /* Texto más oscuro */
+  cursor: not-allowed !important;
+  opacity: 0.7;
+}

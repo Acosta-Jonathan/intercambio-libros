@@ -1,10 +1,9 @@
 // src/components/BookCard.jsx
 import React from "react";
-// No necesitas FaEdit ni FaTrash aquí si solo se usan en MisLibrosPage
 import "../styles/BookCard.css";
 
-// Recibimos la nueva prop 'onDetailsClick'
-const BookCard = ({ book, isOwnedByCurrentUser, onDetailsClick }) => {
+// Añadimos la nueva prop 'showHighlight'
+const BookCard = ({ book, isOwnedByCurrentUser, onDetailsClick, children, showHighlight = true }) => {
   const getEstadoClass = (estado) => {
     switch (estado) {
       case "Nuevo":
@@ -18,8 +17,12 @@ const BookCard = ({ book, isOwnedByCurrentUser, onDetailsClick }) => {
     }
   };
 
+  // Determinar si se debe aplicar el resaltado visual
+  const applyVisualHighlight = isOwnedByCurrentUser && showHighlight;
+
   return (
-    <div className={`libro-card ${isOwnedByCurrentUser ? 'libro-propio' : ''}`}>
+    // Aplicamos la clase condicional 'libro-propio' solo si applyVisualHighlight es true
+    <div className={`libro-card ${applyVisualHighlight ? 'libro-propio' : ''}`}>
       <div className="libro-imagen-container">
         <img
           src={
@@ -30,7 +33,8 @@ const BookCard = ({ book, isOwnedByCurrentUser, onDetailsClick }) => {
           alt={book.title}
         />
       </div>
-      {isOwnedByCurrentUser && (
+      {/* Badge condicional: solo si applyVisualHighlight es true */}
+      {applyVisualHighlight && (
         <span className="badge-propio">Tu Libro</span>
       )}
       <div className="libro-info-content">
@@ -61,14 +65,7 @@ const BookCard = ({ book, isOwnedByCurrentUser, onDetailsClick }) => {
         </div>
       </div>
       <div className="acciones">
-        {/* El botón "Ver detalles" ahora usa la prop onDetailsClick */}
-        <button
-          className="detalles-btn"
-          onClick={onDetailsClick} // Llama a la función pasada por prop
-          disabled={isOwnedByCurrentUser} // Deshabilita el botón
-        >
-          Ver detalles
-        </button>
+        {children}
       </div>
     </div>
   );
