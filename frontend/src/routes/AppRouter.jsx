@@ -9,7 +9,7 @@ import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import MensajesPage from "../pages/MensajesPage";
-import MisLibrosPage from "../pages/MisLibrosPage";
+import MisLibrosPage from "../pages/MiPerfilPage";
 import CrearLibroPage from "../pages/CrearLibroPage";
 import ProtectedRoute from "./ProtectedRoute";
 import MainLayout from "../components/layout/MainLayout";

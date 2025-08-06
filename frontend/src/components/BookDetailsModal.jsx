@@ -1,23 +1,22 @@
 // src/components/BookDetailsModal.jsx
-import React, { useState, useEffect } from 'react'; // Importa useState y useEffect
+import React, { useState, useEffect } from 'react';
 import '../styles/BookDetailsModal.css';
-import { iniciarConversacion, getUserContact } from '../services/api'; // Importa getUserContact
+import { iniciarConversacion, getUserContact } from '../services/api';
 import { TODOS_LOS_ESTADOS, TODOS_LOS_IDIOMAS, TODAS_LAS_CATEGORIAS } from '../data/constants';
+import ModalContacto from './ModalContacto'; // ✨ Importa ModalContacto ✨
 
 const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
-  const [ownerDetails, setOwnerDetails] = useState(null); // Nuevo estado para los detalles del propietario
-  const [loadingOwner, setLoadingOwner] = useState(true); // Estado de carga
+  const [ownerDetails, setOwnerDetails] = useState(null);
+  const [loadingOwner, setLoadingOwner] = useState(true);
+  const [showContactModal, setShowContactModal] = useState(false); // ✨ Nuevo estado para el modal de contacto ✨
 
-  // Función para mapear el estado del libro a una clase de color de badge
   const getEstadoBadgeClass = (estado) => {
     switch (estado) {
       case "Nuevo":
       case "Muy bueno":
         return "badge-green";
-      case "Bueno":
-        return "badge-orange";
       case "Usado":
-        return "badge-gray";
+        return "badge-orange";
       case "Con algunos daños":
         return "badge-red";
       default:
@@ -25,17 +24,16 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
     }
   };
 
-  // ✨✨✨ Nuevo useEffect para cargar los detalles del propietario ✨✨✨
   useEffect(() => {
     const fetchOwnerDetails = async () => {
-      if (book && book.user_id) { // Solo si tenemos el libro y su user_id
+      if (book && book.user_id) {
         setLoadingOwner(true);
         try {
-          const details = await getUserContact(book.user_id); // Llama a la API con el user_id
+          const details = await getUserContact(book.user_id);
           setOwnerDetails(details);
         } catch (error) {
           console.error("Error al obtener detalles del propietario:", error);
-          setOwnerDetails(null); // En caso de error, no mostrar detalles
+          setOwnerDetails(null);
         } finally {
           setLoadingOwner(false);
         }
@@ -43,18 +41,11 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
     };
 
     fetchOwnerDetails();
-  }, [book]); // Se ejecutará cada vez que el 'book' cambie (cuando se abre el modal con un nuevo libro)
+  }, [book]);
 
-
-  const handleContactClick = async () => {
-    try {
-      await iniciarConversacion(book.user_id);
-      alert('¡Conversación iniciada con el propietario del libro!');
-      onClose();
-    } catch (error) {
-      console.error('Error al iniciar conversación:', error);
-      alert('No se pudo iniciar la conversación. Inténtalo de nuevo.');
-    }
+  // ✨ Modifica handleContactClick para abrir el ModalContacto ✨
+  const handleContactClick = () => {
+    setShowContactModal(true);
   };
 
   const isBookOwner = book.user_id === loggedInUserId;
@@ -115,7 +106,6 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
             </div>
           </div>
 
-          {/* ✨✨✨ Muestra el nombre de usuario del propietario ✨✨✨ */}
           <p>
             <strong>Publicado por:</strong>{' '}
             {loadingOwner ? 'Cargando...' : (ownerDetails ? ownerDetails.username : 'Usuario desconocido')}
@@ -124,7 +114,7 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
         <div className="modal-footer-details">
           <button
             className="contactar-btn"
-            onClick={handleContactClick}
+            onClick={handleContactClick} // Ahora abre el ModalContacto
             disabled={isBookOwner}
             style={isBookOwner ? { backgroundColor: '#cccccc', color: '#666666', cursor: 'not-allowed' } : {}}
           >
@@ -135,6 +125,15 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
           </button>
         </div>
       </div>
+
+      {/* ✨ Renderiza ModalContacto condicionalmente ✨ */}
+      {showContactModal && ownerDetails && (
+        <ModalContacto
+          email={ownerDetails.email}
+          telefono={ownerDetails.telefono}
+          onClose={() => setShowContactModal(false)}
+        />
+      )}
     </div>
   );
 };

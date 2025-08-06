@@ -1,9 +1,9 @@
 .home-wrapper {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
 .hero-section {
-  background: linear-gradient(135deg, #6C63FF, #A084DC);
+  background: linear-gradient(135deg, #6c63ff, #a084dc);
   color: white;
   text-align: center;
   padding: 3rem 1rem;
@@ -35,7 +35,7 @@
   padding: 0.6rem 1rem;
   border: none;
   background-color: #ffffff;
-  color: #6C63FF;
+  color: #6c63ff;
   font-weight: bold;
   border-radius: 6px;
   cursor: pointer;
@@ -53,7 +53,7 @@
   background: #f9f9f9;
   padding: 1rem;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .sidebar-filtros h3 {
@@ -82,7 +82,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
-  align-items: stretch;
+  align-items: start;
 }
 
 .libros-section {
@@ -104,7 +104,6 @@
   font-size: 1.4rem;
   margin: 0;
 }
-
 
 .libro-icon {
   font-size: 1.8rem;
@@ -202,7 +201,6 @@
 .detalles-btn:hover {
   background: linear-gradient(90deg, #574fd6, #745df6);
 }
-
 
 .categorias-list {
   display: flex;

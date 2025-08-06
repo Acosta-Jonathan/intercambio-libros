@@ -7,7 +7,7 @@ import {
   updateBook,
   actualizarTelefono,
 } from "../services/api";
-import "../styles/MisLibrosPage.css";
+import "../styles/MiPerfilPage.css";
 import { useNavigate } from "react-router-dom";
 import { setUser } from "../store/authSlice";
 import BookEditModal from "../components/BookEditModal";

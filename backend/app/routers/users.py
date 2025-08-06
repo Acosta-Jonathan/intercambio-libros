@@ -9,20 +9,64 @@ from app.database import get_db
 from app.schemas.user import UpdateTelefono
 
 import logging
+from typing import List # Importar List para el tipo de sugerencias
+import random # Importar random para generar sugerencias
 
 router = APIRouter()
 
 logging.basicConfig(level=logging.INFO)
 
+# --- Función auxiliar para generar sugerencias de nombres de usuario ---
+def generate_username_suggestions(db: Session, base_username: str) -> List[str]:
+    """Genera una lista de nombres de usuario sugeridos que no están en uso."""
+    suggestions = []
+    # Intentar con sufijos numéricos
+    for i in range(1, 6): # Intentar con 1, 2, 3, 4, 5
+        suggestion = f"{base_username}{i}"
+        if not db.query(models.User).filter(models.User.username == suggestion).first():
+            suggestions.append(suggestion)
+            if len(suggestions) >= 3: # Limitar a 3 sugerencias
+                return suggestions
+
+    # Intentar con combinaciones de punto y número
+    if len(suggestions) < 3:
+        for i in range(1, 4):
+            suggestion = f"{base_username}.{i}"
+            if not db.query(models.User).filter(models.User.username == suggestion).first():
+                suggestions.append(suggestion)
+                if len(suggestions) >= 3:
+                    return suggestions
+
+    # Intentar con sufijos aleatorios si aún faltan sugerencias
+    while len(suggestions) < 3:
+        random_suffix = ''.join(random.choices('0123456789', k=random.randint(2, 4))) # 2 a 4 dígitos
+        suggestion = f"{base_username}_{random_suffix}"
+        if not db.query(models.User).filter(models.User.username == suggestion).first():
+            suggestions.append(suggestion)
+            if len(suggestions) >= 3:
+                return suggestions
+    
+    return suggestions[:3] # Asegurarse de devolver un máximo de 3
+
+# --- Endpoint de registro ---
 @router.post("/register/", response_model=schemas.Token)
-def create_user(user: schemas.UserCreate, db: Session = Depends(security.get_db)):
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)): # Usar get_db directamente
     try:
         db_user_username = db.query(models.User).filter(models.User.username == user.username).first()
         db_user_email = db.query(models.User).filter(models.User.email == user.email).first()
+        
         if db_user_username:
-            raise HTTPException(status_code=400, detail="Username already registered")
+            # ✨✨✨ Modificación para devolver sugerencias ✨✨✨
+            suggestions = generate_username_suggestions(db, user.username)
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "message": f"El nombre de usuario '{user.username}' ya está en uso.",
+                    "suggestions": suggestions
+                }
+            )
         if db_user_email:
-            raise HTTPException(status_code=400, detail="Email already registered")
+            raise HTTPException(status_code=400, detail="El email ya está registrado.")
         
         hashed_password = security.get_password_hash(user.password)
         db_user = models.User(username=user.username, email=user.email, hashed_password=hashed_password)
@@ -38,10 +82,12 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(security.get_db)
         }
 
     except HTTPException as e:
-        raise e  # errores 400 llegan como están
+        raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal Server Error: " + str(e))
+        logging.error(f"Error interno al registrar usuario: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error interno del servidor al registrar usuario.")
 
+# --- Resto de tus endpoints (sin cambios) ---
 @router.post("/login/", response_model=schemas.Token)
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(models.User).filter((models.User.username == form_data.username) | (models.User.email == form_data.username)).first()
@@ -74,7 +120,6 @@ def update_telefono(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(security.get_current_user),
 ):
-    # Este user ahora está "adjunto" a la sesión activa
     user = db.query(models.User).filter(models.User.id == current_user.id).first()
     
     if not user:
@@ -86,15 +131,12 @@ def update_telefono(
     
     return user
 
-
 @router.get("/users/{user_id}", response_model=UserContactSchema)
 def get_user_contact(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     return user
-
-
 
 # # ✅ **Cambio de contraseña**
 # @router.post("/change-password/")

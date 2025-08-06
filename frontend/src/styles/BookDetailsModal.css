@@ -118,23 +118,23 @@
 
 /* Colores de los badges */
 .badge-purple {
-  background-color: #7c3aed; /* violeta fuerte */
+  background-color: #8b59e1;
 }
 
 .badge-green {
-  background-color: #22c55e; /* verde fuerte */
+  background-color: #60bf83;
 }
 
 .badge-gray {
-  background-color: #6b7280; /* gris oscuro */
+  background-color: #9996ea;
 }
 
-.badge-orange { /* Nuevo color para el estado "Bueno" */
-  background-color: #f97316; /* Naranja fuerte */
+.badge-orange {
+  background-color: #fbb989;
 }
 
-.badge-red { /* Nuevo color para el estado "Con algunos daños" */
-  background-color: #ef4444; /* Rojo fuerte */
+.badge-red {
+  background-color: #f68787;
 }
 
 
