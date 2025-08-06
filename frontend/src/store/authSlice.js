@@ -38,16 +38,12 @@ export const authSlice = createSlice({
         state.user = JSON.parse(storedUser);
       }
     },
-    // ✨✨✨ AÑADIMOS LA ACCIÓN setUser AQUÍ ✨✨✨
     setUser: (state, action) => {
-      // El payload de esta acción será el objeto de usuario actualizado
       state.user = action.payload;
-      // También es buena idea actualizarlo en localStorage para persistencia
       localStorage.setItem('user', JSON.stringify(action.payload));
     },
   },
 });
 
-// Asegúrate de exportar la nueva acción
 export const { login, logout, setTokenFromStorage, setUser } = authSlice.actions;
 export default authSlice.reducer;

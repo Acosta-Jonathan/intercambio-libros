@@ -52,7 +52,7 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit">Iniciar Sesión</button>
+          <button className='btn btn-outline-primary' type="submit">Iniciar Sesión</button>
         </form>
         <p>
           ¿No tienes una cuenta? <Link to="/register">Regístrate aquí</Link>

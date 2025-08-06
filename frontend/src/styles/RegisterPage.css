@@ -1,0 +1,49 @@
+/* src/styles/RegisterPage.css */
+
+/* Estilos para el contenedor de sugerencias de nombre de usuario */
+.username-suggestions {
+  margin-top: 15px;
+  padding: 10px 15px;
+  background-color: #f0f8ff; /* Un azul muy claro */
+  border: 1px solid #cceeff;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.username-suggestions p {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.username-suggestions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex; /* Para que las sugerencias estén en fila */
+  flex-wrap: wrap;
+  gap: 8px; /* Espacio entre sugerencias */
+}
+
+.username-suggestions li {
+  background-color: #e6e6fa; /* Lila claro */
+  color: #5d3fd3; /* Texto lila oscuro */
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap; /* Evita que se rompa el texto */
+}
+
+.username-suggestions li:hover {
+  background-color: #d4d4f8; /* Lila un poco más oscuro al pasar el ratón */
+}
+
+.username-suggestions small {
+  display: block;
+  margin-top: 10px;
+  color: #666;
+}
+
+/* Puedes añadir aquí otros estilos específicos de RegisterPage si los tienes */

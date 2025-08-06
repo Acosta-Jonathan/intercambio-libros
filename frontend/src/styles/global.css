@@ -7,25 +7,51 @@ body {
   background-color: #f0f8ff; /* Tu color de fondo */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url('frontend/src/assets/20250730_2219_Book Exchange Moment_simple_compose_01k1f0yhqqfc199k7zqz1nxb56.png');
+  background-image: url("frontend/src/assets/20250730_2219_Book Exchange Moment_simple_compose_01k1f0yhqqfc199k7zqz1nxb56.png");
   background-repeat: no-repeat;
   background-size: cover;
+  background-attachment: fixed;
 }
-  
+
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #f44336;
+  --bg-light: #ffffff;
+  --bg-dark: #242424;
+  --text-dark: #213547;
+  --text-light: #fff;
+}
+
+
+input,
+select,
+textarea {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
 
 /* Tus estilos existentes para .container */
 .container {
   width: auto;
   padding: 30px;
-  background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
-  /* Ya no necesita margin: auto; ni alineación si está dentro de un flex container .auth-page-wrapper */
+  background-color: #fff;
 }
 
 .container:hover {
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Efecto hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .container h1 {
@@ -44,47 +70,32 @@ body {
   margin-bottom: 15px;
   border: 1px solid #ddd;
   border-radius: 6px;
-  transition: border-color 0.3s ease; /* Transición suave para el foco */
+  transition: border-color 0.3s ease;
 }
 
 .container form input:focus {
-  border-color: #007bff; /* Color del borde al enfocar */
+  border-color: #007bff;
   outline: none;
 }
 
-.container form button {
-  padding: 12px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease; /* Transición suave para el hover */
-}
-
-.container form button:hover {
-  background-color: #0056b3;
-}
 .error-message {
   color: red;
   margin-bottom: 10px;
   text-align: center;
 }
 
-  /* Contenedor para centrar el contenido de las páginas de autenticación */
 .auth-page-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh; /* Ocupa toda la altura de la ventana para centrar verticalmente */
-  width: 100%; /* Ocupa todo el ancho */
+  min-height: 100vh;
+  width: 100%;
 }
 
 .app-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Usa min-height para que crezca si el contenido es más largo */
-    width: 100%;
-    overflow: hidden; /* Opcional, para evitar barras de desplazamiento no deseadas */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
 }
-

@@ -30,10 +30,34 @@ def save_image(file: UploadFile) -> str:
 # Endpoint para crear el libro (sin imagen)
 @router.post("/books/", response_model=schemas.Book)
 def create_book(book: schemas.BookCreate, current_user: models.User = Depends(security.get_current_user), db: Session = Depends(get_db)):
-    db_book = models.Book(**book.dict(), user_id=current_user.id)
+    # 1. Obtiene los nombres de las categorías del request
+    category_names = book.categories
+    
+    # 2. Busca o crea las categorías en la base de datos
+    categories = []
+    for name in category_names:
+        # Busca si la categoría ya existe (la búsqueda es insensible a mayúsculas/minúsculas)
+        category = db.query(models.Category).filter(models.Category.name.ilike(name)).first()
+        if not category:
+            # Si no existe, la crea
+            category = models.Category(name=name)
+            db.add(category)
+            db.commit()
+            db.refresh(category)
+        categories.append(category)
+
+    # 3. Crea el libro con los datos recibidos, excluyendo el campo 'categories'
+    #    ya que lo manejaremos por separado
+    book_data = book.dict(exclude={"categories"})
+    db_book = models.Book(**book_data, user_id=current_user.id)
+    
+    # 4. Asocia las categorías al libro
+    db_book.categories = categories
+    
     db.add(db_book)
     db.commit()
     db.refresh(db_book)
+    
     return db_book
 
 # Endpoint para cargar la imagen del libro
@@ -96,8 +120,26 @@ def update_book(book_id: int, book: schemas.BookUpdate, current_user: models.Use
         raise HTTPException(status_code=404, detail="Libro no encontrado")
     if db_book.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="No autorizado")
-    for key, value in book.dict(exclude_unset=True).items():
+
+    # Si hay categorías en la actualización, las procesamos
+    if book.categories is not None:
+        category_names = book.categories
+        categories = []
+        for name in category_names:
+            category = db.query(models.Category).filter(models.Category.name.ilike(name)).first()
+            if not category:
+                # Si no existe, la crea
+                category = models.Category(name=name)
+                db.add(category)
+                db.commit()
+                db.refresh(category)
+            categories.append(category)
+        db_book.categories = categories # Asocia las nuevas categorías al libro
+        
+    # Actualiza el resto de los campos
+    for key, value in book.dict(exclude_unset=True, exclude={"categories"}).items():
         setattr(db_book, key, value)
+    
     db.commit()
     db.refresh(db_book)
     return db_book

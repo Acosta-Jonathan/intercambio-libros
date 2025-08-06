@@ -1,45 +1,72 @@
+// src/components/BookCard.jsx
 import React from "react";
-import { Link } from "react-router-dom";
-import { FaBook } from "react-icons/fa";
+import "../styles/BookCard.css";
 
-const estadoColor = {
-  "Muy bueno": "bg-green-100 text-green-700",
-  "Bueno": "bg-yellow-100 text-yellow-700",
-  "Nuevo": "bg-blue-100 text-blue-700",
-};
+// Añadimos la nueva prop 'showHighlight'
+const BookCard = ({ book, isOwnedByCurrentUser, onDetailsClick, children, showHighlight = true }) => {
+  const getEstadoClass = (estado) => {
+    switch (estado) {
+      case "Nuevo":
+        return "estado-nuevo";
+      case "Usado":
+        return "estado-usado";
+      case "Con algunos daños":
+        return "estado-danos";
+      default:
+        return "estado-default";
+    }
+  };
 
-const fondoColor = {
-  "Muy bueno": "bg-blue-100",
-  "Bueno": "bg-green-100",
-  "Nuevo": "bg-pink-100",
-};
+  // Determinar si se debe aplicar el resaltado visual
+  const applyVisualHighlight = isOwnedByCurrentUser && showHighlight;
 
-const BookCard = ({ book }) => {
   return (
-    <div className="flex flex-col justify-between rounded-xl shadow-md p-4 w-full max-w-xs mx-auto bg-white hover:shadow-lg transition-all">
-      <div className="flex flex-col items-center text-center">
-        <div className={`w-16 h-16 rounded-md flex items-center justify-center text-white text-2xl mb-4 ${fondoColor[book.estado] || "bg-gray-200"}`}>
-          <FaBook />
+    // Aplicamos la clase condicional 'libro-propio' solo si applyVisualHighlight es true
+    <div className={`libro-card ${applyVisualHighlight ? 'libro-propio' : ''}`}>
+      <div className="libro-imagen-container">
+        <img
+          src={
+            book.image_url
+              ? `http://localhost:8000${book.image_url}`
+              : "/default-book.svg"
+          }
+          alt={book.title}
+        />
+      </div>
+      {/* Badge condicional: solo si applyVisualHighlight es true */}
+      {applyVisualHighlight && (
+        <span className="badge-propio">Tu Libro</span>
+      )}
+      <div className="libro-info-content">
+        <h3 className="libro-titulo">{book.title}</h3>
+        <p className="libro-autor">
+          <strong>Autor:</strong> {book.author}
+        </p>
+        <div className="libro-etiquetas">
+          <span className={`etiqueta ${getEstadoClass(book.estado)}`}>
+            <strong>Estado:</strong> {book.estado || "No definido"}
+          </span>
         </div>
-        <h2 className="text-lg font-semibold">{book.titulo}</h2>
-        <p className="text-sm text-gray-500">{book.autor}</p>
-        <p className="text-xs text-gray-400 mt-1">{book.idioma}</p>
-
-        <div className={`text-xs px-2 py-1 mt-2 rounded-full font-medium ${estadoColor[book.estado] || "bg-gray-100 text-gray-600"}`}>
-          {book.estado}
-        </div>
-
-        <div className="mt-3 text-sm text-gray-700">
-          📚 {book.usuario_nombre}
+        <div className="categorias-container">
+          <p className="etiqueta-categoria-titulo">
+            <strong>Categorías:</strong>
+          </p>
+          <div className="categorias-list">
+            {book.categories && book.categories.length > 0 ? (
+              book.categories.map((categoria, index) => (
+                <span key={index} className="etiqueta-categoria">
+                  {categoria.name}
+                </span>
+              ))
+            ) : (
+              <span className="etiqueta-categoria">Sin categoría</span>
+            )}
+          </div>
         </div>
       </div>
-
-      <Link
-        to={`/libro/${book.id}`}
-        className="mt-4 bg-violet-600 text-white text-sm px-4 py-2 rounded-full hover:bg-violet-700 text-center"
-      >
-        Ver detalles
-      </Link>
+      <div className="acciones">
+        {children}
+      </div>
     </div>
   );
 };

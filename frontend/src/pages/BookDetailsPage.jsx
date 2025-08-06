@@ -1,4 +1,4 @@
- import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getBookById, getUserContact } from "../services/api";
 import ModalContacto from "../components/ModalContacto";
@@ -48,16 +48,45 @@ function BookDetailPage() {
 
         <div className="book-info-column">
           <h2 className="book-title">{book.title}</h2>
-          <p className="book-author">{book.author}</p>
+          <p className="book-author">
+            <strong>Autor: </strong>
+            {book.author}
+          </p>
 
           <div className="book-badges">
-            {book.category && <span className="badge badge-strong badge-purple">{book.category}</span>}
-            {book.estado && <span className="badge badge-strong badge-green">{book.estado}</span>}
-            {book.idioma && <span className="badge badge-strong badge-gray">{book.idioma}</span>}
+            {book.estado && (
+              <span className="badge badge-strong badge-green">
+                <strong>Estado: </strong>
+                {book.estado}
+              </span>
+            )}
+            {book.idioma && (
+              <span className="badge badge-strong badge-gray">
+                <strong>Idioma: </strong>
+                {book.idioma}
+              </span>
+            )}
           </div>
+          
+            <div className="categorias-container">
+              <p className="etiqueta-categoria-titulo">
+                <strong>Categorías:</strong>
+              </p>
+              <div className="categorias-list">
+                {book.categories && book.categories.length > 0 ? (
+                  book.categories.map((categoria, index) => (
+                    <span key={index} className="categoria-label">
+                      {categoria.name}
+                    </span>
+                  ))
+                ) : (
+                  <span className="categoria-label">Sin categoría</span>
+                )}
+              </div>
+            </div>
 
           <div className="book-description">
-            <h4>Descripción</h4>
+            <h4><strong>Descripción</strong></h4>
             <p>{book.description || "Sin descripción disponible."}</p>
           </div>
 

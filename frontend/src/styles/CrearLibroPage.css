@@ -128,3 +128,58 @@ textarea {
 .botones .publicar:hover {
   background: linear-gradient(135deg, #574fd6, #866ee3);
 }
+
+
+.categorias-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0rem 0.3rem;
+  max-height: 120px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.categoria-checkbox {
+  position: relative;
+  background: rgba(252, 245, 255, 0.85);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.441);
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  user-select: none;
+}
+
+/* Oculta la caja del checkbox nativo */
+.categoria-checkbox input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Estilo cuando está seleccionado (solo color de fondo y texto cambia) */
+.categoria-checkbox input[type="checkbox"]:checked + span {
+  background: #6c63ff;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 0.2em 0.8em;
+  transition: background 0.2s, color 0.2s;
+}
+
+.categoria-checkbox:hover span {
+  background: #eaf1ff;
+  color: #6c63ff;
+  border-radius: 12px;
+}
+
+.categoria-checkbox span {
+  padding: 0.2em 0.8em;
+  border-radius: 12px;
+  transition: background 0.2s, color 0.2s;
+}

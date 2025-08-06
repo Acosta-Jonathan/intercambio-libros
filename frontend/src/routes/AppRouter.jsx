@@ -1,34 +1,50 @@
+// src/routes/AppRouter.js
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+// No necesitamos useDispatch ni useNavigate aquí directamente
+// import { useDispatch } from "react-redux";
+// import { useNavigate } from "react-router-dom";
+
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
-import BookDetailsPage from "../pages/BookDetailsPage";
 import MensajesPage from "../pages/MensajesPage";
-import MisLibrosPage from "../pages/MisLibrosPage";
+import MisLibrosPage from "../pages/MiPerfilPage";
 import CrearLibroPage from "../pages/CrearLibroPage";
 import ProtectedRoute from "./ProtectedRoute";
 import MainLayout from "../components/layout/MainLayout";
+import AuthServiceInitializer from "../components/AuthServiceInitializer"; // Importa el componente
 
-const AppRouter = () => (
-  <BrowserRouter>
-    <Routes>
-      {/* Rutas públicas */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+const AppRouter = () => {
+  // Elimina el useEffect y las llamadas a useDispatch y useNavigate de aquí
+  // const dispatch = useDispatch();
+  // const navigate = useNavigate();
+  // useEffect(() => {
+  //   AuthServiceInitializer(dispatch, navigate);
+  // }, [dispatch, navigate]);
 
-      {/* Rutas protegidas */}
-      <Route element={<ProtectedRoute />}>
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/libros/:id" element={<BookDetailsPage />} />
-          <Route path="/mensajes" element={<MensajesPage />} />
-          <Route path="/mis-libros" element={<MisLibrosPage />} />
-          <Route path="/crear-libro" element={<CrearLibroPage />} />
+  return (
+    <BrowserRouter>
+      {/* Renderiza AuthServiceInitializer como un componente React */}
+      <AuthServiceInitializer />
+      
+      <Routes>
+        {/* Rutas públicas */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        {/* Rutas protegidas */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/mensajes" element={<MensajesPage />} />
+            <Route path="/mis-libros" element={<MisLibrosPage />} />
+            <Route path="/crear-libro" element={<CrearLibroPage />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
-  </BrowserRouter>
-);
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
 export default AppRouter;
