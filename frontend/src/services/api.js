@@ -10,35 +10,28 @@ const api = axios.create({
   },
 });
 
-// Variables para almacenar el dispatch y navigate
-// Se inicializarán desde el componente raíz (App.js)
 let storeDispatch = null;
 let storeNavigate = null;
 
-// Función para inicializar el dispatch y navigate
 export const initApiServices = (dispatch, navigate) => {
   storeDispatch = dispatch;
   storeNavigate = navigate;
 };
 
-// Interceptor de respuesta de Axios
 api.interceptors.response.use(
-  (response) => response, // Si la respuesta es exitosa, la pasa sin cambios
+  (response) => response,
   async (error) => {
-    // Si hay un error en la respuesta del servidor y el estado es 401
     if (error.response && error.response.status === 401) {
       console.log('Token expirado o no autorizado. Redirigiendo al login...');
-      // Asegúrate de que dispatch y navigate estén disponibles
       if (storeDispatch && storeNavigate) {
-        storeDispatch(logout()); // Despacha la acción de logout
-        storeNavigate('/login'); // Redirige a la página de login
+        storeDispatch(logout());
+        storeNavigate('/login');
       } else {
-        // Fallback si por alguna razón dispatch o navigate no están inicializados
-        console.error('Dispatch o Navigate no inicializados en api.js. Recargando para login.');
-        window.location.href = '/login'; // Recarga la página y el App.js debería manejar la redirección
+        console.error('Dispatch o Navigate no inicializados en api.js.');
+        window.location.href = '/login';
       }
     }
-    return Promise.reject(error); // Reenvía el error para que el componente que hizo la llamada lo maneje si es necesario
+    return Promise.reject(error);
   }
 );
 
@@ -103,9 +96,7 @@ export const uploadBookImage = async (bookId, imageFile, token) => {
 
 // 💬 Iniciar conversación con otro usuario
 export const iniciarConversacion = async (receiverId) => {
-  // Asegúrate de obtener el token de Redux o pasarlo como argumento si es necesario
-  // Para este caso, si el token ya está en el interceptor, no necesitas pasarlo aquí
-  const token = localStorage.getItem("access_token"); // O del store de Redux
+  const token = localStorage.getItem("access_token");
   const response = await api.post(
     "/conversations/",
     { receiver_id: receiverId },
@@ -118,7 +109,6 @@ export const iniciarConversacion = async (receiverId) => {
   return response.data;
 };
 
-// ✨✨✨ CAMBIO AQUÍ: Usar `api.put` en lugar de `fetch` ✨✨✨
 export const actualizarTelefono = async (telefono, token) => {
   const response = await api.put("/update-telefono/", { telefono }, {
     headers: {
@@ -126,12 +116,24 @@ export const actualizarTelefono = async (telefono, token) => {
       Authorization: `Bearer ${token}`,
     },
   });
-  return response.data; // Axios ya devuelve response.data como el JSON parseado
+  return response.data;
 };
 
+// ✨✨✨ CAMBIO AQUÍ: Asegúrate de que getUserContact envíe el token ✨✨✨
 export const getUserContact = async (userId) => {
-  const response = await api.get(`/users/${userId}`);
-  return response.data; // { email, telefono }
+  const token = localStorage.getItem('access_token'); // Obtén el token
+  if (!token) {
+    // Si no hay token, no podemos hacer la llamada autenticada
+    // El interceptor no se activará aquí, así que manejamos el error directamente
+    return Promise.reject(new Error('No hay token de autenticación para obtener el contacto del usuario.'));
+  }
+
+  const response = await api.get(`/users/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`, // Añade el encabezado de autorización
+    },
+  });
+  return response.data;
 };
 
 export default api;

@@ -1,8 +1,10 @@
+// src/components/BookCard.jsx
 import React from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
+// No necesitas FaEdit ni FaTrash aquí si solo se usan en MisLibrosPage
 import "../styles/BookCard.css";
 
-const BookCard = ({ book, onEdit, onDelete }) => {
+// Recibimos la nueva prop 'onDetailsClick'
+const BookCard = ({ book, isOwnedByCurrentUser, onDetailsClick }) => {
   const getEstadoClass = (estado) => {
     switch (estado) {
       case "Nuevo":
@@ -17,7 +19,7 @@ const BookCard = ({ book, onEdit, onDelete }) => {
   };
 
   return (
-    <div className="libro-card">
+    <div className={`libro-card ${isOwnedByCurrentUser ? 'libro-propio' : ''}`}>
       <div className="libro-imagen-container">
         <img
           src={
@@ -28,6 +30,9 @@ const BookCard = ({ book, onEdit, onDelete }) => {
           alt={book.title}
         />
       </div>
+      {isOwnedByCurrentUser && (
+        <span className="badge-propio">Tu Libro</span>
+      )}
       <div className="libro-info-content">
         <h3 className="libro-titulo">{book.title}</h3>
         <p className="libro-autor">
@@ -56,11 +61,13 @@ const BookCard = ({ book, onEdit, onDelete }) => {
         </div>
       </div>
       <div className="acciones">
-        <button onClick={() => onEdit(book)}>
-          <FaEdit className="me-1" /> Editar
-        </button>
-        <button onClick={() => onDelete(book.id)}>
-          <FaTrash className="me-1" /> Eliminar
+        {/* El botón "Ver detalles" ahora usa la prop onDetailsClick */}
+        <button
+          className="detalles-btn"
+          onClick={onDetailsClick} // Llama a la función pasada por prop
+          disabled={isOwnedByCurrentUser} // Deshabilita el botón
+        >
+          Ver detalles
         </button>
       </div>
     </div>

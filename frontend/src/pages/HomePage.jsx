@@ -1,8 +1,11 @@
+// src/pages/HomePage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllBooks } from "../services/api";
 import "../styles/HomePage.css";
 import { TODAS_LAS_CATEGORIAS, TODOS_LOS_ESTADOS, TODOS_LOS_IDIOMAS } from "../data/constants";
+import { useSelector } from 'react-redux';
+import BookCard from "../components/BookCard"; // Asegúrate de importar BookCard
 
 const HomePage = () => {
   const [libros, setLibros] = useState([]);
@@ -11,6 +14,10 @@ const HomePage = () => {
   const [idioma, setIdioma] = useState("");
   const [estado, setEstado] = useState("");
   const navigate = useNavigate();
+
+  const loggedInUser = useSelector((state) => state.auth.user);
+  // Acceso más seguro a loggedInUser.id
+  const loggedInUserId = loggedInUser?.id || null; // Usa optional chaining (?.)
 
   useEffect(() => {
     const fetchLibros = async () => {
@@ -25,18 +32,23 @@ const HomePage = () => {
   }, []);
 
   const filtrarLibros = libros.filter((libro) => {
-    return (
-      (libro.title.toLowerCase().includes(busqueda.toLowerCase()) ||
-        libro.author.toLowerCase().includes(busqueda.toLowerCase())) &&
-      (categoria === "" || libro.category === categoria) &&
-      (idioma === "" || libro.idioma === idioma) &&
-      (estado === "" || libro.estado === estado)
-    );
+    const coincideBusqueda =
+      libro.title.toLowerCase().includes(busqueda.toLowerCase()) ||
+      libro.author.toLowerCase().includes(busqueda.toLowerCase());
+
+    const coincideCategoria =
+      categoria === "" ||
+      (libro.categories &&
+        libro.categories.some(cat => cat.name === categoria));
+
+    const coincideIdioma = idioma === "" || libro.idioma === idioma;
+    const coincideEstado = estado === "" || libro.estado === estado;
+
+    return coincideBusqueda && coincideCategoria && coincideIdioma && coincideEstado;
   });
 
   return (
     <div className="home-wrapper">
-      {/* Hero / Header */}
       <div className="hero-section">
         <h1>Intercambiá libros con tu comunidad</h1>
         <p>
@@ -54,7 +66,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Zona de filtros + libros */}
       <div className="main-section">
         <aside className="sidebar-filtros">
           <h3>Filtros</h3>
@@ -102,53 +113,13 @@ const HomePage = () => {
               <p>No se encontraron libros.</p>
             ) : (
               filtrarLibros.map((libro) => (
-                <div key={libro.id} className="libro-card">
-                  <div className="img-wrapper">
-                    <img
-                      src={`http://localhost:8000${libro.image_url}`}
-                      alt={libro.title}
-                    />
-                  </div>
-                  <h4>{libro.title}</h4>
-                  <p className="autor">
-                    <strong>Autor:</strong> {libro.author}
-                  </p>
-                  <p className="idioma">
-                    <strong>Idioma:</strong> {libro.idioma}</p>
-                  <span
-                    className={`estado-label ${libro.estado
-                      ?.toLowerCase()
-                      .replace(" ", "-")}`}
-                  >
-                    <strong>Estado:</strong> {libro.estado || "No definido"}
-                  </span>
-
-                  <div className="categorias-container">
-                    <p className="etiqueta-categoria-titulo">
-                      <strong>Categorías:</strong>
-                    </p>
-                    <div className="categorias-list">
-                      {libro.categories && libro.categories.length > 0 ? (
-                        libro.categories.map((categoria, index) => (
-                          <span key={index} className="categoria-label">
-                            {categoria.name}
-                          </span>
-                        ))
-                      ) : (
-                        <span className="categoria-label">Sin categoría</span>
-                      )}
-                    </div>
-                  </div>
-                  <p className="usuario">
-                    <strong>{libro.usuario_nombre}</strong>
-                  </p>
-                  <button
-                    className="detalles-btn"
-                    onClick={() => navigate(`/libros/${libro.id}`)}
-                  >
-                    Ver detalles
-                  </button>
-                </div>
+                <BookCard
+                  key={libro.id}
+                  book={libro}
+                  // Acceso más seguro a libro.user_id
+                  isOwnedByCurrentUser={libro.user_id === loggedInUserId}
+                  onDetailsClick={() => navigate(`/libros/${libro.id}`)} // Pasa la función de navegación
+                />
               ))
             )}
           </div>

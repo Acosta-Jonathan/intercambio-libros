@@ -2,8 +2,7 @@
 mejoras por hacer:
 
 HomePage:
-- Arreglar filtro por categoría
-- No mostrar los libros que pertenecen al usuario
+- ver detalles ahora es un modal
 
 perfil
 - No duplicado de nombre de Usuarios (tal vez con recomendaciones disponibles)
@@ -26,15 +25,19 @@ mensajería
 
 Mejoras ya realizadas:
 
-Cambios menores
+Cambios menores:
 - La imagen de fondo sea fija
 
-libro
+libro:
 - Permitir más de una categoría por libro
 - En los detalles del libro poner etiquetas de los campos (autor, estado, etc.)
 
-Modal editar libro
+Modal editar libro:
 - arreglar el campo "estado"
 
 Perfil:
 - Si se vence el token y no hay usuario logueado debería actualizarse la pagina y llevar al formulario de logueo
+
+HomePage:
+- Arreglar filtro por categoría
+- Destacar los libros que pertenecen al usuario
