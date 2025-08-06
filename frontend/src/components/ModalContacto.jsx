@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import '../styles/ModalContacto.css';
 
-const ModalContacto = ({ email, telefono, onClose }) => {
+const ModalContacto = ({ email, telefono, nombreLibro, onClose }) => {
     const [showEmailOptions, setShowEmailOptions] = useState(false);
 
     const handleEmailClick = () => {
@@ -11,6 +11,9 @@ const ModalContacto = ({ email, telefono, onClose }) => {
     };
 
     const isWhatsAppDisabled = !telefono;
+
+    // Se crea la cadena del asunto del correo con el nombre del libro
+    const asunto = `Intercambio de Libro - ${nombreLibro}`;
 
     return (
         <div className="modal-backdrop-contacto">
@@ -52,7 +55,8 @@ const ModalContacto = ({ email, telefono, onClose }) => {
                                 <div className="email-options">
                                     <p className="email-options-title">Selecciona un cliente de correo:</p>
                                     <a 
-                                        href={`https://mail.google.com/mail/?view=cm&fs=1&to=${email}`}
+                                        // Se añade el asunto a la URL de Gmail
+                                        href={`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(asunto)}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="email-btn gmail-btn"
@@ -60,7 +64,8 @@ const ModalContacto = ({ email, telefono, onClose }) => {
                                         <span>Gmail</span>
                                     </a>
                                     <a 
-                                        href={`https://outlook.live.com/mail/0/?to=${email}`}
+                                        // Se añade el asunto a la URL de Outlook
+                                        href={`https://outlook.live.com/mail/0/?to=${email}&subject=${encodeURIComponent(asunto)}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="email-btn outlook-btn"
@@ -68,7 +73,8 @@ const ModalContacto = ({ email, telefono, onClose }) => {
                                         <span>Outlook</span>
                                     </a>
                                     <a 
-                                        href={`mailto:${email}`}
+                                        // Se añade el asunto al enlace mailto
+                                        href={`mailto:${email}?subject=${encodeURIComponent(asunto)}`}
                                         className="email-btn generic-btn"
                                     >
                                         <span>Otros...</span>

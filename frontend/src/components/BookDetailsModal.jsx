@@ -114,7 +114,7 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
         <div className="modal-footer-details">
           <button
             className="contactar-btn"
-            onClick={handleContactClick} // Ahora abre el ModalContacto
+            onClick={handleContactClick}
             disabled={isBookOwner}
             style={isBookOwner ? { backgroundColor: '#cccccc', color: '#666666', cursor: 'not-allowed' } : {}}
           >
@@ -131,6 +131,7 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
         <ModalContacto
           email={ownerDetails.email}
           telefono={ownerDetails.telefono}
+          nombreLibro={book.title}
           onClose={() => setShowContactModal(false)}
         />
       )}
