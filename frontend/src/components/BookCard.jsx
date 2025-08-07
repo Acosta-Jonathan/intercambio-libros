@@ -1,12 +1,11 @@
-// src/components/BookCard.jsx
 import React from "react";
 import "../styles/BookCard.css";
 
-// Añadimos la nueva prop 'showHighlight'
-const BookCard = ({ book, isOwnedByCurrentUser, onDetailsClick, children, showHighlight = true }) => {
+const BookCard = ({ book, isOwnedByCurrentUser, children }) => {
   const getEstadoClass = (estado) => {
     switch (estado) {
       case "Nuevo":
+      case "Muy bueno":
         return "estado-nuevo";
       case "Usado":
         return "estado-usado";
@@ -17,24 +16,15 @@ const BookCard = ({ book, isOwnedByCurrentUser, onDetailsClick, children, showHi
     }
   };
 
-  // Determinar si se debe aplicar el resaltado visual
-  const applyVisualHighlight = isOwnedByCurrentUser && showHighlight;
-
   return (
-    // Aplicamos la clase condicional 'libro-propio' solo si applyVisualHighlight es true
-    <div className={`libro-card ${applyVisualHighlight ? 'libro-propio' : ''}`}>
+    <div className={`libro-card ${isOwnedByCurrentUser ? 'libro-propio' : ''}`}>
       <div className="libro-imagen-container">
         <img
-          src={
-            book.image_url
-              ? `http://localhost:8000${book.image_url}`
-              : "/default-book.svg"
-          }
+          src={book.image_url ? `http://localhost:8000${book.image_url}` : "/default-book.svg"}
           alt={book.title}
         />
       </div>
-      {/* Badge condicional: solo si applyVisualHighlight es true */}
-      {applyVisualHighlight && (
+      {isOwnedByCurrentUser && (
         <span className="badge-propio">Tu Libro</span>
       )}
       <div className="libro-info-content">
@@ -42,6 +32,16 @@ const BookCard = ({ book, isOwnedByCurrentUser, onDetailsClick, children, showHi
         <p className="libro-autor">
           <strong>Autor:</strong> {book.author}
         </p>
+        {book.editorial && (
+          <p className="libro-editorial">
+            <strong>Editorial:</strong> {book.editorial}
+          </p>
+        )}
+        {book.edicion && (
+          <p className="libro-edicion">
+            <strong>Edición:</strong> {book.edicion}
+          </p>
+        )}
         <div className="libro-etiquetas">
           <span className={`etiqueta ${getEstadoClass(book.estado)}`}>
             <strong>Estado:</strong> {book.estado || "No definido"}

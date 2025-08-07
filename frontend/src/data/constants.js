@@ -51,3 +51,14 @@ export const TODOS_LOS_IDIOMAS = [
   { id: "otro", nombre: "Otro" },
   // Agrega más idiomas si es necesario
 ];
+
+export const TODAS_LAS_EDICIONES = [
+  { id: "primera", nombre: "Primera" },
+  { id: "segunda", nombre: "Segunda" },
+  { id: "Tercera", nombre: "Tercera" },
+  { id: "cuarta", nombre: "Cuarta" },
+  { id: "quinta", nombre: "Quinta" },
+  { id: "especial", nombre: "Edición Especial" },
+  { id: "revisada", nombre: "Edición Revisada" },
+  { id: "otro", nombre: "Otra" }
+];
