@@ -3,10 +3,10 @@ mejoras por hacer:
 
 Libro
 - agregar editorial, año, etc.
+- actualizar foto
 
-
-NUEVA perfil otro usuario
-- Poder ver el perfil de otro usuario, y si es posible también poder buscarlo desde el buscador, y dentro del perfil poder ver sus libros publicados
+perfil:
+-Actualizar foto
 
 mensajería
 - Intentar nuevamente si se puede hacer funcionar la mensajería interna
@@ -38,3 +38,6 @@ sección contacto
 - Al abrir el mail para enviar, que precargue el asunto con "Intercambio de Libro - " + nombre del libro
 - Al contactar por mail, debe permitir elegir si abrir Gmail, Outlook u otro.
 - Si un usuario no tiene cargado el nro de teléfono que el botón de comunicarse por wsp no esté disponible
+
+NUEVO perfil otro usuario
+- Poder ver el perfil de otro usuario, y si es posible también poder buscarlo desde el buscador, y dentro del perfil poder ver sus libros publicados
