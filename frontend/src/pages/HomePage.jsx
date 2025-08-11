@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// Importamos las nuevas funciones de nuestro servicio de API
+// Importamos las funciones necesarias
 import { getAllBooks, searchUsers } from "../services/api";
 import "../styles/HomePage.css";
 import {
@@ -15,22 +15,26 @@ import BookCard from "../components/BookCard";
 import BookDetailsModal from "../components/BookDetailsModal";
 
 const HomePage = () => {
-  // Estados existentes
+  // Estados para los libros y filtros
   const [libros, setLibros] = useState([]);
   const [busqueda, setBusqueda] = useState("");
   const [categoria, setCategoria] = useState("");
   const [idioma, setIdioma] = useState("");
   const [estado, setEstado] = useState("");
+  // NUEVOS estados para los filtros de editorial y edición
+  const [editorial, setEditorial] = useState("");
+  const [edicion, setEdicion] = useState("");
+
+  // Estados para el modal de detalles
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
 
-  // NUEVOS estados para la búsqueda de usuarios en vivo
+  // Estados para la búsqueda de usuarios
   const [userSearchResults, setUserSearchResults] = useState([]);
   const [loadingUserSearch, setLoadingUserSearch] = useState(false);
   const [showUserResultsDropdown, setShowUserResultsDropdown] = useState(false);
 
   const navigate = useNavigate();
-
   const loggedInUser = useSelector((state) => state.auth.user);
   const loggedInUserId = loggedInUser?.id || null;
 
@@ -59,24 +63,19 @@ const HomePage = () => {
     };
   }, [showDetailsModal]);
 
-  // ✅ NUEVO EFECTO: Búsqueda de usuarios con "debounce"
-  // Se activa cada vez que el valor de 'busqueda' cambia
+  // Efecto para la búsqueda de usuarios con "debounce"
   useEffect(() => {
-    // Ocultar la lista de resultados si el campo está vacío
     if (busqueda.trim() === "") {
       setShowUserResultsDropdown(false);
       setUserSearchResults([]);
       return;
     }
 
-    // Mostrar la lista y empezar a buscar
     setShowUserResultsDropdown(true);
     setLoadingUserSearch(true);
 
-    // Configuración del debounce para evitar peticiones excesivas
     const timeoutId = setTimeout(async () => {
       try {
-        // Llamada a la API para buscar usuarios
         const results = await searchUsers(busqueda);
         setUserSearchResults(results);
       } catch (error) {
@@ -85,14 +84,12 @@ const HomePage = () => {
       } finally {
         setLoadingUserSearch(false);
       }
-    }, 500); // Esperar 500ms después de la última pulsación
+    }, 500);
 
-    // Función de limpieza para cancelar el timeout
     return () => clearTimeout(timeoutId);
   }, [busqueda]);
 
-  // Función para filtrar los libros mostrados en la sección principal
-  // Ahora esta función se ejecuta automáticamente con cada cambio en 'busqueda'
+  // Función para filtrar los libros mostrados
   const filtrarLibros = libros.filter((libro) => {
     const coincideBusqueda =
       libro.title.toLowerCase().includes(busqueda.toLowerCase()) ||
@@ -105,11 +102,30 @@ const HomePage = () => {
 
     const coincideIdioma = idioma === "" || libro.idioma === idioma;
     const coincideEstado = estado === "" || libro.estado === estado;
+    // NUEVAS condiciones de filtro para editorial y edición
+    const coincideEditorial =
+      editorial === "" ||
+      (libro.editorial &&
+        libro.editorial.toLowerCase().includes(editorial.toLowerCase()));
+    const coincideEdicion =
+      edicion === "" ||
+      (libro.edicion &&
+        libro.edicion.toLowerCase().includes(edicion.toLowerCase()));
 
     return (
-      coincideBusqueda && coincideCategoria && coincideIdioma && coincideEstado
+      coincideBusqueda &&
+      coincideCategoria &&
+      coincideIdioma &&
+      coincideEstado &&
+      coincideEditorial &&
+      coincideEdicion
     );
   });
+
+  // Ordenar los libros filtrados alfabéticamente por título
+  const librosOrdenados = [...filtrarLibros].sort((a, b) =>
+    a.title.localeCompare(b.title)
+  );
 
   const handleViewDetails = (book) => {
     setSelectedBook(book);
@@ -123,7 +139,6 @@ const HomePage = () => {
 
   const handleViewProfile = (userId) => {
     navigate(`/perfil/${userId}`);
-    // Ocultamos el dropdown y limpiamos el campo de búsqueda
     setShowUserResultsDropdown(false);
     setBusqueda("");
   };
@@ -136,7 +151,6 @@ const HomePage = () => {
           Descubrí nuevas historias y compartí las tuyas con lectores
           apasionados
         </p>
-        {/* ✅ MODIFICACIONES EN LA BARRA DE BÚSQUEDA */}
         <div className="search-bar-container">
           <div className="search-bar">
             <input
@@ -146,10 +160,8 @@ const HomePage = () => {
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
             />
-            {/* El botón de búsqueda manual ha sido eliminado */}
           </div>
 
-          {/* ✅ NUEVA SECCIÓN PARA MOSTRAR LOS RESULTADOS DE USUARIOS */}
           {showUserResultsDropdown && (
             <div className="user-search-dropdown">
               {loadingUserSearch && (
@@ -227,6 +239,23 @@ const HomePage = () => {
               </option>
             ))}
           </select>
+          
+          {/* NUEVOS FILTROS DE EDITORIAL Y EDICIÓN */}
+          <label>Editorial</label>
+          <input
+            type="text"
+            placeholder="Filtrar por editorial"
+            value={editorial}
+            onChange={(e) => setEditorial(e.target.value)}
+          />
+
+          <label>Edición</label>
+          <input
+            type="text"
+            placeholder="Filtrar por edición"
+            value={edicion}
+            onChange={(e) => setEdicion(e.target.value)}
+          />
         </aside>
         <section className="libros-section">
           <div className="libros-header">
@@ -234,10 +263,10 @@ const HomePage = () => {
           </div>
 
           <div className="cards-container">
-            {filtrarLibros.length === 0 ? (
+            {librosOrdenados.length === 0 ? (
               <p>No se encontraron libros.</p>
             ) : (
-              filtrarLibros.map((libro) => (
+              librosOrdenados.map((libro) => (
                 <BookCard
                   key={libro.id}
                   book={libro}

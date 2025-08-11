@@ -30,6 +30,13 @@ const MisLibrosPage = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
 
+  // Estados para modales personalizados de confirmación y error
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState("");
+  const [confirmAction, setConfirmAction] = useState(() => () => {});
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleConsultarClick = () => navigate("/crear-libro");
 
   useEffect(() => {
@@ -45,7 +52,7 @@ const MisLibrosPage = () => {
   }, [token]);
 
   useEffect(() => {
-    if (editandoLibro || showModal || showDetailsModal) {
+    if (editandoLibro || showModal || showDetailsModal || showConfirmModal || showErrorModal) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -53,17 +60,24 @@ const MisLibrosPage = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [editandoLibro, showModal, showDetailsModal]);
+  }, [editandoLibro, showModal, showDetailsModal, showConfirmModal, showErrorModal]);
 
+  const handleEliminar = (id) => {
+    setConfirmMessage("¿Estás seguro de eliminar este libro?");
+    setConfirmAction(() => () => confirmDelete(id));
+    setShowConfirmModal(true);
+  };
 
-  const handleEliminar = async (id) => {
-    if (!window.confirm("¿Estás seguro de eliminar este libro?")) return;
+  const confirmDelete = async (id) => {
     try {
       await deleteBook(id, token);
       setLibros((prev) => prev.filter((libro) => libro.id !== id));
+      setShowConfirmModal(false);
     } catch (error) {
       console.error("Error al eliminar libro:", error);
-      window.alert("No se pudo eliminar el libro.");
+      setShowErrorModal(true);
+      setErrorMessage("No se pudo eliminar el libro.");
+      setShowConfirmModal(false);
     }
   };
 
@@ -80,7 +94,8 @@ const MisLibrosPage = () => {
       setEditandoLibro(null);
     } catch (error) {
       console.error("Error al actualizar libro:", error);
-      window.alert("No se pudo actualizar el libro.");
+      setErrorMessage("No se pudo actualizar el libro.");
+      setShowErrorModal(true);
     }
   };
 
@@ -99,7 +114,8 @@ const MisLibrosPage = () => {
       setTelefonoError("");
     } catch (error) {
       console.error("Error al actualizar teléfono:", error);
-      window.alert("No se pudo actualizar el teléfono.");
+      setErrorMessage("No se pudo actualizar el teléfono.");
+      setShowErrorModal(true);
     }
   };
 
@@ -140,6 +156,7 @@ const MisLibrosPage = () => {
         </div>
       </div>
 
+      {/* Modal para editar teléfono */}
       {showModal && (
         <div className="modal d-block bg-dark bg-opacity-50" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
@@ -195,29 +212,30 @@ const MisLibrosPage = () => {
       </div>
 
       <br />
-      <div className="libros-grid">
+      <div className="row g-4">
         {libros.map((libro) => (
-          <BookCard
-            key={libro.id}
-            book={libro}
-            isOwnedByCurrentUser={true} // Sigue siendo true porque son sus libros
-            showHighlight={false} // ✨✨✨ Pasamos showHighlight como false aquí ✨✨✨
-          >
-            <button
-              className="detalles-btn full-width-btn"
-              onClick={() => handleViewDetails(libro)}
+          <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={libro.id}>
+            <BookCard
+              book={libro}
+              isOwnedByCurrentUser={true}
+              showHighlight={false} // Ahora pasamos showHighlight como false aquí para deshabilitar el badge/resaltado
             >
-              Ver detalles
-            </button>
-            <div className="acciones-secundarias">
-              <button onClick={() => handleEditarClick(libro)}>
-                <FaEdit className="me-1" /> Editar
+              <button
+                className="detalles-btn full-width-btn"
+                onClick={() => handleViewDetails(libro)}
+              >
+                Ver detalles
               </button>
-              <button onClick={() => handleEliminar(libro.id)}>
-                <FaTrash className="me-1" /> Eliminar
-              </button>
-            </div>
-          </BookCard>
+              <div className="acciones-secundarias">
+                <button onClick={() => handleEditarClick(libro)}>
+                  <FaEdit className="me-1" /> Editar
+                </button>
+                <button onClick={() => handleEliminar(libro.id)}>
+                  <FaTrash className="me-1" /> Eliminar
+                </button>
+              </div>
+            </BookCard>
+          </div>
         ))}
       </div>
 
@@ -236,6 +254,71 @@ const MisLibrosPage = () => {
           loggedInUserId={user?.id || null}
         />
       )}
+
+      {/* Modal de Confirmación para eliminar */}
+      {showConfirmModal && (
+        <div className="modal d-block bg-dark bg-opacity-50" tabIndex="-1">
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirmar Acción</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowConfirmModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <p>{confirmMessage}</p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowConfirmModal(false)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={confirmAction}
+                >
+                  Confirmar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Error/Alerta */}
+      {showErrorModal && (
+        <div className="modal d-block bg-dark bg-opacity-50" tabIndex="-1">
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Error</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowErrorModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <p>{errorMessage}</p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setShowErrorModal(false)}
+                >
+                  Aceptar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
