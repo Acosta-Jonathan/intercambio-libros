@@ -1,9 +1,11 @@
                                             Proyecto final
 mejoras por hacer:
 
-Libro
-- agregar editorial, año, etc.
+GENERAL:
+-Verificar donde hay ventanas de dialogos de consol.log como por ejemplo al eliminar libro y cambiarlos por algo acorde a la lógica y visual de la pagina
 
+Register:
+- obligar a Verificar el correo ingresado mandando un mail a dicho correo con algun codigo o link de verificacion. Si no está verificado no puede ingresar a la pagina
 
 NUEVA perfil otro usuario
 - Poder ver el perfil de otro usuario, y si es posible también poder buscarlo desde el buscador, y dentro del perfil poder ver sus libros publicados
@@ -18,7 +20,8 @@ Mejoras ya realizadas:
 Cambios menores:
 - La imagen de fondo sea fija
 
-libro:
+Libro
+- agregar editorial, edición y año de publicación
 - Permitir más de una categoría por libro
 - En los detalles del libro poner etiquetas de los campos (autor, estado, etc.)
 

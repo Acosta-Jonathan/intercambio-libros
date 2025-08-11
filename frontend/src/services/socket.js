@@ -1,7 +1,7 @@
 // src/services/socket.js
 import { io } from "socket.io-client";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "http://192.168.0.74:8000";
 
 const getAuthToken = () => {
   return localStorage.getItem("access_token");

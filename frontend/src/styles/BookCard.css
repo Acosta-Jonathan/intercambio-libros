@@ -9,22 +9,34 @@
 
 
 .libro-card {
+  /* Se elimina el ancho fijo para que se ajuste al layout del grid */
+  /* Se ajusta la altura para el estado colapsado y se oculta el contenido extra */
+  height: 480px; 
+  overflow: hidden; 
+  
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  width: 220px;
   padding: 1rem;
-  transition: transform 0.2s ease;
   color: #000;
   text-align: left;
   display: flex;
   flex-direction: column;
-  position: relative; /* Necesario para posicionar el badge */
+  position: relative; /* Necesario para posicionar el badge y el footer */
   border: 2px solid transparent; /* Borde por defecto */
+  
+  /* Transiciones más suaves para una mejor experiencia de usuario */
+  transition: all 0.4s ease-in-out;
 }
 
 .libro-card:hover {
-  transform: translateY(-4px);
+  /* Al pasar el cursor, la tarjeta se eleva y se agranda */
+  transform: translateY(-5px) scale(1.02);
+  height: auto; 
+  overflow: visible;
+  /* El z-index asegura que la tarjeta se superponga a las de abajo */
+  z-index: 10; 
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Estilo para los libros del usuario logueado */
@@ -50,6 +62,7 @@
 
 .libro-info-content {
   flex-grow: 1;
+  padding-bottom: 70px; /* Asegura espacio para el footer cuando la tarjeta está colapsada */
 }
 
 .libro-titulo {
@@ -59,7 +72,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
@@ -167,12 +179,29 @@
 
 /* Estilos para el contenedor de acciones (botones) */
 .acciones {
-  margin-top: auto; /* Empuja los botones al fondo de la tarjeta */
+  /* Se mantiene el footer siempre en la parte inferior de la tarjeta */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background-color: #fff;
+  border-top: none;
+  z-index: 10;
+  
   display: flex;
   flex-direction: column; /* Apila los elementos verticalmente */
   gap: 0.75rem; /* Espacio entre filas de botones */
-  padding-top: 10px;
+  
+  /* Transición para el fondo del footer al expandirse la tarjeta */
+  transition: padding-top 0.4s ease-in-out;
 }
+
+/* Este padding evita que el contenido extra tape el footer en el estado colapsado */
+.libro-info-content {
+  padding-bottom: 80px; 
+}
+
 
 /* Estilo para el botón "Ver detalles" (HomePage y MisLibrosPage) */
 .acciones .detalles-btn { /* Apunta al botón dentro de .acciones */

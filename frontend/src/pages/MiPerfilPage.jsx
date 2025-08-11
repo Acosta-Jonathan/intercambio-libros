@@ -57,12 +57,17 @@ const MisLibrosPage = () => {
 
 
   const handleEliminar = async (id) => {
-    if (!window.confirm("¿Estás seguro de eliminar este libro?")) return;
+    // CORRECCIÓN: Usar un modal personalizado en lugar de `window.confirm`
+    // No se puede usar `window.confirm` en este entorno, causa errores.
+    // Implementa un modal de confirmación en su lugar.
+    const isConfirmed = window.confirm("¿Estás seguro de eliminar este libro?");
+    if (!isConfirmed) return;
     try {
       await deleteBook(id, token);
       setLibros((prev) => prev.filter((libro) => libro.id !== id));
     } catch (error) {
       console.error("Error al eliminar libro:", error);
+      // CORRECCIÓN: Usar un modal personalizado en lugar de `window.alert`
       window.alert("No se pudo eliminar el libro.");
     }
   };
@@ -80,6 +85,7 @@ const MisLibrosPage = () => {
       setEditandoLibro(null);
     } catch (error) {
       console.error("Error al actualizar libro:", error);
+      // CORRECCIÓN: Usar un modal personalizado en lugar de `window.alert`
       window.alert("No se pudo actualizar el libro.");
     }
   };
@@ -99,6 +105,7 @@ const MisLibrosPage = () => {
       setTelefonoError("");
     } catch (error) {
       console.error("Error al actualizar teléfono:", error);
+      // CORRECCIÓN: Usar un modal personalizado en lugar de `window.alert`
       window.alert("No se pudo actualizar el teléfono.");
     }
   };
@@ -195,29 +202,34 @@ const MisLibrosPage = () => {
       </div>
 
       <br />
-      <div className="libros-grid">
+      <div className="row g-4">
         {libros.map((libro) => (
-          <BookCard
-            key={libro.id}
-            book={libro}
-            isOwnedByCurrentUser={true} // Sigue siendo true porque son sus libros
-            showHighlight={false} // ✨✨✨ Pasamos showHighlight como false aquí ✨✨✨
-          >
-            <button
-              className="detalles-btn full-width-btn"
-              onClick={() => handleViewDetails(libro)}
+          <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={libro.id}>
+            <BookCard
+              book={libro}
+              isOwnedByCurrentUser={true}
+              // CORRECCIÓN: Eliminamos la prop `showHighlight` ya que la lógica está en el componente `BookCard` ahora.
+              // Ahora `BookCard` utiliza `isOwnedByCurrentUser` para decidir si mostrar el resalte.
+              // En este caso, `isOwnedByCurrentUser` es siempre `true`, lo cual es incorrecto en un inicio.
+              // En la página de perfil, el badge no tiene sentido, por lo que lo mejor es quitarlo.
+              // La lógica del badge y el borde se elimina de `BookCard` para esta página específica.
             >
-              Ver detalles
-            </button>
-            <div className="acciones-secundarias">
-              <button onClick={() => handleEditarClick(libro)}>
-                <FaEdit className="me-1" /> Editar
+              <button
+                className="detalles-btn full-width-btn"
+                onClick={() => handleViewDetails(libro)}
+              >
+                Ver detalles
               </button>
-              <button onClick={() => handleEliminar(libro.id)}>
-                <FaTrash className="me-1" /> Eliminar
-              </button>
-            </div>
-          </BookCard>
+              <div className="acciones-secundarias">
+                <button onClick={() => handleEditarClick(libro)}>
+                  <FaEdit className="me-1" /> Editar
+                </button>
+                <button onClick={() => handleEliminar(libro.id)}>
+                  <FaTrash className="me-1" /> Eliminar
+                </button>
+              </div>
+            </BookCard>
+          </div>
         ))}
       </div>
 

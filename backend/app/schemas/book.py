@@ -15,31 +15,37 @@ class Category(CategoryBase):
     class Config:
         from_attributes = True
 
+# Esquema base con todos los campos del libro
 class BookBase(BaseModel):
     title: str
     author: str
-    publication_date: Optional[date] = None
+    publication_date: Optional[int] = None
+    editorial: Optional[str] = None
+    edicion: Optional[str] = None
     description: Optional[str] = None
     image_url: Optional[str] = None
     tags: Optional[str] = None
     idioma: Optional[str] = None
     estado: Optional[str] = None
 
+# Esquema para crear un libro. Hereda de BookBase.
 class BookCreate(BookBase):
-    # Recibe una lista de ids de categorías
+    # Recibe una lista de nombres de categorías
     categories: List[str]
-    
-class BookUpdate(BaseModel):
-    title: str
-    author: str
-    publication_date: Optional[date] = None
+
+# Esquema para actualizar un libro. Hereda de BookBase y hace todos los campos opcionales.
+class BookUpdate(BookBase):
+    title: Optional[str] = None
+    author: Optional[str] = None
+    publication_date: Optional[int] = None
     description: Optional[str] = None
     image_url: Optional[str] = None
     categories: Optional[List[str]] = None
     tags: Optional[str] = None
     idioma: Optional[str] = None
     estado: Optional[str] = None
-
+    
+# Esquema para la respuesta de la API. Hereda de BookBase.
 class Book(BookBase):
     id: int
     user_id: int
