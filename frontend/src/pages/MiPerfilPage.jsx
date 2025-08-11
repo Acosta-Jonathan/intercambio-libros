@@ -1,4 +1,3 @@
-// src/pages/MisLibrosPage.jsx
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -218,7 +217,7 @@ const MisLibrosPage = () => {
             <BookCard
               book={libro}
               isOwnedByCurrentUser={true}
-              showHighlight={false} // Ahora pasamos showHighlight como false aquí para deshabilitar el badge/resaltado
+              showHighlight={false} // Pasamos showHighlight como false para deshabilitar el badge/resaltado en esta página
             >
               <button
                 className="detalles-btn full-width-btn"

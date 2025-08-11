@@ -15,7 +15,7 @@
 
 /* Estilo principal de la tarjeta del libro */
 .libro-card {
-  width: 220px; /* Ancho fijo para el layout del grid */
+  /* Ancho ajustado para que se adapte al layout del grid */
   height: 480px; /* Altura fija en estado colapsado */
   overflow: hidden; /* Oculta el contenido extra */
   
@@ -36,11 +36,13 @@
 
 /* Efecto de la tarjeta al pasar el cursor */
 .libro-card:hover {
-  transform: translateY(-5px) scale(1.02); /* Se eleva y agranda ligeramente */
-  height: auto; /* Se expande para mostrar todo el contenido */
+  /* Al pasar el cursor, la tarjeta se eleva y se agranda */
+  transform: translateY(-5px) scale(1.02);
+  height: auto;
   overflow: visible;
-  z-index: 10; /* Asegura que se superponga a las tarjetas de abajo */
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+  /* El z-index asegura que la tarjeta se superponga a las de abajo */
+  z-index: 10;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Estilo para los libros del usuario logueado */
@@ -197,14 +199,14 @@
   z-index: 10;
   
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  flex-direction: column; /* Apila los elementos verticalmente */
+  gap: 0.75rem; /* Espacio entre filas de botones */
   
   /* Transición para el padding del footer al expandirse la tarjeta */
   transition: padding-top 0.4s ease-in-out;
 }
 
-/* Estilo para el botón "Ver detalles" */
+/* Estilo para el botón "Ver detalles" (HomePage y MisLibrosPage) */
 .acciones .detalles-btn {
   width: 100%;
   padding: 0.6rem 1rem;
