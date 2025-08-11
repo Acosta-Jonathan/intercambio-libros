@@ -1,14 +1,12 @@
-// src/components/BookDetailsModal.jsx
-import React, { useState, useEffect } from 'react';
-import '../styles/BookDetailsModal.css';
-import { iniciarConversacion, getUserContact } from '../services/api';
-import { TODOS_LOS_ESTADOS, TODOS_LOS_IDIOMAS, TODAS_LAS_CATEGORIAS } from '../data/constants';
-import ModalContacto from './ModalContacto'; // ✨ Importa ModalContacto ✨
+import React, { useState, useEffect } from "react";
+import "../styles/BookDetailsModal.css";
+import { getUserContact } from "../services/api";
+import ModalContacto from "./ModalContacto";
 
 const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
   const [ownerDetails, setOwnerDetails] = useState(null);
   const [loadingOwner, setLoadingOwner] = useState(true);
-  const [showContactModal, setShowContactModal] = useState(false); // ✨ Nuevo estado para el modal de contacto ✨
+  const [showContactModal, setShowContactModal] = useState(false);
 
   const getEstadoBadgeClass = (estado) => {
     switch (estado) {
@@ -43,7 +41,6 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
     fetchOwnerDetails();
   }, [book]);
 
-  // ✨ Modifica handleContactClick para abrir el ModalContacto ✨
   const handleContactClick = () => {
     setShowContactModal(true);
   };
@@ -59,21 +56,41 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
       <div className="modal-content-details">
         <div className="modal-header-details">
           <h2>Detalles del Libro</h2>
-          <button className="close-button-details" onClick={onClose}>&times;</button>
+          <button className="close-button-details" onClick={onClose}>
+            &times;
+          </button>
         </div>
         <div className="modal-body-details">
           <div className="modal-book-image-container">
             <img
-              src={book.image_url ? `http://localhost:8000${book.image_url}` : "/default-book.svg"}
+              src={
+                book.image_url
+                  ? `http://localhost:8000${book.image_url}`
+                  : "/default-book.svg"
+              }
               alt={book.title}
             />
           </div>
           <h3>{book.title}</h3>
-          <p><strong>Autor:</strong> {book.author}</p>
-
+          <p>
+            <strong>Autor:</strong> {book.author}
+          </p>
+          <p>
+            <strong>Editorial:</strong> {book.editorial || "-"}
+          </p>
+          <p>
+            <strong>Edición:</strong> {book.edicion || "-"}
+          </p>
+          <p>
+            <strong>Año de Publicación:</strong> {book.publication_date || "-"}
+          </p>
           <div className="book-badges">
             {book.estado && (
-              <span className={`badge badge-strong ${getEstadoBadgeClass(book.estado)}`}>
+              <span
+                className={`badge badge-strong ${getEstadoBadgeClass(
+                  book.estado
+                )}`}
+              >
                 <strong>Estado: </strong>
                 {book.estado}
               </span>
@@ -85,14 +102,16 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
               </span>
             )}
           </div>
-
           <div className="book-description">
-            <h4><strong>Descripción</strong></h4>
+            <h4>
+              <strong>Descripción</strong>
+            </h4>
             <p>{book.description || "Sin descripción disponible."}</p>
           </div>
-
           <div className="categorias-section-details">
-            <h4><strong>Categorías</strong></h4>
+            <h4>
+              <strong>Categorías</strong>
+            </h4>
             <div className="categorias-list-details">
               {book.categories && book.categories.length > 0 ? (
                 book.categories.map((categoria, index) => (
@@ -101,14 +120,19 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
                   </span>
                 ))
               ) : (
-                <span className="badge badge-strong badge-purple">Sin categoría</span>
+                <span className="badge badge-strong badge-purple">
+                  Sin categoría
+                </span>
               )}
             </div>
           </div>
-
           <p>
-            <strong>Publicado por:</strong>{' '}
-            {loadingOwner ? 'Cargando...' : (ownerDetails ? ownerDetails.username : 'Usuario desconocido')}
+            <strong>Publicado por:</strong>{" "}
+            {loadingOwner
+              ? "Cargando..."
+              : ownerDetails
+              ? ownerDetails.username
+              : "Usuario desconocido"}
           </p>
         </div>
         <div className="modal-footer-details">
@@ -116,7 +140,6 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
             className="contactar-btn"
             onClick={handleContactClick}
             disabled={isBookOwner}
-            style={isBookOwner ? { backgroundColor: '#cccccc', color: '#666666', cursor: 'not-allowed' } : {}}
           >
             Contactar
           </button>
@@ -125,8 +148,6 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
           </button>
         </div>
       </div>
-
-      {/* ✨ Renderiza ModalContacto condicionalmente ✨ */}
       {showContactModal && ownerDetails && (
         <ModalContacto
           email={ownerDetails.email}

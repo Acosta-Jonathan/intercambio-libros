@@ -1,5 +1,4 @@
 // src/pages/HomePage.jsx
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 // Importamos las funciones necesarias
@@ -270,8 +269,7 @@ const HomePage = () => {
                 <BookCard
                   key={libro.id}
                   book={libro}
-                  isOwnedByCurrentUser={libro.user_id === loggedInUserId}
-                  showHighlight={true}
+                  showHighlight={libro.user_id === loggedInUserId}
                 >
                   <button
                     className="detalles-btn"

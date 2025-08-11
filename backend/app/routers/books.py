@@ -1,7 +1,7 @@
 # app/routers/books.py
 import os
 from uuid import uuid4
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status, Query
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import date
@@ -81,8 +81,19 @@ def upload_book_image(
     return db_book
 
 @router.get("/books/", response_model=List[schemas.Book], description="Obtiene una lista de libros con opciones de búsqueda y filtrado.")
-def read_books(skip: int = 0, limit: int = 100, title: Optional[str] = None, author: Optional[str] = None, publication_date: Optional[date] = None, category: Optional[str] = None, tags: Optional[str] = None, idioma: Optional[str] = None,
-estado: Optional[str] = None, db: Session = Depends(get_db)):
+def read_books(
+    skip: int = 0, limit: int = 100,
+    title: Optional[str] = None,
+    author: Optional[str] = None,
+    publication_date: Optional[date] = None,
+    editorial: Optional[str] = None,
+    edicion: Optional[str] = None,
+    category: Optional[str] = None,
+    tags: Optional[str] = None,
+    idioma: Optional[str] = None,
+    estado: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
     query = db.query(models.Book)
     if title:
         query = query.filter(models.Book.title.ilike(f"%{title}%"))
@@ -90,9 +101,13 @@ estado: Optional[str] = None, db: Session = Depends(get_db)):
         query = query.filter(models.Book.author.ilike(f"%{author}%"))
     if publication_date:
         query = query.filter(models.Book.publication_date == publication_date)
+    if editorial:
+        query = query.filter(models.Book.editorial.ilike(f"%{editorial}%"))
+    if edicion:
+        query = query.filter(models.Book.edicion.ilike(f"%{edicion}%"))
     if category:
-        # CORRECCIÓN: Filtrar por la relación de categorías, no por una columna
-        query = query.join(models.book_categories).join(models.Category).filter(models.Category.name.ilike(f"%{category}%"))
+        # Lógica para filtrar por categoría
+        query = query.join(models.Book.categories).filter(models.Category.name.ilike(f"%{category}%"))
     if tags:
         query = query.filter(models.Book.tags.ilike(f"%{tags}%"))
     if idioma:
@@ -101,7 +116,7 @@ estado: Optional[str] = None, db: Session = Depends(get_db)):
         query = query.filter(models.Book.estado.ilike(f"%{estado}%"))
     books = query.offset(skip).limit(limit).all()
     return books
-    
+
 @router.get("/books/my-books", response_model=List[schemas.Book])
 def read_my_books(current_user: models.User = Depends(security.get_current_user), db: Session = Depends(get_db)):
     books = db.query(models.Book).filter(models.Book.user_id == current_user.id).all()
@@ -157,14 +172,21 @@ def delete_book(book_id: int, current_user: models.User = Depends(security.get_c
     db.commit()
     return {"message": "Libro borrado con éxito"}
 
-# 🎉 NUEVO ENDPOINT PARA OBTENER LOS LIBROS DE UN USUARIO ESPECÍFICO 🎉
-@router.get("/books/user-books/{user_id}", response_model=List[schemas.Book])
-def get_user_books(user_id: int, db: Session = Depends(get_db)):
-    """
-    Obtiene todos los libros publicados por un usuario específico por su ID.
-    """
-    books = db.query(models.Book).filter(models.Book.user_id == user_id).all()
-    if not books:
-        # Devuelve una lista vacía si no hay libros, en lugar de un error 404.
-        return []
-    return books
+@router.put("/books/{book_id}/upload-image", response_model=schemas.Book)
+def update_book_image(
+    book_id: int,
+    file: UploadFile = File(...),
+    current_user: models.User = Depends(security.get_current_user),
+    db: Session = Depends(get_db)
+):
+    db_book = db.query(models.Book).filter(models.Book.id == book_id).first()
+    if not db_book:
+        raise HTTPException(status_code=404, detail="Libro no encontrado")
+    if db_book.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="No autorizado")
+
+    image_url = save_image(file)
+    db_book.image_url = image_url
+    db.commit()
+    db.refresh(db_book)
+    return db_book
