@@ -1,7 +1,8 @@
 import React from "react";
 import "../styles/BookCard.css";
 
-const BookCard = ({ book, isOwnedByCurrentUser, children }) => {
+// CORRECCIÓN: Agregamos la prop `showHighlight` para controlar si se muestra el borde y el badge.
+const BookCard = ({ book, isOwnedByCurrentUser, children, showHighlight }) => {
   const getEstadoClass = (estado) => {
     switch (estado) {
       case "Nuevo":
@@ -17,14 +18,16 @@ const BookCard = ({ book, isOwnedByCurrentUser, children }) => {
   };
 
   return (
-    <div className={`libro-card ${isOwnedByCurrentUser ? 'libro-propio' : ''}`}>
+    // CORRECCIÓN: Usamos `showHighlight` para aplicar la clase condicionalmente.
+    <div className={`libro-card ${showHighlight ? 'libro-propio' : ''}`}>
       <div className="libro-imagen-container">
         <img
           src={book.image_url ? `http://localhost:8000${book.image_url}` : "/default-book.svg"}
           alt={book.title}
         />
       </div>
-      {isOwnedByCurrentUser && (
+      {/* CORRECCIÓN: Mostramos el badge solo si `showHighlight` es `true` */}
+      {showHighlight && (
         <span className="badge-propio">Tu Libro</span>
       )}
       <div className="libro-info-content">

@@ -13,8 +13,8 @@ const HomePage = () => {
     const [categoria, setCategoria] = useState("");
     const [idioma, setIdioma] = useState("");
     const [estado, setEstado] = useState("");
-    const [editorial, setEditorial] = useState(""); // <-- Nuevo estado para editorial
-    const [edicion, setEdicion] = useState(""); // <-- Nuevo estado para edicion
+    const [editorial, setEditorial] = useState("");
+    const [edicion, setEdicion] = useState("");
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [selectedBook, setSelectedBook] = useState(null);
     const navigate = useNavigate();
@@ -60,12 +60,16 @@ const HomePage = () => {
 
         const coincideIdioma = idioma === "" || libro.idioma === idioma;
         const coincideEstado = estado === "" || libro.estado === estado;
-        const coincideEditorial = editorial === "" || (libro.editorial && libro.editorial.toLowerCase().includes(editorial.toLowerCase())); // <-- Nuevo filtro
-        const coincideEdicion = edicion === "" || (libro.edicion && libro.edicion.toLowerCase().includes(edicion.toLowerCase())); // <-- Nuevo filtro
+        const coincideEditorial = editorial === "" || (libro.editorial && libro.editorial.toLowerCase().includes(editorial.toLowerCase()));
+        const coincideEdicion = edicion === "" || (libro.edicion && libro.edicion.toLowerCase().includes(edicion.toLowerCase()));
 
 
         return coincideBusqueda && coincideCategoria && coincideIdioma && coincideEstado && coincideEditorial && coincideEdicion;
     });
+
+    // Ordenar los libros filtrados alfabéticamente por título
+    const librosOrdenados = [...filtrarLibros].sort((a, b) => a.title.localeCompare(b.title));
+
 
     const handleViewDetails = (book) => {
         setSelectedBook(book);
@@ -132,24 +136,6 @@ const HomePage = () => {
                             </option>
                         ))}
                     </select>
-                    
-                    {/* <-- Nuevos filtros de búsqueda */}
-                    {/* <label>Editorial</label>
-                    <input
-                        type="text"
-                        placeholder="Filtrar por editorial"
-                        value={editorial}
-                        onChange={(e) => setEditorial(e.target.value)}
-                    />
-
-                    <label>Edición</label>
-                    <input
-                        type="text"
-                        placeholder="Filtrar por edición"
-                        value={edicion}
-                        onChange={(e) => setEdicion(e.target.value)}
-                    /> */}
-                    {/* Fin de nuevos filtros --> */}
                 </aside>
                 <section className="libros-section">
                     <div className="libros-header">
@@ -157,10 +143,10 @@ const HomePage = () => {
                     </div>
 
                     <div className="cards-container">
-                        {filtrarLibros.length === 0 ? (
+                        {librosOrdenados.length === 0 ? (
                             <p>No se encontraron libros.</p>
                         ) : (
-                            filtrarLibros.map((libro) => (
+                            librosOrdenados.map((libro) => (
                                 <BookCard
                                     key={libro.id}
                                     book={libro}
