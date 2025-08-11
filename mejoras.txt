@@ -1,43 +1,53 @@
-                                            Proyecto final
+Proyecto final
 mejoras por hacer:
 
 GENERAL:
--Verificar donde hay ventanas de dialogos de consol.log como por ejemplo al eliminar libro y cambiarlos por algo acorde a la lógica y visual de la pagina
+Verificar donde hay ventanas de dialogos de consol.log como por ejemplo al eliminar libro y cambiarlos por algo acorde a la lógica y visual de la pagina
 
 Register:
-- obligar a Verificar el correo ingresado mandando un mail a dicho correo con algun codigo o link de verificacion. Si no está verificado no puede ingresar a la pagina
-
-NUEVA perfil otro usuario
-- Poder ver el perfil de otro usuario, y si es posible también poder buscarlo desde el buscador, y dentro del perfil poder ver sus libros publicados
-
-mensajería
-- Intentar nuevamente si se puede hacer funcionar la mensajería interna
-
-
-
-Mejoras ya realizadas:
-
-Cambios menores:
-- La imagen de fondo sea fija
+obligar a Verificar el correo ingresado mandando un mail a dicho correo con algun codigo o link de verificacion. Si no está verificado no puede ingresar a la pagina
 
 Libro
-- agregar editorial, edición y año de publicación
-- Permitir más de una categoría por libro
-- En los detalles del libro poner etiquetas de los campos (autor, estado, etc.)
+actualizar foto
+
+perfil:
+-Actualizar foto
+
+mensajería
+Intentar nuevamente si se puede hacer funcionar la mensajería interna
+
+Mejoras ya realizadas:
+Cambios menores:
+La imagen de fondo sea fija
+
+Libro
+agregar editorial, edición y año de publicación
+
+Permitir más de una categoría por libro
+
+En los detalles del libro poner etiquetas de los campos (autor, estado, etc.)
 
 Modal editar libro:
-- arreglar el campo "estado"
+arreglar el campo "estado"
 
 perfil
-- No duplicado de nombre de Usuarios (tal vez con recomendaciones disponibles)
-- Si se vence el token y no hay usuario logueado debería actualizarse la pagina y llevar al formulario de logueo
+No duplicado de nombre de Usuarios (tal vez con recomendaciones disponibles)
+
+Si se vence el token y no hay usuario logueado debería actualizarse la pagina y llevar al formulario de logueo
 
 HomePage:
-- Arreglar filtro por categoría
-- Destacar los libros que pertenecen al usuario
-- ver detalles ahora es un modal
+Arreglar filtro por categoría
+
+Destacar los libros que pertenecen al usuario
+
+ver detalles ahora es un modal
 
 sección contacto
-- Al abrir el mail para enviar, que precargue el asunto con "Intercambio de Libro - " + nombre del libro
-- Al contactar por mail, debe permitir elegir si abrir Gmail, Outlook u otro.
-- Si un usuario no tiene cargado el nro de teléfono que el botón de comunicarse por wsp no esté disponible
+Al abrir el mail para enviar, que precargue el asunto con "Intercambio de Libro - " + nombre del libro
+
+Al contactar por mail, debe permitir elegir si abrir Gmail, Outlook u otro.
+
+Si un usuario no tiene cargado el nro de teléfono que el botón de comunicarse por wsp no esté disponible
+
+NUEVO perfil otro usuario
+Poder ver el perfil de otro usuario, y si es posible también poder buscarlo desde el buscador, y dentro del perfil poder ver sus libros publicados

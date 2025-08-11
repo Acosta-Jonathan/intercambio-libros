@@ -1,4 +1,3 @@
-// src/pages/MisLibrosPage.jsx
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -30,6 +29,13 @@ const MisLibrosPage = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
 
+  // Estados para modales personalizados de confirmación y error
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState("");
+  const [confirmAction, setConfirmAction] = useState(() => () => {});
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleConsultarClick = () => navigate("/crear-libro");
 
   useEffect(() => {
@@ -45,7 +51,7 @@ const MisLibrosPage = () => {
   }, [token]);
 
   useEffect(() => {
-    if (editandoLibro || showModal || showDetailsModal) {
+    if (editandoLibro || showModal || showDetailsModal || showConfirmModal || showErrorModal) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -53,22 +59,24 @@ const MisLibrosPage = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [editandoLibro, showModal, showDetailsModal]);
+  }, [editandoLibro, showModal, showDetailsModal, showConfirmModal, showErrorModal]);
 
+  const handleEliminar = (id) => {
+    setConfirmMessage("¿Estás seguro de eliminar este libro?");
+    setConfirmAction(() => () => confirmDelete(id));
+    setShowConfirmModal(true);
+  };
 
-  const handleEliminar = async (id) => {
-    // CORRECCIÓN: Usar un modal personalizado en lugar de `window.confirm`
-    // No se puede usar `window.confirm` en este entorno, causa errores.
-    // Implementa un modal de confirmación en su lugar.
-    const isConfirmed = window.confirm("¿Estás seguro de eliminar este libro?");
-    if (!isConfirmed) return;
+  const confirmDelete = async (id) => {
     try {
       await deleteBook(id, token);
       setLibros((prev) => prev.filter((libro) => libro.id !== id));
+      setShowConfirmModal(false);
     } catch (error) {
       console.error("Error al eliminar libro:", error);
-      // CORRECCIÓN: Usar un modal personalizado en lugar de `window.alert`
-      window.alert("No se pudo eliminar el libro.");
+      setShowErrorModal(true);
+      setErrorMessage("No se pudo eliminar el libro.");
+      setShowConfirmModal(false);
     }
   };
 
@@ -85,8 +93,8 @@ const MisLibrosPage = () => {
       setEditandoLibro(null);
     } catch (error) {
       console.error("Error al actualizar libro:", error);
-      // CORRECCIÓN: Usar un modal personalizado en lugar de `window.alert`
-      window.alert("No se pudo actualizar el libro.");
+      setErrorMessage("No se pudo actualizar el libro.");
+      setShowErrorModal(true);
     }
   };
 
@@ -105,8 +113,8 @@ const MisLibrosPage = () => {
       setTelefonoError("");
     } catch (error) {
       console.error("Error al actualizar teléfono:", error);
-      // CORRECCIÓN: Usar un modal personalizado en lugar de `window.alert`
-      window.alert("No se pudo actualizar el teléfono.");
+      setErrorMessage("No se pudo actualizar el teléfono.");
+      setShowErrorModal(true);
     }
   };
 
@@ -147,6 +155,7 @@ const MisLibrosPage = () => {
         </div>
       </div>
 
+      {/* Modal para editar teléfono */}
       {showModal && (
         <div className="modal d-block bg-dark bg-opacity-50" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
@@ -208,11 +217,7 @@ const MisLibrosPage = () => {
             <BookCard
               book={libro}
               isOwnedByCurrentUser={true}
-              // CORRECCIÓN: Eliminamos la prop `showHighlight` ya que la lógica está en el componente `BookCard` ahora.
-              // Ahora `BookCard` utiliza `isOwnedByCurrentUser` para decidir si mostrar el resalte.
-              // En este caso, `isOwnedByCurrentUser` es siempre `true`, lo cual es incorrecto en un inicio.
-              // En la página de perfil, el badge no tiene sentido, por lo que lo mejor es quitarlo.
-              // La lógica del badge y el borde se elimina de `BookCard` para esta página específica.
+              showHighlight={false} // Pasamos showHighlight como false para deshabilitar el badge/resaltado en esta página
             >
               <button
                 className="detalles-btn full-width-btn"
@@ -248,6 +253,71 @@ const MisLibrosPage = () => {
           loggedInUserId={user?.id || null}
         />
       )}
+
+      {/* Modal de Confirmación para eliminar */}
+      {showConfirmModal && (
+        <div className="modal d-block bg-dark bg-opacity-50" tabIndex="-1">
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirmar Acción</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowConfirmModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <p>{confirmMessage}</p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowConfirmModal(false)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={confirmAction}
+                >
+                  Confirmar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Error/Alerta */}
+      {showErrorModal && (
+        <div className="modal d-block bg-dark bg-opacity-50" tabIndex="-1">
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Error</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowErrorModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <p>{errorMessage}</p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setShowErrorModal(false)}
+                >
+                  Aceptar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
