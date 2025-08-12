@@ -2,7 +2,7 @@
 mejoras por hacer:
 
 GENERAL:
--Verificar donde hay ventanas de dialogos de consol.log como por ejemplo al eliminar libro y cambiarlos por algo acorde a la lógica y visual de la pagina
+-Verificar donde hay ventanas de dialogos de consol.log o windows.alert o parecidos, como por ejemplo al eliminar libro y cambiarlos por algo acorde a la lógica y visual de la pagina
 
 Register:
 - obligar a Verificar el correo ingresado mandando un mail a dicho correo con algun codigo o link de verificacion. Si no está verificado no puede ingresar a la pagina
