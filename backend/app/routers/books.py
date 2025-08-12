@@ -190,3 +190,15 @@ def update_book_image(
     db.commit()
     db.refresh(db_book)
     return db_book
+
+# 🎉 NUEVO ENDPOINT PARA OBTENER LOS LIBROS DE UN USUARIO ESPECÍFICO 🎉
+@router.get("/books/user-books/{user_id}", response_model=List[schemas.Book])
+def get_user_books(user_id: int, db: Session = Depends(get_db)):
+    """
+    Obtiene todos los libros publicados por un usuario específico por su ID.
+    """
+    books = db.query(models.Book).filter(models.Book.user_id == user_id).all()
+    if not books:
+        # Devuelve una lista vacía si no hay libros, en lugar de un error 404.
+        return []
+    return books

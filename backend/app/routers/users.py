@@ -1,5 +1,5 @@
 # app/routers/users.py
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.models import User
@@ -137,6 +137,36 @@ def get_user_contact(user_id: int, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     return user
+
+
+# 🎉 NUEVO ENDPOINT PARA OBTENER EL PERFIL COMPLETO DE UN USUARIO 🎉
+@router.get("/users/{user_id}/profile", response_model=schemas.User)
+def get_user_profile(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    return user
+
+# 🔎 NUEVO ENDPOINT PARA BUSCAR USUARIOS POR NOMBRE 🎉
+@router.get("/users/search/", response_model=List[schemas.User])
+def search_users(
+    search_term: str = Query(..., alias="name"),
+    db: Session = Depends(get_db)
+):
+    """
+    Busca usuarios por su nombre de usuario (username).
+    """
+    if not search_term:
+        return []
+
+    users = db.query(models.User).filter(
+        models.User.username.ilike(f"%{search_term}%")
+    ).limit(10).all()
+    
+    # 🐛 SOLUCIÓN: Devuelve una lista vacía en lugar de un error 404
+    # La respuesta será 200 OK con un array vacío.
+    return users
+
 
 # # ✅ **Cambio de contraseña**
 # @router.post("/change-password/")

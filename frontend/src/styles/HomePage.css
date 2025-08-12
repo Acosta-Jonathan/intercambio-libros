@@ -1,152 +1,242 @@
 /* src/styles/HomePage.css */
 .home-wrapper {
-  font-family: "Segoe UI", sans-serif;
+    font-family: "Segoe UI", sans-serif;
 }
 
 .hero-section {
-  background: linear-gradient(135deg, #6c63ff, #a084dc);
-  color: white;
-  text-align: center;
-  padding: 3rem 1rem;
+    background: linear-gradient(135deg, #6c63ff, #a084dc);
+    color: white;
+    text-align: center;
+    padding: 3rem 1rem;
 }
 
 .hero-section h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .hero-section p {
-  margin-bottom: 2rem;
-  font-size: 1.1rem;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+/* Estilos para el nuevo contenedor de la barra de búsqueda y el dropdown */
+.search-bar-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .search-bar {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
+    display: flex;
+    align-items: center;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    padding: 5px 15px;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    gap: 0.5rem;
 }
 
 .search-bar input {
-  padding: 0.6rem;
-  border-radius: 6px;
-  border: none;
-  width: 300px;
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    padding: 8px;
+    background-color: transparent;
 }
 
-.search-bar button {
-  padding: 0.6rem 1rem;
-  border: none;
-  background-color: #ffffff;
-  color: #6c63ff;
-  font-weight: bold;
-  border-radius: 6px;
-  cursor: pointer;
+.search-input{
+    border: none !important;
 }
+
+/* El botón de la lupa ya no existe en el nuevo código, pero se mantiene el estilo por si se quiere añadir de nuevo */
+.search-bar button {
+    padding: 0.6rem 1rem;
+    border: none;
+    background-color: #6c63ff;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.search-bar button:hover {
+    background-color: #574fd6;
+}
+
+
+/* Estilos para el nuevo menú desplegable de resultados de usuarios */
+.user-search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    margin-top: 5px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f4f8;
+}
+
+.dropdown-item.loading-message,
+.dropdown-item.no-results-message {
+    justify-content: center;
+    color: #666;
+}
+
+.user-result .user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-result .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+}
+
+.user-result .username {
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+/* Fin de los nuevos estilos para la búsqueda de usuarios */
 
 .main-section {
-  display: flex;
-  padding: 2rem;
-  gap: 2rem;
+    display: flex;
+    padding: 2rem;
+    gap: 2rem;
 }
 
 .sidebar-filtros {
-  height: fit-content;
-  flex: 1;
-  min-width: max-content;
-  background: #f9f9f9;
-  padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    height: fit-content;
+    flex: 1;
+    min-width: max-content;
+    background: #f9f9f9;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .sidebar-filtros h3 {
-  margin-bottom: 1rem;
+    margin-bottom: 1rem;
 }
 
 .sidebar-filtros label {
-  display: block;
-  margin-top: 0.5rem;
-  font-weight: bold;
+    display: block;
+    margin-top: 0.5rem;
+    font-weight: bold;
 }
 
-.sidebar-filtros select {
-  width: 100%;
-  padding: 0.4rem;
-  margin-top: 0.3rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+.sidebar-filtros select,
+.sidebar-filtros input {
+    width: 100%;
+    padding: 0.4rem;
+    margin-top: 0.3rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box; /* Asegura que el padding no cambie el ancho */
 }
 
 .libros-section {
-  flex: 3;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .libros-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
 .libros-header h3 {
-  font-size: 1.4rem;
-  margin: 0;
-  color: #333;
+    font-size: 1.4rem;
+    margin: 0;
+    color: #333;
 }
 
-/* Nuevo layout con CSS Grid para un orden de izquierda a derecha */
 .cards-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
 }
 
-/* El estilo de la tarjeta individual no necesita un ancho fijo, se adapta al grid */
 .cards-container > .libro-card {
-  width: auto;
+    width: auto;
 }
 
 /* Responsive para dispositivos móviles */
 @media (max-width: 768px) {
-  .main-section {
-    flex-direction: column;
-    padding: 1rem;
-  }
-  
-  .sidebar-filtros {
-    max-width: 100%;
-    margin-bottom: 1rem;
-  }
-  
-  .hero-section {
-    padding: 2rem 1rem;
-  }
-  
-  .hero-section h1 {
-    font-size: 2rem;
-  }
-  
-  .search-bar input {
-    width: 250px;
-  }
+    .main-section {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .sidebar-filtros {
+        max-width: 100%;
+        margin-bottom: 1rem;
+        order: 2;
+    }
+
+    .libros-section {
+        order: 1;
+    }
+
+    .hero-section {
+        padding: 2rem 1rem;
+    }
+
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .search-bar {
+        flex-direction: column;
+        border: none;
+        box-shadow: none;
+        background-color: transparent;
+        padding: 0;
+    }
+    
+    .search-bar-container .search-bar input {
+        width: 100%;
+        max-width: 300px;
+        margin-bottom: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 0.6rem;
+    }
 }
 
 @media (max-width: 480px) {
-  .search-bar {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .search-bar input {
-    width: 100%;
-    max-width: 300px;
-    margin-bottom: 0.5rem;
-  }
-  
-  .hero-section h1 {
-    font-size: 1.8rem;
-  }
+    .hero-section h1 {
+        font-size: 1.8rem;
+    }
 }

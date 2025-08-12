@@ -136,4 +136,48 @@ export const getUserContact = async (userId) => {
   return response.data;
 };
 
+// ✨✨✨ NUEVAS FUNCIONES PARA EL BUSCADOR Y PERFIL ✨✨✨
+
+// 🔎 Buscar usuarios por nombre
+export const searchUsers = async (searchTerm) => {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    return Promise.reject(new Error('No hay token de autenticación para buscar usuarios.'));
+  }
+  const response = await api.get(`/users/search/?name=${encodeURIComponent(searchTerm)}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+// 👨‍💼 Obtener el perfil de un usuario (usa un endpoint diferente para evitar conflictos)
+export const getUserProfile = async (userId) => {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    return Promise.reject(new Error('No hay token de autenticación para obtener el perfil.'));
+  }
+  const response = await api.get(`/users/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+// 📚 Obtener los libros de un usuario
+export const getUserBooks = async (userId) => {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    return Promise.reject(new Error('No hay token de autenticación para obtener los libros del usuario.'));
+  }
+  const response = await api.get(`/books/user-books/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
 export default api;

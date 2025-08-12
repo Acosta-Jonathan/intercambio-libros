@@ -250,10 +250,10 @@ const MisLibrosPage = () => {
               </button>
               <div className="acciones-secundarias">
                 <button onClick={() => handleEditarClick(libro)}>
-                  <FaEdit className="me-1" /> Editar
+                  <FaEdit className="me" />
                 </button>
                 <button onClick={() => handleEliminarClick(libro.id)}>
-                  <FaTrash className="me-1" /> Eliminar
+                  <FaTrash className="me" />
                 </button>
               </div>
             </BookCard>

@@ -13,7 +13,8 @@ import MisLibrosPage from "../pages/MiPerfilPage";
 import CrearLibroPage from "../pages/CrearLibroPage";
 import ProtectedRoute from "./ProtectedRoute";
 import MainLayout from "../components/layout/MainLayout";
-import AuthServiceInitializer from "../components/AuthServiceInitializer"; // Importa el componente
+import AuthServiceInitializer from "../components/AuthServiceInitializer";
+import UserProfilePage from "../pages/UserProfilePage";
 
 const AppRouter = () => {
   // Elimina el useEffect y las llamadas a useDispatch y useNavigate de aquí
@@ -37,6 +38,7 @@ const AppRouter = () => {
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
+            <Route path="/perfil/:userId" element={<UserProfilePage />} />
             <Route path="/mensajes" element={<MensajesPage />} />
             <Route path="/mis-libros" element={<MisLibrosPage />} />
             <Route path="/crear-libro" element={<CrearLibroPage />} />

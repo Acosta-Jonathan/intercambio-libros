@@ -99,3 +99,7 @@ textarea:focus {
   width: 100%;
   overflow: hidden;
 }
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
