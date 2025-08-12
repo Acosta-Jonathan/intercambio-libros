@@ -188,7 +188,14 @@
 
 .cards-container > .libro-card {
     width: auto;
+    height: 420px;
 }
+.cards-container > .libro-card:hover {
+    width: auto;
+    height: max-content;
+}
+
+
 
 /* Responsive para dispositivos móviles */
 @media (max-width: 768px) {

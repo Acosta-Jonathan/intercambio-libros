@@ -1,7 +1,7 @@
 import axios from "axios";
 import { logout } from '../store/authSlice'; // Importa la acción de logout
 
-const API_URL = "http://192.168.0.74:8000";
+const API_URL = "http://localhost:8000";
 
 const api = axios.create({
   baseURL: API_URL,

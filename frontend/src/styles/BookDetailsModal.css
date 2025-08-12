@@ -62,8 +62,8 @@
 }
 
 .modal-book-image-container {
-  width: 100%;
-  max-height: 300px;
+  width: auto;
+  height: auto;
   overflow: hidden;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -74,9 +74,8 @@
 
 .modal-book-image-container img {
   width: 100%;
-  height: auto;
-  object-fit: cover;
-  display: block;
+  height: 100%;
+  object-fit: contain;
 }
 
 .modal-body-details h3 {
@@ -94,7 +93,8 @@
 }
 
 /* Estilos para los badges (comunes) */
-.book-badges { /* Contenedor para los badges de estado e idioma */
+.book-badges {
+  /* Contenedor para los badges de estado e idioma */
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
@@ -137,7 +137,6 @@
   background-color: #f68787;
 }
 
-
 /* Estilos para la sección de categorías en el modal */
 .categorias-section-details {
   margin-bottom: 1rem;
@@ -155,7 +154,6 @@
   gap: 0.5rem;
 }
 
-
 .book-description h4 {
   font-size: 1rem;
   padding-top: 1rem;
@@ -169,7 +167,6 @@
   line-height: 1.5;
 }
 
-
 .modal-footer-details {
   display: flex;
   justify-content: flex-end; /* Alinea los botones a la derecha */
@@ -180,7 +177,7 @@
 }
 
 .contactar-btn {
-  background-color: #6C63FF; /* Un color primario */
+  background-color: #6c63ff; /* Un color primario */
   color: white;
   padding: 10px 20px;
   border: none;

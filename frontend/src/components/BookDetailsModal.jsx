@@ -66,7 +66,7 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
               src={
                 book.image_url
                   ? `http://localhost:8000${book.image_url}`
-                  : "/default-book.svg"
+                  : "https://placehold.co/100x100/E5E7EB/4B5563?text=Sin+Imagen"
               }
               alt={book.title}
             />
