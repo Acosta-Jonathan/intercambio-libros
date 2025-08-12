@@ -1,54 +1,53 @@
 /* src/styles/BookCard.css */
 
-/* Nuevas variables para el color dorado */
+/* Variables para los colores */
 :root {
-  --gold-solid: #FFD700; /* Oro sólido */
-  --gold-gradient: linear-gradient(45deg, #FFD700, #FFC107); /* Degradado de oro a ámbar */
-  --gold-text: #8B4513; /* Color de texto para contraste con el oro */
+  --gold-solid: #FFD700;
+  --gold-gradient: linear-gradient(45deg, #FFD700, #FFC107);
+  --gold-text: #8B4513;
+  --primary-color: #6C63FF;
+  --primary-hover: #574fd6;
+  --secondary-bg-light: #eef0ff;
+  --secondary-text: #4c4cf1;
+  --danger-bg-light: #ffecec;
+  --danger-text: #f14c4c;
 }
 
-
+/* Estilo principal de la tarjeta del libro */
 .libro-card {
-  /* Se elimina el ancho fijo para que se ajuste al layout del grid */
-  /* Se ajusta la altura para el estado colapsado y se oculta el contenido extra */
-  height: 480px; 
+  max-height: 500px;
   overflow: hidden; 
-  
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 1rem;
   color: #000;
   text-align: left;
-  display: flex;
-  flex-direction: column;
-  position: relative; /* Necesario para posicionar el badge y el footer */
-  border: 2px solid transparent; /* Borde por defecto */
-  
-  /* Transiciones más suaves para una mejor experiencia de usuario */
-  transition: all 0.4s ease-in-out;
+  display: flex; 
+  flex-direction: column; 
+  position: relative; 
+  border: 2px solid transparent; 
+  transition: max-height 0.4s ease-in-out, transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
 }
 
+/* Efecto de la tarjeta al pasar el cursor */
 .libro-card:hover {
-  /* Al pasar el cursor, la tarjeta se eleva y se agranda */
+  max-height: 1000px;
   transform: translateY(-5px) scale(1.02);
-  height: auto; 
-  overflow: visible;
-  /* El z-index asegura que la tarjeta se superponga a las de abajo */
-  z-index: 10; 
+  z-index: 10;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Estilo para los libros del usuario logueado */
+/* Estilo para los libros del usuario logueado, activado por la clase 'libro-propio' */
 .libro-card.libro-propio {
   border-color: var(--gold-solid);
   border-width: thick;
 }
 
+/* Contenedor de la imagen del libro */
 .libro-imagen-container {
   width: 100%;
   height: 220px;
-  object-fit: cover;
   border-radius: 12px;
   margin-bottom: 0.75rem;
 }
@@ -60,9 +59,10 @@
   border-radius: 12px;
 }
 
+/* Contenido de información del libro */
 .libro-info-content {
-  flex-grow: 1;
-  padding-bottom: 70px; /* Asegura espacio para el footer cuando la tarjeta está colapsada */
+  flex-grow: 1; 
+  padding-bottom: 0; 
 }
 
 .libro-titulo {
@@ -72,6 +72,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
+  -webkit-line-clamp: 2; 
   -webkit-box-orient: vertical;
 }
 
@@ -85,22 +86,22 @@
   color: #000;
 }
 
-/* Badge "Tu Libro" */
+/* Badge "Tu Libro", se muestra solo si la clase 'libro-propio' está presente */
 .badge-propio {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: var(--gold-gradient); /* Degradado dorado para el badge */
-  color: var(--gold-text); /* Color de texto para contraste */
+  background: var(--gold-gradient);
+  color: var(--gold-text);
   padding: 4px 8px;
   border-radius: 8px;
   font-size: 0.75rem;
   font-weight: bold;
-  z-index: 10; /* Asegura que esté por encima de otros elementos */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra sutil para el badge */
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Estilos de las etiquetas de categoría y estado */
+/* Contenedor de etiquetas (categoría y estado) */
 .libro-etiquetas {
   display: flex;
   flex-direction: column;
@@ -145,7 +146,7 @@
   color: #383d41;
 }
 
-/* Nuevos estilos para el contenedor de categorías */
+/* Contenedor de categorías */
 .categorias-container {
   margin-top: 0.5rem;
   text-align: left;
@@ -157,6 +158,9 @@
   font-weight: 600;
   color: #333;
   margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .categorias-list {
@@ -177,38 +181,42 @@
   white-space: nowrap;
 }
 
-/* Estilos para el contenedor de acciones (botones) */
+/* Contenedor de acciones (botones) */
 .acciones {
-  /* Se mantiene el footer siempre en la parte inferior de la tarjeta */
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 1rem;
+  margin-top: auto; 
+  padding-top: 1rem;
+  padding-bottom: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
   background-color: #fff;
   border-top: none;
   z-index: 10;
   
   display: flex;
-  flex-direction: column; /* Apila los elementos verticalmente */
-  gap: 0.75rem; /* Espacio entre filas de botones */
-  
-  /* Transición para el fondo del footer al expandirse la tarjeta */
-  transition: padding-top 0.4s ease-in-out;
+  flex-direction: column; 
+  gap: 0.75rem; 
+
+  /* Ocultamos los botones por defecto */
+  opacity: 0;
+  visibility: hidden;
+  /* Animación para que los botones aparezcan suavemente */
+  transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out, transform 0.4s ease-in-out;
+  transform: translateY(20px);
 }
 
-/* Este padding evita que el contenido extra tape el footer en el estado colapsado */
-.libro-info-content {
-  padding-bottom: 80px; 
+/* Mostramos los botones al hacer hover sobre la tarjeta */
+.libro-card:hover .acciones {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
-
 
 /* Estilo para el botón "Ver detalles" (HomePage y MisLibrosPage) */
-.acciones .detalles-btn { /* Apunta al botón dentro de .acciones */
-  width: 100%; /* Ocupa todo el ancho */
-  padding: 0.6rem 1rem; /* Ajusta el padding si es necesario */
-  font-size: 0.9rem; /* Ajusta el tamaño de fuente */
-  background-color: #6C63FF; /* Color primario */
+.acciones .detalles-btn {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: 8px;
@@ -220,19 +228,19 @@
 }
 
 .acciones .detalles-btn:hover:not(:disabled) {
-  background-color: #574fd6; /* Color de hover */
+  background-color: var(--primary-hover);
 }
 
 /* Contenedor para los botones "Editar" y "Eliminar" */
 .acciones-secundarias {
   display: flex;
-  gap: 0.75rem; /* Espacio entre los botones */
-  width: 100%; /* Ocupa todo el ancho disponible */
+  gap: 0.75rem;
+  width: 100%;
 }
 
 /* Estilos para los botones dentro de acciones-secundarias */
 .acciones-secundarias button {
-  flex: 1; /* Cada botón ocupa la mitad del espacio */
+  flex: 1;
   padding: 0.4rem 0.8rem;
   font-size: 0.85rem;
   border: none;
@@ -245,8 +253,8 @@
 }
 
 .acciones-secundarias button:first-child { /* Botón Editar */
-  background-color: #eef0ff;
-  color: #4c4cf1;
+  background-color: var(--secondary-bg-light);
+  color: var(--secondary-text);
 }
 
 .acciones-secundarias button:first-child:hover:not(:disabled) {
@@ -254,14 +262,13 @@
 }
 
 .acciones-secundarias button:last-child { /* Botón Eliminar */
-  background-color: #ffecec;
-  color: #f14c4c;
+  background-color: var(--danger-bg-light);
+  color: var(--danger-text);
 }
 
 .acciones-secundarias button:last-child:hover:not(:disabled) {
   background-color: #ffd3d3;
 }
-
 
 /* Estilo para el botón deshabilitado (general) */
 .acciones button:disabled,
@@ -270,4 +277,37 @@
   color: #666666 !important;
   cursor: not-allowed !important;
   opacity: 0.7;
+}
+
+/* Animación de deslizamiento de luz */
+@keyframes sweep-highlight {
+  0% {
+    transform: translateX(-100%) skewX(-30deg);
+  }
+  100% {
+    transform: translateX(200%) skewX(-30deg);
+  }
+}
+
+/* Estilos para el borde animado */
+.libro-card.animate-highlight {
+  position: relative;
+  border: 2px solid #ffc107;
+  overflow: hidden; /* Esto es crucial para que el "destello" no se salga */
+}
+
+.libro-card.animate-highlight::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: sweep-highlight 2.5s infinite ease-in-out;
 }

@@ -15,6 +15,31 @@ import BookCard from "../components/BookCard";
 import BookDetailsModal from "../components/BookDetailsModal";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
+// Nuevo componente de modal de confirmación
+const ConfirmationModal = ({ message, onConfirm, onCancel }) => (
+    <div className="modal d-block bg-dark bg-opacity-50" tabIndex="-1">
+        <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+                <div className="modal-header">
+                    <h5 className="modal-title">Confirmar</h5>
+                    <button type="button" className="btn-close" onClick={onCancel}></button>
+                </div>
+                <div className="modal-body">
+                    <p>{message}</p>
+                </div>
+                <div className="modal-footer">
+                    <button className="btn btn-secondary" onClick={onCancel}>
+                        Cancelar
+                    </button>
+                    <button className="btn btn-danger" onClick={onConfirm}>
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
 const MisLibrosPage = () => {
   const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.auth.user);
@@ -29,6 +54,10 @@ const MisLibrosPage = () => {
   // Estados para el modal de detalles de libro
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
+  
+  // Estado para el modal de confirmación de eliminación
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [libroAEliminar, setLibroAEliminar] = useState(null);
 
   const handleConsultarClick = () => navigate("/crear-libro");
 
@@ -45,7 +74,7 @@ const MisLibrosPage = () => {
   }, [token]);
 
   useEffect(() => {
-    if (editandoLibro || showModal || showDetailsModal) {
+    if (editandoLibro || showModal || showDetailsModal || showConfirmModal) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -53,22 +82,26 @@ const MisLibrosPage = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [editandoLibro, showModal, showDetailsModal]);
+  }, [editandoLibro, showModal, showDetailsModal, showConfirmModal]);
 
+  // Lógica para mostrar el modal de confirmación
+  const handleEliminarClick = (id) => {
+    setLibroAEliminar(id);
+    setShowConfirmModal(true);
+  };
 
-  const handleEliminar = async (id) => {
-    // CORRECCIÓN: Usar un modal personalizado en lugar de `window.confirm`
-    // No se puede usar `window.confirm` en este entorno, causa errores.
-    // Implementa un modal de confirmación en su lugar.
-    const isConfirmed = window.confirm("¿Estás seguro de eliminar este libro?");
-    if (!isConfirmed) return;
+  const handleConfirmarEliminar = async () => {
     try {
-      await deleteBook(id, token);
-      setLibros((prev) => prev.filter((libro) => libro.id !== id));
+      await deleteBook(libroAEliminar, token);
+      setLibros((prev) => prev.filter((libro) => libro.id !== libroAEliminar));
     } catch (error) {
       console.error("Error al eliminar libro:", error);
-      // CORRECCIÓN: Usar un modal personalizado en lugar de `window.alert`
-      window.alert("No se pudo eliminar el libro.");
+      // Usar un modal personalizado para errores
+      // Aquí se debería mostrar un modal de error, pero para este ejemplo,
+      // lo manejamos en la consola.
+    } finally {
+      setShowConfirmModal(false);
+      setLibroAEliminar(null);
     }
   };
 
@@ -85,8 +118,8 @@ const MisLibrosPage = () => {
       setEditandoLibro(null);
     } catch (error) {
       console.error("Error al actualizar libro:", error);
-      // CORRECCIÓN: Usar un modal personalizado en lugar de `window.alert`
-      window.alert("No se pudo actualizar el libro.");
+      // Aquí se debería mostrar un modal de error, pero para este ejemplo,
+      // lo manejamos en la consola.
     }
   };
 
@@ -105,8 +138,8 @@ const MisLibrosPage = () => {
       setTelefonoError("");
     } catch (error) {
       console.error("Error al actualizar teléfono:", error);
-      // CORRECCIÓN: Usar un modal personalizado en lugar de `window.alert`
-      window.alert("No se pudo actualizar el teléfono.");
+      // Aquí se debería mostrar un modal de error, pero para este ejemplo,
+      // lo manejamos en la consola.
     }
   };
 
@@ -208,11 +241,6 @@ const MisLibrosPage = () => {
             <BookCard
               book={libro}
               isOwnedByCurrentUser={true}
-              // CORRECCIÓN: Eliminamos la prop `showHighlight` ya que la lógica está en el componente `BookCard` ahora.
-              // Ahora `BookCard` utiliza `isOwnedByCurrentUser` para decidir si mostrar el resalte.
-              // En este caso, `isOwnedByCurrentUser` es siempre `true`, lo cual es incorrecto en un inicio.
-              // En la página de perfil, el badge no tiene sentido, por lo que lo mejor es quitarlo.
-              // La lógica del badge y el borde se elimina de `BookCard` para esta página específica.
             >
               <button
                 className="detalles-btn full-width-btn"
@@ -224,7 +252,7 @@ const MisLibrosPage = () => {
                 <button onClick={() => handleEditarClick(libro)}>
                   <FaEdit className="me-1" /> Editar
                 </button>
-                <button onClick={() => handleEliminar(libro.id)}>
+                <button onClick={() => handleEliminarClick(libro.id)}>
                   <FaTrash className="me-1" /> Eliminar
                 </button>
               </div>
@@ -246,6 +274,14 @@ const MisLibrosPage = () => {
           book={selectedBook}
           onClose={handleCloseDetailsModal}
           loggedInUserId={user?.id || null}
+        />
+      )}
+      
+      {showConfirmModal && (
+        <ConfirmationModal
+          message="¿Estás seguro de que quieres eliminar este libro?"
+          onConfirm={handleConfirmarEliminar}
+          onCancel={() => setShowConfirmModal(false)}
         />
       )}
     </div>

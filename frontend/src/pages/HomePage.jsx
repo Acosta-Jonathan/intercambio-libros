@@ -151,7 +151,7 @@ const HomePage = () => {
                                     key={libro.id}
                                     book={libro}
                                     isOwnedByCurrentUser={libro.user_id === loggedInUserId}
-                                    showHighlight={true}
+                                    showHighlight={libro.user_id === loggedInUserId}
                                 >
                                     <button
                                         className="detalles-btn"
