@@ -7,7 +7,7 @@ import {
   TODAS_LAS_EDICIONES,
 } from "../data/constants";
 
-const placeholderImage = "https://placehold.co/200x300.png?text=Sin+Imagen";
+const placeholderImage = "https://placehold.co/100x100/E5E7EB/4B5563?text=Sin+Imagen";
 
 const BookEditModal = ({ book, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -40,7 +40,8 @@ const BookEditModal = ({ book, onClose, onSave }) => {
       const categoriasNombres = book.categories.map((cat) => cat.name);
       setCategoriasSeleccionadas(categoriasNombres);
       setNewImageFile(null);
-      setPreviewImage(book.image_url || placeholderImage);
+      const initialImageUrl = book.image_url ? `http://localhost:8000${book.image_url}` : placeholderImage;
+      setPreviewImage(initialImageUrl);
     }
   }, [book]);
 
@@ -82,12 +83,15 @@ const BookEditModal = ({ book, onClose, onSave }) => {
       setNewImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
+        // 🐛 CORRECCIÓN: Usamos `setPreviewImage` para actualizar el estado
+        // con la nueva imagen, esto hará que la UI se renderice de nuevo.
         setPreviewImage(reader.result);
       };
       reader.readAsDataURL(file);
     } else {
       setNewImageFile(null);
-      setPreviewImage(book.image_url || null);
+      // Usamos el estado del libro original si no hay nuevo archivo
+      setPreviewImage(book.image_url ? `http://localhost:8000${book.image_url}` : placeholderImage);
     }
   };
 
@@ -117,11 +121,7 @@ const BookEditModal = ({ book, onClose, onSave }) => {
             <div className="modal-body">
               <div className="image-edit-container">
                 <img
-                  src={
-                book.image_url
-                  ? `http://localhost:8000${book.image_url}`
-                  : "https://placehold.co/100x100/E5E7EB/4B5563?text=Sin+Imagen"
-              }
+                  src={previewImage}
                   alt="Portada del libro"
                   className="book-image-preview"
                 />

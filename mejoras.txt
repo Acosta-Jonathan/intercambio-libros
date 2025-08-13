@@ -1,9 +1,6 @@
                                             Proyecto final
 mejoras por hacer:
 
-BookEditModal:
-- no actualiza visualizacion foto al cargar una nueva
-
 Register:
 - obligar a Verificar el correo ingresado mandando un mail a dicho correo con algun codigo o link de verificacion. Si no está verificado no puede ingresar a la pagina
 
@@ -30,6 +27,7 @@ Libro
 - En los detalles del libro poner etiquetas de los campos (autor, estado, etc.)
 
 Modal editar libro:
+- Ahora se puede editar imagen del libro
 - arreglar el campo "estado"
 
 perfil
