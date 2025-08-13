@@ -13,32 +13,9 @@ import { setUser } from "../store/authSlice";
 import BookEditModal from "../components/BookEditModal";
 import BookCard from "../components/BookCard";
 import BookDetailsModal from "../components/BookDetailsModal";
+import ErrorModal from "../components/ErrorModal";
+import ConfirmationModal from "../components/ConfirmationModal";
 import { FaEdit, FaTrash } from "react-icons/fa";
-
-// Nuevo componente de modal de confirmación
-const ConfirmationModal = ({ message, onConfirm, onCancel }) => (
-    <div className="modal d-block bg-dark bg-opacity-50" tabIndex="-1">
-        <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-                <div className="modal-header">
-                    <h5 className="modal-title">Confirmar</h5>
-                    <button type="button" className="btn-close" onClick={onCancel}></button>
-                </div>
-                <div className="modal-body">
-                    <p>{message}</p>
-                </div>
-                <div className="modal-footer">
-                    <button className="btn btn-secondary" onClick={onCancel}>
-                        Cancelar
-                    </button>
-                    <button className="btn btn-danger" onClick={onConfirm}>
-                        Eliminar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-);
 
 const MisLibrosPage = () => {
   const token = useSelector((state) => state.auth.token);
@@ -59,6 +36,10 @@ const MisLibrosPage = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [libroAEliminar, setLibroAEliminar] = useState(null);
 
+  // Estados para el modal de error
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleConsultarClick = () => navigate("/crear-libro");
 
   useEffect(() => {
@@ -74,7 +55,7 @@ const MisLibrosPage = () => {
   }, [token]);
 
   useEffect(() => {
-    if (editandoLibro || showModal || showDetailsModal || showConfirmModal) {
+    if (editandoLibro || showModal || showDetailsModal || showConfirmModal || showErrorModal) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -82,7 +63,7 @@ const MisLibrosPage = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [editandoLibro, showModal, showDetailsModal, showConfirmModal]);
+  }, [editandoLibro, showModal, showDetailsModal, showConfirmModal, showErrorModal]);
 
   // Lógica para mostrar el modal de confirmación
   const handleEliminarClick = (id) => {
@@ -95,10 +76,8 @@ const MisLibrosPage = () => {
       await deleteBook(libroAEliminar, token);
       setLibros((prev) => prev.filter((libro) => libro.id !== libroAEliminar));
     } catch (error) {
-      console.error("Error al eliminar libro:", error);
-      // Usar un modal personalizado para errores
-      // Aquí se debería mostrar un modal de error, pero para este ejemplo,
-      // lo manejamos en la consola.
+      setErrorMessage("Error al eliminar el libro. Por favor, inténtalo de nuevo.");
+      setShowErrorModal(true);
     } finally {
       setShowConfirmModal(false);
       setLibroAEliminar(null);
@@ -117,9 +96,8 @@ const MisLibrosPage = () => {
       );
       setEditandoLibro(null);
     } catch (error) {
-      console.error("Error al actualizar libro:", error);
-      // Aquí se debería mostrar un modal de error, pero para este ejemplo,
-      // lo manejamos en la consola.
+      setErrorMessage("Error al actualizar el libro. Por favor, inténtalo de nuevo.");
+      setShowErrorModal(true);
     }
   };
 
@@ -137,9 +115,8 @@ const MisLibrosPage = () => {
       setShowModal(false);
       setTelefonoError("");
     } catch (error) {
-      console.error("Error al actualizar teléfono:", error);
-      // Aquí se debería mostrar un modal de error, pero para este ejemplo,
-      // lo manejamos en la consola.
+      setErrorMessage("Error al actualizar el teléfono. Por favor, inténtalo de nuevo.");
+      setShowErrorModal(true);
     }
   };
 
@@ -277,11 +254,19 @@ const MisLibrosPage = () => {
         />
       )}
       
+      {/* Renderizado de los modales separados */}
       {showConfirmModal && (
         <ConfirmationModal
-          message="¿Estás seguro de que quieres eliminar este libro?"
+          message={`¿Estás seguro de que quieres eliminar el libro "${libros.find(l => l.id === libroAEliminar)?.title}"?`}
           onConfirm={handleConfirmarEliminar}
           onCancel={() => setShowConfirmModal(false)}
+        />
+      )}
+
+      {showErrorModal && (
+        <ErrorModal
+          message={errorMessage}
+          onClose={() => setShowErrorModal(false)}
         />
       )}
     </div>
