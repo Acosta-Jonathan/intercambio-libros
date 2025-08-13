@@ -1,8 +1,8 @@
                                             Proyecto final
 mejoras por hacer:
 
-GENERAL:
--Verificar donde hay ventanas de dialogos de consol.log o windows.alert o parecidos, como por ejemplo al eliminar libro y cambiarlos por algo acorde a la lógica y visual de la pagina
+BookEditModal:
+- no actualiza visualizacion foto al cargar una nueva
 
 Register:
 - obligar a Verificar el correo ingresado mandando un mail a dicho correo con algun codigo o link de verificacion. Si no está verificado no puede ingresar a la pagina
@@ -14,6 +14,9 @@ mensajería
 
 
 Mejoras ya realizadas:
+
+GENERAL:
+-Verificar donde hay ventanas de dialogos de consol.log o windows.alert o parecidos, como por ejemplo al eliminar libro y cambiarlos por algo acorde a la lógica y visual de la pagina
 
 NUEVA perfil otro usuario
 - Poder ver el perfil de otro usuario, y si es posible también poder buscarlo desde el buscador, y dentro del perfil poder ver sus libros publicados

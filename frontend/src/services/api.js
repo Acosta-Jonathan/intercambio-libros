@@ -180,4 +180,22 @@ export const getUserBooks = async (userId) => {
   return response.data;
 };
 
+export const updateBookImage = async (bookId, imageFile, token) => {
+  const formData = new FormData();
+  formData.append("file", imageFile);
+
+  const response = await fetch(`${API_URL}/books/${bookId}/upload-image`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al subir la imagen del libro.");
+  }
+  return await response.json();
+};
+
 export default api;

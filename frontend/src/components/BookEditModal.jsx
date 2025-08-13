@@ -7,6 +7,8 @@ import {
   TODAS_LAS_EDICIONES,
 } from "../data/constants";
 
+const placeholderImage = "https://placehold.co/200x300.png?text=Sin+Imagen";
+
 const BookEditModal = ({ book, onClose, onSave }) => {
   const [formData, setFormData] = useState({
     title: "",
@@ -16,6 +18,8 @@ const BookEditModal = ({ book, onClose, onSave }) => {
     publication_date: "",
     description: "",
   });
+  const [newImageFile, setNewImageFile] = useState(null);
+  const [previewImage, setPreviewImage] = useState(placeholderImage);
   const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState("");
   const [idiomaSeleccionado, setIdiomaSeleccionado] = useState("");
@@ -35,6 +39,8 @@ const BookEditModal = ({ book, onClose, onSave }) => {
       setEdicionSeleccionada(book.edicion || "");
       const categoriasNombres = book.categories.map((cat) => cat.name);
       setCategoriasSeleccionadas(categoriasNombres);
+      setNewImageFile(null);
+      setPreviewImage(book.image_url || placeholderImage);
     }
   }, [book]);
 
@@ -70,6 +76,21 @@ const BookEditModal = ({ book, onClose, onSave }) => {
     );
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setNewImageFile(null);
+      setPreviewImage(book.image_url || null);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const updatedData = {
@@ -81,7 +102,7 @@ const BookEditModal = ({ book, onClose, onSave }) => {
       edicion: edicionSeleccionada,
       categories: categoriasSeleccionadas,
     };
-    onSave(book.id, updatedData);
+    onSave(book.id, updatedData, newImageFile);
   };
 
   if (!book) {
@@ -94,6 +115,27 @@ const BookEditModal = ({ book, onClose, onSave }) => {
         <form onSubmit={handleSubmit} className="modal-form">
           <div className="modal-scrollable-content">
             <div className="modal-body">
+              <div className="image-edit-container">
+                <img
+                  src={
+                book.image_url
+                  ? `http://localhost:8000${book.image_url}`
+                  : "https://placehold.co/100x100/E5E7EB/4B5563?text=Sin+Imagen"
+              }
+                  alt="Portada del libro"
+                  className="book-image-preview"
+                />
+                <label className="file-input-label">
+                  Cambiar imagen
+                  <input
+                    type="file"
+                    name="image"
+                    onChange={handleImageChange}
+                    accept="image/*"
+                    style={{ display: "none" }}
+                  />
+                </label>
+              </div>
               <label>
                 Título:
                 <input

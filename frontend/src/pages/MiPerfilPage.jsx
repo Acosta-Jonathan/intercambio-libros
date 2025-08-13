@@ -6,6 +6,7 @@ import {
   getMyBooks,
   updateBook,
   actualizarTelefono,
+  updateBookImage,
 } from "../services/api";
 import "../styles/MiPerfilPage.css";
 import { useNavigate } from "react-router-dom";
@@ -88,11 +89,21 @@ const MisLibrosPage = () => {
     setEditandoLibro(libro);
   };
 
-  const handleGuardarEdicion = async (id, updatedData) => {
+  const handleGuardarEdicion = async (id, updatedData, imageFile) => {
     try {
-      const updated = await updateBook(id, updatedData, token);
+      // 1. Actualizar los datos de texto del libro
+      const updatedBookData = await updateBook(id, updatedData, token);
+
+      let finalBook = updatedBookData;
+
+      // 2. Si se proporcionó un archivo de imagen, subirlo
+      if (imageFile) {
+        finalBook = await updateBookImage(id, imageFile, token);
+      }
+
+      // Actualizar el estado de los libros con los datos finales
       setLibros((prevLibros) =>
-        prevLibros.map((libro) => (libro.id === id ? updated : libro))
+        prevLibros.map((libro) => (libro.id === id ? finalBook : libro))
       );
       setEditandoLibro(null);
     } catch (error) {

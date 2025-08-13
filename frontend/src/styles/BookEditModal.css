@@ -105,3 +105,37 @@
   margin-top: 20px;
   flex-shrink: 0; /* Evita que el footer se encoja */
 }
+
+
+/* Estilos para el contenedor de la imagen */
+.image-edit-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* 🐛 CORRECCIÓN: Estilos para que la imagen se ajuste al contenedor */
+.book-image-preview {
+    width: 100%; /* El ancho ocupará el 100% del contenedor padre */
+    height: auto; /* La altura se ajustará automáticamente */
+    max-width: 200px; /* Limita el ancho máximo para que no sea demasiado grande */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    object-fit: cover; /* Recorta la imagen para que cubra el área */
+}
+
+.file-input-label {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+}
+
+.file-input-label:hover {
+    background-color: #0056b3;
+}
