@@ -37,29 +37,22 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
         }
       }
     };
-
     fetchOwnerDetails();
   }, [book]);
 
-  const handleContactClick = () => {
-    setShowContactModal(true);
-  };
+  const handleContactClick = () => setShowContactModal(true);
 
   const isBookOwner = book.user_id === loggedInUserId;
-
-  if (!book) {
-    return null;
-  }
+  if (!book) return null;
 
   return (
     <div className="modal-backdrop-details">
       <div className="modal-content-details">
         <div className="modal-header-details">
           <h2>Detalles del Libro</h2>
-          <button className="close-button-details" onClick={onClose}>
-            &times;
-          </button>
+          <button className="close-button-details" onClick={onClose}>&times;</button>
         </div>
+
         <div className="modal-body-details">
           <div className="modal-book-image-container">
             <img
@@ -71,47 +64,33 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
               alt={book.title}
             />
           </div>
+
           <h3>{book.title}</h3>
-          <p>
-            <strong>Autor:</strong> {book.author}
-          </p>
-          <p>
-            <strong>Editorial:</strong> {book.editorial || "-"}
-          </p>
-          <p>
-            <strong>Edición:</strong> {book.edicion || "-"}
-          </p>
-          <p>
-            <strong>Año de Publicación:</strong> {book.publication_date || "-"}
-          </p>
+          <p><strong>Autor:</strong> {book.author}</p>
+          <p><strong>Editorial:</strong> {book.editorial || "-"}</p>
+          <p><strong>Edición:</strong> {book.edicion || "-"}</p>
+          <p><strong>Año de Publicación:</strong> {book.publication_date || "-"}</p>
+
           <div className="book-badges">
             {book.estado && (
-              <span
-                className={`badge badge-strong ${getEstadoBadgeClass(
-                  book.estado
-                )}`}
-              >
-                <strong>Estado: </strong>
-                {book.estado}
+              <span className={`badge badge-strong ${getEstadoBadgeClass(book.estado)}`}>
+                <strong>Estado: </strong>{book.estado}
               </span>
             )}
             {book.idioma && (
               <span className="badge badge-strong badge-gray">
-                <strong>Idioma: </strong>
-                {book.idioma}
+                <strong>Idioma: </strong>{book.idioma}
               </span>
             )}
           </div>
+
           <div className="book-description">
-            <h4>
-              <strong>Descripción</strong>
-            </h4>
+            <h4><strong>Descripción</strong></h4>
             <p>{book.description || "Sin descripción disponible."}</p>
           </div>
+
           <div className="categorias-section-details">
-            <h4>
-              <strong>Categorías</strong>
-            </h4>
+            <h4><strong>Categorías</strong></h4>
             <div className="categorias-list-details">
               {book.categories && book.categories.length > 0 ? (
                 book.categories.map((categoria, index) => (
@@ -120,40 +99,32 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
                   </span>
                 ))
               ) : (
-                <span className="badge badge-strong badge-purple">
-                  Sin categoría
-                </span>
+                <span className="badge badge-strong badge-purple">Sin categoría</span>
               )}
             </div>
           </div>
+
           <p>
             <strong>Publicado por:</strong>{" "}
-            {loadingOwner
-              ? "Cargando..."
-              : ownerDetails
-              ? ownerDetails.username
-              : "Usuario desconocido"}
+            {loadingOwner ? "Cargando..." : ownerDetails ? ownerDetails.username : "Usuario desconocido"}
           </p>
         </div>
+
         <div className="modal-footer-details">
-          <button
-            className="contactar-btn"
-            onClick={handleContactClick}
-            disabled={isBookOwner}
-          >
+          <button className="contactar-btn" onClick={handleContactClick} disabled={isBookOwner}>
             Contactar
           </button>
-          <button className="btn btn-outline-danger" onClick={onClose}>
-            Cerrar
-          </button>
+          <button className="btn btn-outline-danger" onClick={onClose}>Cerrar</button>
         </div>
       </div>
+
       {showContactModal && ownerDetails && (
         <ModalContacto
           email={ownerDetails.email}
           telefono={ownerDetails.telefono}
           nombreLibro={book.title}
           onClose={() => setShowContactModal(false)}
+          ownerId={book.user_id}
         />
       )}
     </div>

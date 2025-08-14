@@ -1,3 +1,4 @@
+// src/services/api.js
 import axios from "axios";
 import { logout } from '../store/authSlice'; // Importa la acción de logout
 
@@ -214,6 +215,61 @@ export const updateProfilePicture = async (imageFile, token) => {
     throw new Error("Error al subir la foto de perfil.");
   }
   return await response.json();
+};
+
+// 📡 Conectar WebSocket
+export const connectWebSocket = (onMessage) => {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    console.error("No hay token para WebSocket");
+    return null;
+  }
+
+  const ws = new WebSocket(`ws://localhost:8000/messages/ws?token=${token}`);
+
+  ws.onopen = () => {
+    console.log("Conectado al WebSocket");
+  };
+
+  ws.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    if (onMessage) {
+      onMessage(message);
+    }
+  };
+
+  ws.onclose = () => {
+    console.log("Desconectado del WebSocket");
+  };
+
+  ws.onerror = (err) => {
+    console.error("Error en WebSocket", err);
+  };
+
+  return ws;
+};
+
+// 📤 Enviar mensaje por WebSocket
+export const sendWebSocketMessage = (ws, receiverId, content) => {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ receiver_id: receiverId, content }));
+  } else {
+    console.error("WebSocket no está conectado");
+  }
+};
+
+export const getConversations = async (token) => {
+  const response = await api.get("/conversations/", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+export const getMessages = async (userId, token) => {
+  const response = await api.get(`/messages/conversation/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
 };
 
 

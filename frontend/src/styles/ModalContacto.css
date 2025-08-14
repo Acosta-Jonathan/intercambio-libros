@@ -1,178 +1,171 @@
 /* src/styles/ModalContacto.css */
-
 .modal-backdrop-contacto {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
 .modal-content-contacto {
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    position: relative;
-    font-family: 'Inter', sans-serif;
-    color: #333;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .modal-header-contacto {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .modal-header-contacto h2 {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 700;
+  margin: 0;
+  font-size: 1.5rem;
 }
 
 .close-button-contacto {
-    background: none;
-    border: none;
-    font-size: 2rem;
-    cursor: pointer;
-    color: #aaa;
-    line-height: 1;
-    padding: 0;
-}
-
-.close-button-contacto:hover {
-    color: #555;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #555;
 }
 
 .modal-body-contacto {
-    margin-bottom: 1rem;
+  padding: 10px 0;
 }
 
 .contact-section {
-    margin-bottom: 1.5rem;
+  margin-bottom: 20px;
 }
 
 .contact-section h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #333;
 }
 
 .contact-btn {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
-.contact-btn.disabled {
-    background-color: #ccc;
-    color: #666;
-    cursor: not-allowed;
+.dm-btn {
+  background-color: #6c63ff;
+  color: white;
+  border: none;
 }
 
-.mail-btn {
-    background-color: #007bff;
-    color: white;
-}
-
-.mail-btn:hover:not(.disabled) {
-    background-color: #0056b3;
+.dm-btn:hover {
+  background-color: #574fd6;
 }
 
 .wsp-btn {
-    display: block;
-    background-color: #25d366;
-    color: white;
+  background-color: #25d366;
+  color: white;
 }
 
-.wsp-btn:hover:not(.disabled) {
-    background-color: #128c7e;
+.wsp-btn:hover {
+  background-color: #128c7e;
+}
+
+.wsp-btn.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.mail-btn {
+  background-color: #d14836;
+  color: white;
+  border: none;
+}
+
+.mail-btn:hover {
+  background-color: #c2382c;
 }
 
 .email-options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .email-options-title {
-    text-align: center;
-    font-size: 1rem;
-    margin: 0;
-    font-weight: 500;
+  font-weight: normal;
+  color: #666;
+  margin: 0;
 }
 
 .email-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 15px;
-    border-radius: 8px;
-    text-decoration: none;
-    color: #fff;
-    font-weight: 600;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 10px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  transition: background-color 0.2s;
 }
 
-.email-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.email-btn span {
+  vertical-align: middle;
 }
 
 .gmail-btn {
-    background-color: #db4437;
+  background-color: #d14836;
+}
+.gmail-btn:hover {
+  background-color: #c2382c;
 }
 
 .outlook-btn {
-    background-color: #0078d4;
+  background-color: #0078d4;
+}
+.outlook-btn:hover {
+  background-color: #005a9e;
 }
 
 .generic-btn {
-    background-color: #909497;
+  background-color: #6c63ff;
+}
+.generic-btn:hover {
+  background-color: #574fd6;
 }
 
 .modal-footer-contacto {
-    display: flex;
-    justify-content: flex-end;
-    border-top: 1px solid #eee;
-    padding-top: 1rem;
-    margin-top: 1rem;
-}
-
-.btn {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: all 0.3s ease;
-}
-
-.btn-outline-danger {
-  color: #dc3545;
-  background-color: transparent;
-  border-color: #dc3545;
-}
-
-.btn-outline-danger:hover {
-  color: #fff;
-  background-color: #dc3545;
-  border-color: #dc3545;
+  border-top: 1px solid #ccc;
+  padding-top: 15px;
+  display: flex;
+  justify-content: flex-end;
 }

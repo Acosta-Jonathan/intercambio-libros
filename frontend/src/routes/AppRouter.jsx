@@ -15,6 +15,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import MainLayout from "../components/layout/MainLayout";
 import AuthServiceInitializer from "../components/AuthServiceInitializer";
 import UserProfilePage from "../pages/UserProfilePage";
+import MensajeriaPage from "../pages/MensajeriaPage";
+import ChatPage from "../components/ChatPage";
 
 const AppRouter = () => {
   // Elimina el useEffect y las llamadas a useDispatch y useNavigate de aquí
@@ -28,7 +30,7 @@ const AppRouter = () => {
     <BrowserRouter>
       {/* Renderiza AuthServiceInitializer como un componente React */}
       <AuthServiceInitializer />
-      
+
       <Routes>
         {/* Rutas públicas */}
         <Route path="/login" element={<LoginPage />} />
@@ -42,6 +44,8 @@ const AppRouter = () => {
             <Route path="/mensajes" element={<MensajesPage />} />
             <Route path="/mis-libros" element={<MiPerfilPage />} />
             <Route path="/crear-libro" element={<CrearLibroPage />} />
+            <Route path="/mensajeria" element={<MensajeriaPage />} />
+            <Route path="/chat" element={<ChatPage />} />
           </Route>
         </Route>
       </Routes>

@@ -1,34 +1,29 @@
-# app/schemas/message.py
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional # Para Optional
 
 class MessageBase(BaseModel):
-    content: str = Field(..., min_length=1, max_length=1000)
-    conversation_id: int
+    receiver_id: int
+    content: str
 
 class MessageCreate(MessageBase):
     pass
 
-class MessageReadStatusUpdate(BaseModel):
-    read: bool
-
-class Message(MessageBase):
+class MessageResponse(BaseModel):
     id: int
     sender_id: int
     receiver_id: int
+    content: str
     timestamp: datetime
-    read: bool
-    delivered: bool
-    seen: bool
+    is_read: bool
 
     class Config:
-        from_attributes = True
+        orm_mode = True
 
-class MessageReadStatus(BaseModel):
-    message_id: int
+class ConversationPreview(BaseModel):
     user_id: int
-    read: bool
+    username: str
+    last_message: str
+    last_timestamp: datetime
 
     class Config:
-        from_attributes = True
+        orm_mode = True

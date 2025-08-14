@@ -22,4 +22,3 @@ class User(Base):
     books = relationship("Book", back_populates="owner")
     sent_messages = relationship("Message", back_populates="sender", foreign_keys="[Message.sender_id]")
     received_messages = relationship("Message", back_populates="receiver", foreign_keys="[Message.receiver_id]")
-    read_message_statuses = relationship("MessageReadStatus", back_populates="user")
