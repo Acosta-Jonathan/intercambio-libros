@@ -1,4 +1,4 @@
-// src/pages/MisLibrosPage.jsx
+// src/pages/MiPerfilPage.jsx
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -7,6 +7,7 @@ import {
   updateBook,
   actualizarTelefono,
   updateBookImage,
+  updateProfilePicture,
 } from "../services/api";
 import "../styles/MiPerfilPage.css";
 import { useNavigate } from "react-router-dom";
@@ -16,18 +17,22 @@ import BookCard from "../components/BookCard";
 import BookDetailsModal from "../components/BookDetailsModal";
 import ErrorModal from "../components/ErrorModal";
 import ConfirmationModal from "../components/ConfirmationModal";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash, FaCamera } from "react-icons/fa";
 
-const MisLibrosPage = () => {
+const MiPerfilPage = () => {
   const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.auth.user);
   const [libros, setLibros] = useState([]);
   const [editandoLibro, setEditandoLibro] = useState(null);
   const [telefono, setTelefono] = useState(user?.telefono || "");
-  const [showModal, setShowModal] = useState(false); // Modal para editar teléfono
+  const [showModal, setShowModal] = useState(false);
   const [telefonoError, setTelefonoError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // Estados para la foto de perfil (sin cambios)
+  const [newProfilePicFile, setNewProfilePicFile] = useState(null);
+  const [profilePicPreview, setProfilePicPreview] = useState(null);
 
   // Estados para el modal de detalles de libro
   const [showDetailsModal, setShowDetailsModal] = useState(false);
@@ -141,12 +146,61 @@ const MisLibrosPage = () => {
     setSelectedBook(null);
   };
 
+  const handleProfilePicChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      try {
+        // La API devuelve un usuario actualizado con la nueva URL de la imagen
+        const updatedUser = await updateProfilePicture(file, token);
+        
+        // 🐛 CORRECCIÓN: Creamos una nueva URL con un timestamp para evitar el cacheo del navegador.
+        // Esto obliga al navegador a recargar la imagen.
+        const newProfilePicUrl = `${updatedUser.profile_picture_url}?t=${Date.now()}`;
+        
+        // Creamos un objeto de usuario nuevo con la URL modificada
+        const userWithNewPic = {
+          ...updatedUser,
+          profile_picture_url: newProfilePicUrl,
+        };
+        
+        // Dispatch el usuario actualizado para que Redux y el componente se rendericen
+        dispatch(setUser(userWithNewPic));
+        
+      } catch (error) {
+        setErrorMessage("Error al subir la foto de perfil. Por favor, inténtalo de nuevo.");
+        setShowErrorModal(true);
+      }
+    }
+  };
+
   return (
     <div className="container perfil-container mb-4">
       <div className="row align-items-center">
         <div className="col-md-9 d-flex align-items-center gap-3">
-          <div className="perfil-avatar d-flex align-items-center justify-content-center">
-            <i className="fas fa-user fa-2x text-white"></i>
+          <div className="perfil-avatar-container">
+            {user?.profile_picture_url ? (
+              <img
+                // 🐛 CORRECCIÓN: La URL ya tiene el timestamp en el estado de Redux, por lo que no es necesario modificarla aquí.
+                // Es por esto que no ves el cambio en esta línea, ya que la URL completa (con timestamp) ya se encuentra en el estado `user`.
+                src={`http://localhost:8000${user.profile_picture_url}`}
+                alt="Foto de perfil"
+                className="perfil-avatar"
+              />
+            ) : (
+              <div className="perfil-avatar">
+                <i className="fas fa-user fa-2x text-white"></i>
+              </div>
+            )}
+            {/* Botón para cambiar la foto de perfil */}
+            <label className="profile-pic-edit-btn">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleProfilePicChange}
+                style={{ display: 'none' }}
+              />
+              <FaCamera />
+            </label>
           </div>
           <div>
             <h2 className="mb-1">{user?.username}</h2>
@@ -284,4 +338,4 @@ const MisLibrosPage = () => {
   );
 };
 
-export default MisLibrosPage;
+export default MiPerfilPage;

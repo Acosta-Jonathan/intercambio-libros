@@ -198,4 +198,23 @@ export const updateBookImage = async (bookId, imageFile, token) => {
   return await response.json();
 };
 
+export const updateProfilePicture = async (imageFile, token) => {
+  const formData = new FormData();
+  formData.append("file", imageFile);
+
+  const response = await fetch(`${API_URL}/users/me/profile_picture`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al subir la foto de perfil.");
+  }
+  return await response.json();
+};
+
+
 export default api;

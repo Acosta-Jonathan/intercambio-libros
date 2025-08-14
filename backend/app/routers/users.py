@@ -1,5 +1,5 @@
 # app/routers/users.py
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, UploadFile, File
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.models import User
@@ -7,11 +7,17 @@ from app.schemas.user import UserContactSchema
 from app import models, schemas, security
 from app.database import get_db
 from app.schemas.user import UpdateTelefono
+from fastapi.responses import JSONResponse
 
 import logging
-from typing import List # Importar List para el tipo de sugerencias
-import random # Importar random para generar sugerencias
+from typing import List
+import random
+import shutil
+import os
 
+UPLOAD_FOLDER = "static/profile_pictures"
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 router = APIRouter()
 
 logging.basicConfig(level=logging.INFO)
@@ -163,9 +169,47 @@ def search_users(
         models.User.username.ilike(f"%{search_term}%")
     ).limit(10).all()
     
-    # 🐛 SOLUCIÓN: Devuelve una lista vacía en lugar de un error 404
-    # La respuesta será 200 OK con un array vacío.
     return users
+
+
+# ✅ **Endpoint para subir o actualizar la foto de perfil**
+@router.put("/users/me/profile_picture", response_model=schemas.User)
+def update_profile_picture(
+    file: UploadFile = File(...),
+    current_user: models.User = Depends(security.get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Sube o actualiza la foto de perfil del usuario logueado.
+    """
+    try:
+        # ✨ CAMBIO CLAVE: Obtener el objeto User de la sesión actual antes de modificarlo
+        user_to_update = db.query(models.User).filter(models.User.id == current_user.id).first()
+        
+        if not user_to_update:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado en la base de datos.")
+
+        if not file.content_type.startswith("image/"):
+            raise HTTPException(status_code=400, detail="El archivo debe ser una imagen.")
+
+        file_extension = file.filename.split('.')[-1]
+        file_name = f"user_{user_to_update.id}.{file_extension}"
+        file_path = os.path.join(UPLOAD_FOLDER, file_name)
+
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+
+        profile_picture_url = f"/static/profile_pictures/{file_name}"
+
+        # Ahora actualizamos la instancia correcta, que está en la sesión actual
+        user_to_update.profile_picture_url = profile_picture_url
+        db.commit()
+        db.refresh(user_to_update)
+
+        return user_to_update
+    except Exception as e:
+        logging.error(f"Error al subir la foto de perfil: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error interno del servidor al subir la foto.")
 
 
 # # ✅ **Cambio de contraseña**

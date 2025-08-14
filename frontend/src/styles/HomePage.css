@@ -52,21 +52,25 @@
     border: none !important;
 }
 
-/* El botón de la lupa ya no existe en el nuevo código, pero se mantiene el estilo por si se quiere añadir de nuevo */
-.search-bar button {
-    padding: 0.6rem 1rem;
+/* Estilos para el nuevo botón de limpiar búsqueda */
+.clear-search-btn {
+    background: none;
     border: none;
-    background-color: #6c63ff;
-    color: #ffffff;
-    font-weight: bold;
-    border-radius: 20px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: color 0.2s ease;
 }
 
-.search-bar button:hover {
-    background-color: #574fd6;
+.clear-search-btn:hover {
+    color: #333;
 }
+
+
+
 
 
 /* Estilos para el nuevo menú desplegable de resultados de usuarios */

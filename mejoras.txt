@@ -33,6 +33,7 @@ Modal editar libro:
 perfil
 - No duplicado de nombre de Usuarios (tal vez con recomendaciones disponibles)
 - Si se vence el token y no hay usuario logueado debería actualizarse la pagina y llevar al formulario de logueo
+- Poder cambiar imagen de perfil
 
 HomePage:
 - Arreglar filtro por categoría

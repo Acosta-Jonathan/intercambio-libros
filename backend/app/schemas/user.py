@@ -11,6 +11,7 @@ class UserBase(BaseModel):
         pattern=r'^\d{10,}$',
         description="Solo números, mínimo 10 dígitos"
     )
+    profile_picture_url: Optional[str] = None
 
 class UserCreate(UserBase):
     password: str = Field(..., min_length=8)
@@ -19,19 +20,15 @@ class User(UserBase):
     id: int
     is_active: bool
     is_verified: bool = False
-    # Si User tiene relaciones (como sent_messages, read_message_statuses)
-    # y quieres que Pydantic las incluya al serializar, necesitarías definirlas aquí
-    # Por ejemplo, si los mensajes fueran un modelo con Pydantic:
-    # sent_messages: List['MessageSchema'] = [] # Asumiendo que 'MessageSchema' es un esquema para mensajes
 
     class Config:
-        from_attributes = True # O orm_mode = True para versiones antiguas de Pydantic
+        from_attributes = True
 
 # MODIFICACIÓN CLAVE AQUÍ:
 class Token(BaseModel):
     access_token: str
     token_type: str
-    user: User # <-- ¡Agrega esto! La respuesta del login ahora incluirá el objeto User
+    user: User
 
 class TokenPayload(BaseModel):
     sub: str

@@ -14,9 +14,10 @@ class User(Base):
     username: Mapped[str] = mapped_column(String, unique=True, index=True)
     email: Mapped[str] = mapped_column(String, unique=True, index=True)
     hashed_password: Mapped[str]
-    telefono: Mapped[str] = mapped_column(String, nullable=True)  # ✅ corregido con Mapped
+    telefono: Mapped[str] = mapped_column(String, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    profile_picture_url: Mapped[str] = mapped_column(String, nullable=True)
 
     books = relationship("Book", back_populates="owner")
     sent_messages = relationship("Message", back_populates="sender", foreign_keys="[Message.sender_id]")

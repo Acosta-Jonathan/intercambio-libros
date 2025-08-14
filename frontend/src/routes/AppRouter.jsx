@@ -9,7 +9,7 @@ import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import MensajesPage from "../pages/MensajesPage";
-import MisLibrosPage from "../pages/MiPerfilPage";
+import MiPerfilPage from "../pages/MiPerfilPage";
 import CrearLibroPage from "../pages/CrearLibroPage";
 import ProtectedRoute from "./ProtectedRoute";
 import MainLayout from "../components/layout/MainLayout";
@@ -40,7 +40,7 @@ const AppRouter = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/perfil/:userId" element={<UserProfilePage />} />
             <Route path="/mensajes" element={<MensajesPage />} />
-            <Route path="/mis-libros" element={<MisLibrosPage />} />
+            <Route path="/mis-libros" element={<MiPerfilPage />} />
             <Route path="/crear-libro" element={<CrearLibroPage />} />
           </Route>
         </Route>

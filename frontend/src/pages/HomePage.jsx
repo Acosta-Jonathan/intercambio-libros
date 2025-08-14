@@ -136,6 +136,12 @@ const HomePage = () => {
         setShowDetailsModal(false);
         setSelectedBook(null);
     };
+    
+    // NUEVA FUNCION para limpiar la búsqueda
+    const handleClearSearch = () => {
+        setBusqueda("");
+        setShowUserResultsDropdown(false);
+    };
 
     // NUEVA FUNCIÓN para navegar al perfil de un usuario
     const handleViewProfile = (userId) => {
@@ -162,6 +168,29 @@ const HomePage = () => {
                             value={busqueda}
                             onChange={(e) => setBusqueda(e.target.value)}
                         />
+                        {/* BOTÓN PARA LIMPIAR EL CAMPO DE BÚSQUEDA */}
+                        {busqueda.trim() !== "" && (
+                            <button
+                                className="clear-search-btn"
+                                onClick={handleClearSearch}
+                                aria-label="Limpiar búsqueda"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        )}
                     </div>
 
                     {/* NUEVO DROPDOWN de resultados de búsqueda de usuarios */}
@@ -182,8 +211,13 @@ const HomePage = () => {
                                             onClick={() => handleViewProfile(user.id)}
                                         >
                                             <div className="user-info">
+                                                {/* CAMBIO AQUI: Usamos la URL de la foto de perfil si existe, sino, usamos el placeholder */}
                                                 <img
-                                                    src={`https://placehold.co/40x40/E5E7EB/4B5563?text=${user.username[0].toUpperCase()}`}
+                                                    src={
+                                                        user.profile_picture_url
+                                                            ? `http://localhost:8000${user.profile_picture_url}`
+                                                            : `https://placehold.co/40x40/E5E7EB/4B5563?text=${user.username[0].toUpperCase()}`
+                                                    }
                                                     alt={`Avatar de ${user.username}`}
                                                     className="user-avatar"
                                                 />
