@@ -7,7 +7,7 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import users, books, messages
+from app.routers import users, books, messages, conversations
 from app.database import engine, Base
 import socketio
 from app.socket_manager import sio
@@ -36,6 +36,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(users.router)
 app.include_router(books.router)
 app.include_router(messages.router)
+app.include_router(conversations.router)
 
 # Configuración de logging
 logging.basicConfig(level=logging.INFO)

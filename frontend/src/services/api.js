@@ -258,9 +258,13 @@ export const sendWebSocketMessage = (ws, receiverId, content) => {
   }
 };
 
-export const getConversations = async (token) => {
+// 📩 Obtener conversaciones del usuario
+export const getConversations = async () => {
+  const token = localStorage.getItem("access_token");
   const response = await api.get("/conversations/", {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
   return response.data;
 };
@@ -272,5 +276,21 @@ export const getMessages = async (userId, token) => {
   return response.data;
 };
 
-
+export const startConversation = async (receiverId, token) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/conversations/`,
+      { receiver_id: receiverId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al iniciar la conversación:", error);
+    throw error;
+  }
+};
 export default api;

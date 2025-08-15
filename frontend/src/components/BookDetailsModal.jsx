@@ -125,6 +125,7 @@ const BookDetailsModal = ({ book, onClose, loggedInUserId }) => {
           nombreLibro={book.title}
           onClose={() => setShowContactModal(false)}
           ownerId={book.user_id}
+          currentUserId={loggedInUserId}
         />
       )}
     </div>

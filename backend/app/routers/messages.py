@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from typing import List, Dict
@@ -36,10 +36,18 @@ active_connections: Dict[int, WebSocket] = {}
 
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket, token: str, db: Session = Depends(get_db)):
-    username = verify_access_token(token)
-    user = db.query(models.user.User).filter(models.user.User.username == username).first()
+    """
+    Gestiona la conexión WebSocket para el chat en tiempo real.
+    """
+    try:
+        username = verify_access_token(token)
+    except HTTPException:
+        await websocket.close(code=status.HTTP_401_UNAUTHORIZED)
+        return
+        
+    user = db.query(models.User).filter(models.User.username == username).first()
     if not user:
-        await websocket.close(code=4001)
+        await websocket.close(code=status.HTTP_401_UNAUTHORIZED)
         return
 
     await websocket.accept()
@@ -51,15 +59,39 @@ async def websocket_endpoint(websocket: WebSocket, token: str, db: Session = Dep
             receiver_id = data.get("receiver_id")
             content = data.get("content")
 
-            new_message = models.message.Message(
+            if not receiver_id or not content:
+                continue
+
+            # Buscar o crear la conversación.
+            conversation = db.query(models.Conversation).filter(
+                or_(
+                    (models.Conversation.user1_id == user.id) & (models.Conversation.user2_id == receiver_id),
+                    (models.Conversation.user1_id == receiver_id) & (models.Conversation.user2_id == user.id)
+                )
+            ).first()
+
+            if not conversation:
+                new_convo = models.Conversation(
+                    user1_id=user.id,
+                    user2_id=receiver_id
+                )
+                db.add(new_convo)
+                db.commit()
+                db.refresh(new_convo)
+                conversation = new_convo
+
+            # Crear el nuevo mensaje con el conversation_id
+            new_message = models.Message(
                 sender_id=user.id,
                 receiver_id=receiver_id,
-                content=content
+                content=content,
+                conversation_id=conversation.id  # Asignamos el ID de la conversación aquí
             )
             db.add(new_message)
             db.commit()
             db.refresh(new_message)
 
+            # Si el receptor está conectado, le enviamos el mensaje
             if receiver_id in active_connections:
                 await active_connections[receiver_id].send_json({
                     "id": new_message.id,
@@ -67,11 +99,29 @@ async def websocket_endpoint(websocket: WebSocket, token: str, db: Session = Dep
                     "receiver_id": receiver_id,
                     "content": content,
                     "timestamp": new_message.timestamp.isoformat(),
-                    "is_read": False
+                    "is_read": False,
+                    "conversation_id": new_message.conversation_id
                 })
+            
+            # También enviamos el mensaje al emisor para que se refleje en su UI
+            await active_connections[user.id].send_json({
+                "id": new_message.id,
+                "sender_id": user.id,
+                "receiver_id": receiver_id,
+                "content": content,
+                "timestamp": new_message.timestamp.isoformat(),
+                "is_read": False,
+                "conversation_id": new_message.conversation_id
+            })
 
     except WebSocketDisconnect:
+        # La conexión se cierra, eliminamos el usuario de las conexiones activas
         active_connections.pop(user.id, None)
+    except Exception as e:
+        # Manejo de cualquier otra excepción para evitar que el proceso se detenga
+        print(f"Error inesperado en WebSocket: {e}")
+        active_connections.pop(user.id, None)
+        await websocket.close(code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @router.get("/partners", response_model=List[schemas.message.ConversationPreview])

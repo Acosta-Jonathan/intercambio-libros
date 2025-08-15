@@ -1,129 +1,141 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { getConversations, getMessages, startConversation } from "../services/api";
 import "../styles/MensajeriaPage.css";
 
-const API_BASE = "http://localhost:8000";
-
 const MensajeriaPage = () => {
+  const { id } = useParams(); // ID del otro usuario de la URL
+  const navigate = useNavigate();
   const location = useLocation();
-  const { targetUserId } = location.state || {};
+  const { targetUserId, targetUsername } = location.state || {}; // Información del usuario de destino si viene del `state`
+
   const loggedInUser = useSelector((state) => state.auth.user);
   const loggedInUserId = loggedInUser?.id || null;
+  const token = localStorage.getItem("access_token");
 
-  const [chats, setChats] = useState([]); // {user_id, username, last_message, last_timestamp}
-  const [selectedChatUser, setSelectedChatUser] = useState(null); // {user_id, username}
-  const [messages, setMessages] = useState([]); // historial con selectedChatUser
+  const [conversations, setConversations] = useState([]);
+  const [selectedChatUser, setSelectedChatUser] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [loadingChats, setLoadingChats] = useState(true);
-  const [loadingMessages, setLoadingMessages] = useState(false);
   const messagesEndRef = useRef(null);
   const wsRef = useRef(null);
 
-  const token = localStorage.getItem("token");
+  // Función para conectar al WebSocket
+  const connectWebSocket = useCallback(() => {
+    if (!token || !loggedInUserId || wsRef.current) return;
 
-  // Abrir WebSocket
-  useEffect(() => {
-    if (!token) return;
+    wsRef.current = new WebSocket(`ws://localhost:8000/messages/ws?token=${token}`);
 
-    const wsUrl = `ws://localhost:8000/messages/ws?token=${encodeURIComponent(token)}`;
-    const ws = new WebSocket(wsUrl);
-    wsRef.current = ws;
-
-    ws.onopen = () => {
-      // console.log("WS conectado");
+    wsRef.current.onopen = () => {
+      console.log("Conectado al WebSocket");
     };
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      // data => {id, sender_id, receiver_id, content, timestamp, is_read}
-      const otherId = data.sender_id === loggedInUserId ? data.receiver_id : data.sender_id;
+    wsRef.current.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      const otherId = message.sender_id === loggedInUserId ? message.receiver_id : message.sender_id;
 
-      // Si estoy en esa conversación, agrego el mensaje
-      if (selectedChatUser && selectedChatUser.user_id === otherId) {
-        setMessages((prev) => [...prev, data]);
-      }
-
-      // Actualizo la lista de chats (muevo/creo entrada con last_message)
-      setChats((prev) => {
-        const rest = prev.filter((c) => c.user_id !== otherId);
-        const existing = prev.find((c) => c.user_id === otherId);
-        const username = existing?.username ?? `Usuario ${otherId}`;
+      // Actualiza la lista de conversaciones con el nuevo mensaje
+      setConversations(prev => {
+        const rest = prev.filter(c => c.other_user_id !== otherId);
+        const existing = prev.find(c => c.other_user_id === otherId);
+        const username = existing?.other_user_name ?? `Usuario ${otherId}`;
         const updated = {
-          user_id: otherId,
-          username,
-          last_message: data.content,
-          last_timestamp: data.timestamp,
+          other_user_id: otherId,
+          other_user_name: username,
+          last_message: message.content,
+          last_message_time: message.timestamp,
         };
         return [updated, ...rest];
       });
+
+      // Si el mensaje es para el chat activo, agrégalo a la vista
+      if (selectedChatUser && selectedChatUser.user_id === otherId) {
+        setMessages(prev => [...prev, message]);
+      }
     };
 
-    ws.onclose = () => {
-      wsRef.current = null;
+    wsRef.current.onclose = () => {
+        console.log("Desconectado del WebSocket", event.code);
+        wsRef.current = null;
+        // Lógica de reconexión: intenta reconectar después de un breve retraso
+        setTimeout(() => {
+            console.log("Intentando reconectar...");
+            connectWebSocket();
+        }, 3000); // Intenta reconectar después de 3 segundos
     };
 
+    wsRef.current.onerror = (error) => {
+      console.error("Error en WebSocket:", error);
+    };
+
+    // Función de limpieza para cerrar la conexión al desmontar el componente
     return () => {
-      ws.close();
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        wsRef.current.close();
+      }
+      wsRef.current = null;
     };
   }, [token, loggedInUserId, selectedChatUser]);
 
-  // Cargar lista de conversaciones
+  // Carga inicial de conversaciones y conexión WebSocket
   useEffect(() => {
-    if (!token) return;
-    const loadPartners = async () => {
-      setLoadingChats(true);
+    const loadConversations = async () => {
+      if (!token) return;
       try {
-        const res = await fetch(`${API_BASE}/messages/partners`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        setChats(data);
-
-        // Si vengo desde "Iniciar conversación" del modal
-        if (targetUserId) {
-          const existing = data.find((c) => c.user_id === targetUserId);
-          if (existing) {
-            setSelectedChatUser({ user_id: existing.user_id, username: existing.username });
-          } else {
-            // Aún no hay historial, creo entrada "temporal"
-            setSelectedChatUser({ user_id: targetUserId, username: `Usuario ${targetUserId}` });
-            setChats((prev) => [
-              { user_id: targetUserId, username: `Usuario ${targetUserId}`, last_message: "¡Inicia una nueva conversación!", last_timestamp: new Date().toISOString() },
-              ...prev,
-            ]);
-          }
-        }
-      } catch (e) {
-        console.error("Error cargando conversaciones:", e);
-      } finally {
-        setLoadingChats(false);
+        const data = await getConversations();
+        setConversations(data);
+      } catch (error) {
+        console.error("Error al cargar conversaciones:", error);
       }
     };
-    loadPartners();
-  }, [token, targetUserId]);
 
-  // Cargar historial de una conversación
+    loadConversations();
+    connectWebSocket();
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+    };
+  }, [token, connectWebSocket]);
+
+  // Manejar la selección del chat desde la URL o el estado
+  useEffect(() => {
+    if (id && conversations.length > 0) {
+      const chat = conversations.find(c => c.other_user_id === parseInt(id));
+      if (chat) {
+        setSelectedChatUser({
+          user_id: chat.other_user_id,
+          username: chat.other_user_name,
+        });
+      }
+    } else if (targetUserId) {
+      setSelectedChatUser({
+        user_id: targetUserId,
+        username: targetUsername || `Usuario ${targetUserId}`,
+      });
+      // Limpiar el estado para evitar selecciones accidentales en futuros re-renderizados
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [id, targetUserId, targetUsername, conversations, navigate, location.pathname]);
+
+  // Cargar historial de mensajes del chat seleccionado
   useEffect(() => {
     if (!token || !selectedChatUser) {
       setMessages([]);
       return;
     }
-    const loadHistory = async () => {
-      setLoadingMessages(true);
+    const loadMessages = async () => {
       try {
-        const res = await fetch(`${API_BASE}/messages/conversation/${selectedChatUser.user_id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        setMessages(data);
-      } catch (e) {
-        console.error("Error cargando historial:", e);
-      } finally {
-        setLoadingMessages(false);
+        const fetchedMessages = await getMessages(selectedChatUser.user_id, token);
+        setMessages(fetchedMessages);
+      } catch (error) {
+        console.error("Error al cargar mensajes:", error);
       }
     };
-    loadHistory();
+    loadMessages();
   }, [token, selectedChatUser]);
 
   // Scroll al último mensaje
@@ -131,94 +143,87 @@ const MensajeriaPage = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSendMessage = (e) => {
+  // Manejar el envío de mensajes
+  const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim() || !selectedChatUser || !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
+    const content = newMessage.trim();
+    if (!content || !selectedChatUser || !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      return;
+    }
 
-    const payload = {
-      receiver_id: selectedChatUser.user_id,
-      content: newMessage.trim(),
-    };
-    wsRef.current.send(JSON.stringify(payload));
-    // Como el backend reenvía al receptor, y nosotros somos emisor,
-    // agregamos localmente para feedback inmediato:
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: `temp-${Date.now()}`,
+    try {
+      // Envía el mensaje por WebSocket
+      wsRef.current.send(JSON.stringify({
+        receiver_id: selectedChatUser.user_id,
+        content: content,
+      }));
+
+      // Agrega el mensaje al estado local inmediatamente
+      const tempMessage = {
+        id: Date.now(),
         sender_id: loggedInUserId,
         receiver_id: selectedChatUser.user_id,
-        content: newMessage.trim(),
+        content: content,
         timestamp: new Date().toISOString(),
-        is_read: false,
-      },
-    ]);
-    setChats((prev) => {
-      const rest = prev.filter((c) => c.user_id !== selectedChatUser.user_id);
-      const updated = {
-        user_id: selectedChatUser.user_id,
-        username: selectedChatUser.username,
-        last_message: newMessage.trim(),
-        last_timestamp: new Date().toISOString(),
       };
-      return [updated, ...rest];
-    });
-    setNewMessage("");
+      setMessages(prev => [...prev, tempMessage]);
+
+      // Si la conversación no existe, se crea en el backend.
+      // Esta llamada asegura que se cree la conversación si es la primera vez que se envía un mensaje.
+      await startConversation(selectedChatUser.user_id, token);
+
+      setNewMessage("");
+
+    } catch (error) {
+      console.error("Error al enviar el mensaje:", error);
+    }
   };
 
-  const getChatPartnerName = (chat) => chat.username || `Usuario ${chat.user_id}`;
+  const selectChat = (chat) => {
+    navigate(`/mensajeria/${chat.other_user_id}`);
+  };
 
   return (
     <div className="messaging-page-container">
       <div className="chat-list-pane">
         <h2>Chats</h2>
-        {loadingChats ? (
-          <p>Cargando chats...</p>
-        ) : (
-          <div className="chat-list">
-            {chats.length === 0 ? (
-              <p>No tienes conversaciones activas.</p>
-            ) : (
-              chats.map((chat) => (
-                <div
-                  key={chat.user_id}
-                  className={`chat-item ${selectedChatUser?.user_id === chat.user_id ? "active" : ""}`}
-                  onClick={() => setSelectedChatUser({ user_id: chat.user_id, username: chat.username })}
-                >
-                  <div className="chat-info">
-                    <p className="chat-partner-name">{getChatPartnerName(chat)}</p>
-                    <p className="last-message">{chat.last_message}</p>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        )}
+        <div className="chat-list">
+          {conversations.map((chat) => (
+            <div
+              key={chat.other_user_id}
+              className={`chat-item ${
+                selectedChatUser?.user_id === chat.other_user_id ? "active" : ""
+              }`}
+              onClick={() => selectChat(chat)}
+            >
+              <div className="chat-info">
+                <p className="chat-partner-name">{chat.other_user_name}</p>
+                <p className="last-message">{chat.last_message}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="chat-window-pane">
         {selectedChatUser ? (
           <>
             <div className="chat-header">
-              <h3>{selectedChatUser.username || `Usuario ${selectedChatUser.user_id}`}</h3>
+              <h3>{selectedChatUser.username}</h3>
             </div>
-
             <div className="messages-container">
-              {loadingMessages ? (
-                <p>Cargando mensajes...</p>
-              ) : (
-                messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`message-bubble ${msg.sender_id === loggedInUserId ? "sent" : "received"}`}
-                  >
-                    <p>{msg.content}</p>
-                  </div>
-                ))
-              )}
+              {messages.map((msg) => (
+                <div
+                  key={msg.id}
+                  className={`message-bubble ${
+                    msg.sender_id === loggedInUserId ? "sent" : "received"
+                  }`}
+                >
+                  <p>{msg.content}</p>
+                </div>
+              ))}
               <div ref={messagesEndRef} />
             </div>
-
             <form onSubmit={handleSendMessage} className="message-input-form">
               <input
                 type="text"
@@ -227,7 +232,9 @@ const MensajeriaPage = () => {
                 placeholder="Escribe un mensaje..."
                 className="message-input"
               />
-              <button type="submit" className="send-button">Enviar</button>
+              <button type="submit" className="send-button">
+                Enviar
+              </button>
             </form>
           </>
         ) : (

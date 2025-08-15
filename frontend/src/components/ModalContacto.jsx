@@ -1,19 +1,58 @@
+// src/components/ModalContacto.jsx
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/ModalContacto.css";
+import axios from "axios";
 
-const ModalContacto = ({ email, telefono, nombreLibro, onClose, ownerId }) => {
+const ModalContacto = ({ email, telefono, nombreLibro, onClose, ownerId, ownerUsername }) => {
   const [showEmailOptions, setShowEmailOptions] = useState(false);
   const navigate = useNavigate();
+
 
   const handleEmailClick = () => setShowEmailOptions(true);
   const isWhatsAppDisabled = !telefono;
   const asunto = `Intercambio de Libro - ${nombreLibro}`;
 
-  const handleDirectMessage = () => {
-    navigate(`/chat`, { state: { targetUserId: ownerId } });
-    onClose();
+  const handleDirectMessage = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        console.error("No se encontró el token de autenticación.");
+        // Opcional: redirigir al login
+        return;
+      }
+      
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
+      
+      // CAMBIO 1: La URL del endpoint debe ser /conversations/
+      // CAMBIO 2: El payload debe enviar solo el receiver_id
+      const res = await axios.post(
+        "http://localhost:8000/conversations/",
+        {
+          receiver_id: ownerId
+        },
+        config
+      );
+      
+      // La respuesta del backend ahora es un objeto ConversationOut,
+      // que tiene el 'id' de la conversación.
+      navigate(`/mensajeria`, {
+        state: {
+          targetUserId: ownerId,
+          targetUsername: ownerUsername // Pasa el nombre para la UI
+        }
+      });
+      onClose();
+    } catch (err) {
+      console.error("Error creando/obteniendo conversación:", err);
+    }
   };
+
 
   return (
     <div className="modal-backdrop-contacto">
