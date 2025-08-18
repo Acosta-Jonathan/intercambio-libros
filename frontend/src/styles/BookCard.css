@@ -289,7 +289,7 @@
 /* Estilos para el borde animado */
 .libro-card.animate-highlight {
   position: relative;
-  border: 2px solid #ffc107;
+  border: 5px solid #ffc107;
   overflow: hidden; /* Esto es crucial para que el "destello" no se salga */
 }
 

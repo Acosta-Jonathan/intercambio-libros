@@ -2,12 +2,14 @@
 
 .messaging-page-container {
     display: flex;
-    height: 90vh; /* Ajusta la altura de la página de mensajería */
+    /* Ajusta la altura dinámicamente */
+    height: calc(100vh - 100px); /* 100px es un valor de ejemplo. Ajusta esto al alto de tu navbar. */
     max-width: 1200px;
-    margin: 20px auto;
+    margin: 50px auto 0px;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    
 }
 
 .chat-list-pane {
@@ -162,6 +164,7 @@
     color: white;
     border: none;
 }
+
 .dm-btn:hover {
     background-color: #574fd6;
 }
@@ -169,6 +172,9 @@
 @media (max-width: 768px) {
     .messaging-page-container {
         flex-direction: column;
+        /* Reajusta el margen superior en pantallas pequeñas si tu navbar cambia de tamaño */
+        margin-top: 60px; /* Por ejemplo, si el navbar es más pequeño en móviles */
+        height: calc(100vh - 60px); 
     }
 
     .chat-list-pane {

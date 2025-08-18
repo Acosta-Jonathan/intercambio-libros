@@ -24,6 +24,7 @@
   padding: 1.5rem 2rem;
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    margin-top: 130px; 
 }
 
 /* Contenedor para el avatar y el botón de edición */
