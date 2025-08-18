@@ -1,3 +1,4 @@
+
 // src/pages/MiPerfilPage.jsx
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -43,6 +44,13 @@ const MiPerfilPage = () => {
   const [libroAEliminar, setLibroAEliminar] = useState(null);
 
   // Estados para el modal de error
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Estados para modales personalizados de confirmación y error
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState("");
+  const [confirmAction, setConfirmAction] = useState(() => () => {});
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -222,6 +230,7 @@ const MiPerfilPage = () => {
         </div>
       </div>
 
+      {/* Modal para editar teléfono */}
       {showModal && (
         <div className="modal d-block bg-dark bg-opacity-50" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
@@ -318,7 +327,6 @@ const MiPerfilPage = () => {
           loggedInUserId={user?.id || null}
         />
       )}
-      
       {/* Renderizado de los modales separados */}
       {showConfirmModal && (
         <ConfirmationModal

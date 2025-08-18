@@ -120,18 +120,16 @@ export const actualizarTelefono = async (telefono, token) => {
   return response.data;
 };
 
-// ✨✨✨ CAMBIO AQUÍ: Asegúrate de que getUserContact envíe el token ✨✨✨
+// ✨ OBTENER CONTACTO DE USUARIO (YA EXISTÍA)
 export const getUserContact = async (userId) => {
-  const token = localStorage.getItem('access_token'); // Obtén el token
+  const token = localStorage.getItem('access_token');
   if (!token) {
-    // Si no hay token, no podemos hacer la llamada autenticada
-    // El interceptor no se activará aquí, así que manejamos el error directamente
     return Promise.reject(new Error('No hay token de autenticación para obtener el contacto del usuario.'));
   }
 
   const response = await api.get(`/users/${userId}`, {
     headers: {
-      Authorization: `Bearer ${token}`, // Añade el encabezado de autorización
+      Authorization: `Bearer ${token}`,
     },
   });
   return response.data;
@@ -152,7 +150,21 @@ export const searchUsers = async (searchTerm) => {
   });
   return response.data;
 };
+// ✨✨✨ NUEVAS FUNCIONES PARA EL BUSCADOR Y PERFIL ✨✨✨
 
+// 🔎 Buscar usuarios por nombre
+export const searchUsers = async (searchTerm) => {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    return Promise.reject(new Error('No hay token de autenticación para buscar usuarios.'));
+  }
+  const response = await api.get(`/users/search/?name=${encodeURIComponent(searchTerm)}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
 // 👨‍💼 Obtener el perfil de un usuario (usa un endpoint diferente para evitar conflictos)
 export const getUserProfile = async (userId) => {
   const token = localStorage.getItem('access_token');
@@ -180,7 +192,6 @@ export const getUserBooks = async (userId) => {
   });
   return response.data;
 };
-
 export const updateBookImage = async (bookId, imageFile, token) => {
   const formData = new FormData();
   formData.append("file", imageFile);

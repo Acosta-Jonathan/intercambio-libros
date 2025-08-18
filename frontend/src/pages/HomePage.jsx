@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// Importamos las funciones necesarias, incluyendo la nueva para buscar usuarios
 import { getAllBooks, searchUsers } from "../services/api";
 import "../styles/HomePage.css";
 import {
@@ -131,10 +130,18 @@ const HomePage = () => {
         setSelectedBook(book);
         setShowDetailsModal(true);
     };
+    fetchLibros();
+  }, []);
 
-    const handleCloseDetailsModal = () => {
-        setShowDetailsModal(false);
-        setSelectedBook(null);
+  // Efecto para controlar el scroll del body cuando el modal está abierto
+  useEffect(() => {
+    if (showDetailsModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
     };
     
     // NUEVA FUNCION para limpiar la búsqueda
@@ -240,47 +247,69 @@ const HomePage = () => {
                 </div>
             </div>
 
-            <div className="main-section">
-                <aside className="sidebar-filtros">
-                    <h3>Filtros</h3>
+  const handleViewDetails = (book) => {
+    setSelectedBook(book);
+    setShowDetailsModal(true);
+  };
 
-                    <label>Categoría</label>
-                    <select
-                        value={categoria}
-                        onChange={(e) => setCategoria(e.target.value)}
+  const handleCloseDetailsModal = () => {
+    setShowDetailsModal(false);
+    setSelectedBook(null);
+  };
+
+  const handleViewProfile = (userId) => {
+    navigate(`/perfil/${userId}`);
+    setShowUserResultsDropdown(false);
+    setBusqueda("");
+  };
+
+  return (
+    <div className="home-wrapper">
+      <div className="hero-section">
+        <h1>Intercambiá libros con tu comunidad</h1>
+        <p>
+          Descubrí nuevas historias y compartí las tuyas con lectores
+          apasionados
+        </p>
+        <div className="search-bar-container">
+          <div className="search-bar">
+            <input
+              className="search-input"
+              type="text"
+              placeholder="Buscá por título, autor o nombre de usuario"
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+            />
+          </div>
+
+          {showUserResultsDropdown && (
+            <div className="user-search-dropdown">
+              {loadingUserSearch && (
+                <div className="dropdown-item loading-message">
+                  Buscando usuarios...
+                </div>
+              )}
+
+              {!loadingUserSearch && userSearchResults.length > 0 && (
+                <>
+                  {userSearchResults.map((user) => (
+                    <div
+                      key={user.id}
+                      className="dropdown-item user-result"
+                      onClick={() => handleViewProfile(user.id)}
                     >
-                        <option value="">Todas las categorías</option>
-                        {TODAS_LAS_CATEGORIAS.map((cat) => (
-                            <option key={cat.id} value={cat.nombre}>
-                                {cat.nombre}
-                            </option>
-                        ))}
-                    </select>
-
-                    <label>Idioma</label>
-                    <select value={idioma} onChange={(e) => setIdioma(e.target.value)}>
-                        <option value="">Todos los idiomas</option>
-                        {TODOS_LOS_IDIOMAS.map((idiomaOpcion) => (
-                            <option key={idiomaOpcion.id} value={idiomaOpcion.nombre}>
-                                {idiomaOpcion.nombre}
-                            </option>
-                        ))}
-                    </select>
-
-                    <label>Estado</label>
-                    <select value={estado} onChange={(e) => setEstado(e.target.value)}>
-                        <option value="">Cualquier estado</option>
-                        {TODOS_LOS_ESTADOS.map((estadoOpcion) => (
-                            <option key={estadoOpcion.id} value={estadoOpcion.nombre}>
-                                {estadoOpcion.nombre}
-                            </option>
-                        ))}
-                    </select>
-                </aside>
-                <section className="libros-section">
-                    <div className="libros-header">
-                        <h3>Libros disponibles</h3>
+                      <div className="user-info">
+                        <img
+                          src={`https://placehold.co/40x40/E5E7EB/4B5563?text=${user.username[0].toUpperCase()}`}
+                          alt={`Avatar de ${user.username}`}
+                          className="user-avatar"
+                        />
+                        <p className="username">{user.username}</p>
+                      </div>
                     </div>
+                  ))}
+                </>
+              )}
 
                     <div className="cards-container">
                         {librosOrdenados.length === 0 ? (
@@ -305,16 +334,101 @@ const HomePage = () => {
                     </div>
                 </section>
             </div>
-
-            {showDetailsModal && selectedBook && (
-                <BookDetailsModal
-                    book={selectedBook}
-                    onClose={handleCloseDetailsModal}
-                    loggedInUserId={loggedInUserId}
-                />
-            )}
+          )}
         </div>
-    );
+      </div>
+
+      <div className="main-section">
+        <aside className="sidebar-filtros">
+          <h3>Filtros</h3>
+
+          <label>Categoría</label>
+          <select
+            value={categoria}
+            onChange={(e) => setCategoria(e.target.value)}
+          >
+            <option value="">Todas las categorías</option>
+            {TODAS_LAS_CATEGORIAS.map((cat) => (
+              <option key={cat.id} value={cat.nombre}>
+                {cat.nombre}
+              </option>
+            ))}
+          </select>
+
+          <label>Idioma</label>
+          <select value={idioma} onChange={(e) => setIdioma(e.target.value)}>
+            <option value="">Todos los idiomas</option>
+            {TODOS_LOS_IDIOMAS.map((idiomaOpcion) => (
+              <option key={idiomaOpcion.id} value={idiomaOpcion.nombre}>
+                {idiomaOpcion.nombre}
+              </option>
+            ))}
+          </select>
+
+          <label>Estado</label>
+          <select value={estado} onChange={(e) => setEstado(e.target.value)}>
+            <option value="">Cualquier estado</option>
+            {TODOS_LOS_ESTADOS.map((estadoOpcion) => (
+              <option key={estadoOpcion.id} value={estadoOpcion.nombre}>
+                {estadoOpcion.nombre}
+              </option>
+            ))}
+          </select>
+          
+          {/* NUEVOS FILTROS DE EDITORIAL Y EDICIÓN */}
+          <label>Editorial</label>
+          <input
+            type="text"
+            placeholder="Filtrar por editorial"
+            value={editorial}
+            onChange={(e) => setEditorial(e.target.value)}
+          />
+
+          <label>Edición</label>
+          <input
+            type="text"
+            placeholder="Filtrar por edición"
+            value={edicion}
+            onChange={(e) => setEdicion(e.target.value)}
+          />
+        </aside>
+        <section className="libros-section">
+          <div className="libros-header">
+            <h3>Libros disponibles</h3>
+          </div>
+
+          <div className="cards-container">
+            {librosOrdenados.length === 0 ? (
+              <p>No se encontraron libros.</p>
+            ) : (
+              librosOrdenados.map((libro) => (
+                <BookCard
+                  key={libro.id}
+                  book={libro}
+                  showHighlight={libro.user_id === loggedInUserId}
+                >
+                  <button
+                    className="detalles-btn"
+                    onClick={() => handleViewDetails(libro)}
+                  >
+                    Ver detalles
+                  </button>
+                </BookCard>
+              ))
+            )}
+          </div>
+        </section>
+      </div>
+
+      {showDetailsModal && selectedBook && (
+        <BookDetailsModal
+          book={selectedBook}
+          onClose={handleCloseDetailsModal}
+          loggedInUserId={loggedInUserId}
+        />
+      )}
+    </div>
+  );
 };
 
 export default HomePage;

@@ -29,6 +29,13 @@
     margin: 0 auto;
 }
 
+.search-bar-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 .search-bar {
     display: flex;
     align-items: center;
@@ -199,8 +206,6 @@
     width: auto;
     height: max-content;
 }
-
-
 
 /* Responsive para dispositivos móviles */
 @media (max-width: 768px) {

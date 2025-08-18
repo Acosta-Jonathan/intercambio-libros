@@ -17,13 +17,6 @@ import UserProfilePage from "../pages/UserProfilePage";
 import MensajeriaPage from "../pages/MensajeriaPage";
 
 const AppRouter = () => {
-  // Elimina el useEffect y las llamadas a useDispatch y useNavigate de aquí
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
-  // useEffect(() => {
-  //   AuthServiceInitializer(dispatch, navigate);
-  // }, [dispatch, navigate]);
-
   return (
     <BrowserRouter>
       {/* Renderiza AuthServiceInitializer como un componente React */}
