@@ -19,96 +19,137 @@ const MensajeriaPage = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef(null);
-  const wsRef = useRef(null);
+  const wsRef = useRef(null); // Referencia persistente al objeto WebSocket
 
-  // Función para conectar al WebSocket
+  // ✨ FUNCIÓN PARA CONECTAR AL WEBSOCKET (se ejecuta una única vez al montar el componente)
   const connectWebSocket = useCallback(() => {
-    if (!token || !loggedInUserId || wsRef.current) return;
+    // Si ya existe una conexión o no hay token/usuario logueado, no intentes conectar
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      return;
+    }
+    if (!token || !loggedInUserId) {
+      console.warn("No hay token o usuario logueado para conectar el WebSocket.");
+      return;
+    }
 
-    wsRef.current = new WebSocket(`ws://localhost:8000/messages/ws?token=${token}`);
+    const ws = new WebSocket(`ws://localhost:8000/messages/ws?token=${token}`);
 
-    wsRef.current.onopen = () => {
+    ws.onopen = () => {
       console.log("Conectado al WebSocket");
     };
 
-    wsRef.current.onmessage = (event) => {
+    ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       const otherId = message.sender_id === loggedInUserId ? message.receiver_id : message.sender_id;
 
-      // Actualiza la lista de conversaciones con el nuevo mensaje
-      setConversations(prev => {
-        const rest = prev.filter(c => c.other_user_id !== otherId);
-        const existing = prev.find(c => c.other_user_id === otherId);
-        const username = existing?.other_user_name ?? `Usuario ${otherId}`;
-        const updated = {
-          other_user_id: otherId,
-          other_user_name: username,
-          last_message: message.content,
-          last_message_time: message.timestamp,
-        };
-        return [updated, ...rest];
+      // Actualiza la lista de conversaciones
+      setConversations(prevConversations => {
+        const otherChatExists = prevConversations.some(c => c.other_user_id === otherId);
+        let updatedConversations;
+
+        // Si el chat ya existe, actualízalo y muévelo al principio
+        if (otherChatExists) {
+          updatedConversations = prevConversations.map(c => 
+            c.other_user_id === otherId ? { ...c, last_message: message.content, last_message_time: message.timestamp } : c
+          );
+          // Mueve el chat actualizado al principio para que aparezca como el más reciente
+          const chatToMove = updatedConversations.find(c => c.other_user_id === otherId);
+          const filtered = updatedConversations.filter(c => c.other_user_id !== otherId);
+          updatedConversations = [chatToMove, ...filtered];
+        } else {
+          // Si es un chat nuevo, añádelo al principio (esto puede ocurrir si recibimos un mensaje de un usuario con el que aún no hemos interactuado)
+          updatedConversations = [{
+            other_user_id: otherId,
+            other_user_name: `Usuario ${otherId}`, // Asume un nombre por defecto si no lo tienes
+            last_message: message.content,
+            last_message_time: message.timestamp,
+          }, ...prevConversations];
+        }
+        return updatedConversations.sort((a, b) => new Date(b.last_message_time) - new Date(a.last_message_time));
       });
 
       // Si el mensaje es para el chat activo, agrégalo a la vista
-      if (selectedChatUser && selectedChatUser.user_id === otherId) {
+      if (selectedChatUser && (selectedChatUser.user_id === otherId || message.sender_id === loggedInUserId)) {
         setMessages(prev => [...prev, message]);
       }
     };
 
-    wsRef.current.onclose = () => {
-        console.log("Desconectado del WebSocket", event.code);
-        wsRef.current = null;
-        // Lógica de reconexión: intenta reconectar después de un breve retraso
-        setTimeout(() => {
-            console.log("Intentando reconectar...");
-            connectWebSocket();
-        }, 3000); // Intenta reconectar después de 3 segundos
+    ws.onclose = (event) => {
+      console.log("Desconectado del WebSocket. Código:", event.code, "Razón:", event.reason);
+      wsRef.current = null; // Limpia la referencia al WS cerrado
+      // Implementar una lógica de reconexión controlada aquí si lo deseas,
+      // pero asegúrate de que no cause un bucle infinito en caso de error persistente.
+      // Por ejemplo, con un retraso exponencial o un límite de reintentos.
+      // setTimeout(() => {
+      //   console.log("Intentando reconectar...");
+      //   connectWebSocket();
+      // }, 3000);
     };
 
-    wsRef.current.onerror = (error) => {
+    ws.onerror = (error) => {
       console.error("Error en WebSocket:", error);
+      if (wsRef.current) {
+        wsRef.current.close(); // Cierra explícitamente la conexión en caso de error
+      }
     };
 
-    // Función de limpieza para cerrar la conexión al desmontar el componente
+    wsRef.current = ws; // Guarda la instancia del WebSocket en la referencia
+
+    // Limpieza: Esta función se ejecuta SÓLO cuando el componente se desmonta.
+    // Asegura que la conexión se cierre limpiamente para evitar conexiones fantasma.
     return () => {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         wsRef.current.close();
+        console.log("WebSocket cerrado al desmontar el componente.");
       }
       wsRef.current = null;
     };
-  }, [token, loggedInUserId, selectedChatUser]);
+  }, [token, loggedInUserId, selectedChatUser]); // Dependencias para re-ejecutar el efecto si cambian
 
-  // Carga inicial de conversaciones y conexión WebSocket
+  // ✨ EFECTO PRINCIPAL: Se encarga de iniciar la conexión WebSocket
+  // Se ejecuta solo una vez al montar el componente (gracias al `useCallback` y sus dependencias)
+  useEffect(() => {
+    connectWebSocket();
+  }, [connectWebSocket]);
+
+  // ✨ Cargar conversaciones al inicio y cuando el token cambie
   useEffect(() => {
     const loadConversations = async () => {
       if (!token) return;
       try {
-        const data = await getConversations();
+        const data = await getConversations(token); // Pasa el token a getConversations
         setConversations(data);
       } catch (error) {
         console.error("Error al cargar conversaciones:", error);
       }
     };
-
     loadConversations();
-    connectWebSocket();
+  }, [token]); // Depende del token
 
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-        wsRef.current = null;
-      }
-    };
-  }, [token, connectWebSocket]);
-
-  // Manejar la selección del chat desde la URL o el estado
+  // ✨ Manejar la selección del chat desde la URL o el estado
   useEffect(() => {
-    if (id && conversations.length > 0) {
-      const chat = conversations.find(c => c.other_user_id === parseInt(id));
+    if (id) {
+      const parsedId = parseInt(id);
+      const chat = conversations.find(c => c.other_user_id === parsedId);
       if (chat) {
         setSelectedChatUser({
           user_id: chat.other_user_id,
           username: chat.other_user_name,
+        });
+      } else if (targetUserId && targetUserId === parsedId) {
+        // Caso de que lleguemos de una búsqueda y el chat no exista en la lista (primera conversación)
+        setSelectedChatUser({
+          user_id: targetUserId,
+          username: targetUsername || `Usuario ${targetUserId}`,
+        });
+        navigate(location.pathname, { replace: true, state: {} }); // Limpiar el estado de la URL
+      } else {
+        // Si el ID de la URL no coincide con ninguna conversación existente,
+        // podrías querer cargar los detalles del usuario para mostrarlo en el chat.
+        // Por ahora, establece un usuario genérico.
+        setSelectedChatUser({
+          user_id: parsedId,
+          username: `Usuario ${parsedId}`,
         });
       }
     } else if (targetUserId) {
@@ -116,27 +157,33 @@ const MensajeriaPage = () => {
         user_id: targetUserId,
         username: targetUsername || `Usuario ${targetUserId}`,
       });
-      // Limpiar el estado para evitar selecciones accidentales en futuros re-renderizados
       navigate(location.pathname, { replace: true, state: {} });
+    } else {
+      setSelectedChatUser(null);
     }
   }, [id, targetUserId, targetUsername, conversations, navigate, location.pathname]);
 
-  // Cargar historial de mensajes del chat seleccionado
-  useEffect(() => {
-    if (!token || !selectedChatUser) {
+
+  // ✨ Cargar historial de mensajes del chat seleccionado
+  const fetchMessages = useCallback(async (userId) => {
+    if (!token || !userId) {
       setMessages([]);
       return;
     }
-    const loadMessages = async () => {
-      try {
-        const fetchedMessages = await getMessages(selectedChatUser.user_id, token);
-        setMessages(fetchedMessages);
-      } catch (error) {
-        console.error("Error al cargar mensajes:", error);
-      }
-    };
-    loadMessages();
-  }, [token, selectedChatUser]);
+    try {
+      const fetchedMessages = await getMessages(userId, token);
+      setMessages(fetchedMessages);
+    } catch (error) {
+      console.error("Error al cargar mensajes:", error);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (selectedChatUser) {
+      fetchMessages(selectedChatUser.user_id);
+    }
+  }, [selectedChatUser, fetchMessages]);
+
 
   // Scroll al último mensaje
   useEffect(() => {
@@ -147,20 +194,26 @@ const MensajeriaPage = () => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     const content = newMessage.trim();
-    if (!content || !selectedChatUser || !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+    if (!content || !selectedChatUser) {
+      return;
+    }
+
+    // Verifica que el WebSocket esté abierto antes de enviar
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      console.error("No se puede enviar el mensaje: WebSocket no está conectado o listo.");
       return;
     }
 
     try {
-      // Envía el mensaje por WebSocket
+      // 1. Envía el mensaje por WebSocket
       wsRef.current.send(JSON.stringify({
         receiver_id: selectedChatUser.user_id,
         content: content,
       }));
 
-      // Agrega el mensaje al estado local inmediatamente
+      // 2. Optimista: Agrega el mensaje al estado local inmediatamente para una UX fluida
       const tempMessage = {
-        id: Date.now(),
+        id: `temp-${Date.now()}`, // Usar un ID temporal único
         sender_id: loggedInUserId,
         receiver_id: selectedChatUser.user_id,
         content: content,
@@ -168,14 +221,30 @@ const MensajeriaPage = () => {
       };
       setMessages(prev => [...prev, tempMessage]);
 
-      // Si la conversación no existe, se crea en el backend.
-      // Esta llamada asegura que se cree la conversación si es la primera vez que se envía un mensaje.
+      // 3. Actualiza la lista de conversaciones (mueve el chat al principio con el último mensaje)
+      setConversations(prev => {
+        const rest = prev.filter(c => c.other_user_id !== selectedChatUser.user_id);
+        const updated = {
+          ...selectedChatUser,
+          other_user_id: selectedChatUser.user_id,
+          other_user_name: selectedChatUser.username,
+          last_message: content,
+          last_message_time: tempMessage.timestamp,
+        };
+        return [updated, ...rest].sort((a, b) => new Date(b.last_message_time) - new Date(a.last_message_time));
+      });
+
+      // 4. Asegura que la conversación exista en el backend (solo si es la primera vez que se envía un mensaje a ese usuario)
+      // Esta llamada es idempotente, no creará duplicados.
       await startConversation(selectedChatUser.user_id, token);
 
+      // 5. Limpia el input del mensaje
       setNewMessage("");
 
     } catch (error) {
       console.error("Error al enviar el mensaje:", error);
+      // Opcional: Revertir el mensaje optimista si hay un error real de envío
+      setMessages(prev => prev.filter(msg => msg.id !== tempMessage.id));
     }
   };
 
@@ -212,9 +281,9 @@ const MensajeriaPage = () => {
               <h3>{selectedChatUser.username}</h3>
             </div>
             <div className="messages-container">
-              {messages.map((msg) => (
+              {messages.map((msg, index) => ( // Usar index como fallback key si msg.id no está disponible (ej. mensajes temporales)
                 <div
-                  key={msg.id}
+                  key={msg.id || index}
                   className={`message-bubble ${
                     msg.sender_id === loggedInUserId ? "sent" : "received"
                   }`}
