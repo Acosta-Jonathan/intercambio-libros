@@ -5,8 +5,6 @@ Register:
 - obligar a Verificar el correo ingresado mandando un mail a dicho correo con algun codigo o link de verificacion. Si no está verificado no puede ingresar a la pagina
 
 
-mensajería
-- Intentar nuevamente si se puede hacer funcionar la mensajería interna
 
 
 
@@ -45,3 +43,5 @@ sección contacto
 - Al contactar por mail, debe permitir elegir si abrir Gmail, Outlook u otro.
 - Si un usuario no tiene cargado el nro de teléfono que el botón de comunicarse por wsp no esté disponible
 
+mensajería
+- Ahora tiene una mensajería interna
