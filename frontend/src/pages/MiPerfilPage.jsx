@@ -34,6 +34,7 @@ const MiPerfilPage = () => {
   const [newProfilePicFile, setNewProfilePicFile] = useState(null);
   const [profilePicPreview, setProfilePicPreview] = useState(null);
 
+  
   // Estados para el modal de detalles de libro
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
