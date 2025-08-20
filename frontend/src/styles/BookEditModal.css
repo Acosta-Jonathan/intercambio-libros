@@ -139,3 +139,15 @@
 .file-input-label:hover {
     background-color: #0056b3;
 }
+/* Estilo para el área cuando se arrastra un archivo */
+.image-edit-container.dragging,
+.subir-imagen.dragging {
+    border: 2px dashed #6c63ff; /* Borde punteado para indicar que se puede soltar */
+    background-color: #f0f4ff; /* Color de fondo para dar más feedback */
+}
+
+/* Opcional: Un poco de estilo para el texto dentro del área de arrastrar */
+.image-edit-container.dragging label,
+.subir-imagen.dragging label {
+    color: #6c63ff;
+}

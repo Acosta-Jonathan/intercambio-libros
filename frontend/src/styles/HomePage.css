@@ -7,7 +7,7 @@
     background: linear-gradient(135deg, #6c63ff, #a084dc);
     color: white;
     text-align: center;
-    padding: 3rem 1rem;
+    padding: 1rem 1rem;
     margin-top: 130px; 
 }
 
@@ -17,7 +17,7 @@
 }
 
 .hero-section p {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     font-size: 1.1rem;
 }
 
@@ -69,10 +69,6 @@
 .clear-search-btn:hover {
     color: #333;
 }
-
-
-
-
 
 /* Estilos para el nuevo menú desplegable de resultados de usuarios */
 .user-search-dropdown {
@@ -182,7 +178,7 @@
 .libros-header h3 {
     font-size: 1.4rem;
     margin: 0;
-    color: #333;
+    color: #fff;
 }
 
 .cards-container {

@@ -47,6 +47,7 @@ class UserContactSchema(BaseModel):
     email: str
     telefono: str | None
     username: str | None
+    profile_picture_url: str | None
 
     class Config:
         from_attributes = True

@@ -6,7 +6,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,12 +18,12 @@
   padding: 20px;
   border-radius: 12px;
   width: 90%;
-  max-width: 600px; /* Un poco más ancho para detalles */
+  max-width: 800px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   display: flex;
-  flex-direction: column;
-  max-height: 90vh; /* Para que no se desborde verticalmente */
-  overflow-y: auto; /* Habilita el scroll si el contenido es largo */
+  flex-direction: column; /* Mantiene el encabezado, contenido y pie de página apilados */
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal-header-details {
@@ -54,19 +54,24 @@
   color: #333;
 }
 
-.modal-body-details {
-  flex-grow: 1;
+/* ✅ NUEVO: Contenedor para la doble columna */
+.modal-body-content {
+  display: flex;
+  gap: 30px;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  flex-grow: 1; /* ✅ NUEVO: Permite que el contenido del cuerpo ocupe el espacio disponible */
+  overflow-y: auto; /* ✅ NUEVO: Habilita el scroll solo en el cuerpo del modal */
   padding-bottom: 20px;
-  line-height: 1.6;
-  color: #555;
 }
 
 .modal-book-image-container {
-  width: auto;
+  width: 100%;
   height: auto;
+  max-width: 250px;
+  flex-shrink: 0;
   overflow: hidden;
   border-radius: 8px;
-  margin-bottom: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -74,8 +79,13 @@
 
 .modal-book-image-container img {
   width: 100%;
-  height: 100%;
+  height: auto;
   object-fit: contain;
+}
+
+.book-details-info {
+  flex-grow: 1;
+  min-width: 300px;
 }
 
 .modal-body-details h3 {
@@ -94,7 +104,6 @@
 
 /* Estilos para los badges (comunes) */
 .book-badges {
-  /* Contenedor para los badges de estado e idioma */
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
@@ -109,7 +118,7 @@
   border-radius: 0.5rem;
   color: #fff;
   text-transform: capitalize;
-  white-space: nowrap; /* Evita que el texto del badge se rompa */
+  white-space: nowrap;
 }
 
 .badge-strong {
@@ -120,34 +129,27 @@
 .badge-purple {
   background-color: #8b59e1;
 }
-
 .badge-green {
   background-color: #60bf83;
 }
-
 .badge-gray {
   background-color: #9996ea;
 }
-
 .badge-orange {
   background-color: #fbb989;
 }
-
 .badge-red {
   background-color: #f68787;
 }
 
-/* Estilos para la sección de categorías en el modal */
 .categorias-section-details {
   margin-bottom: 1rem;
 }
-
 .categorias-section-details h4 {
   font-size: 1rem;
   margin-bottom: 0.4rem;
   color: #333;
 }
-
 .categorias-list-details {
   display: flex;
   flex-wrap: wrap;
@@ -169,15 +171,19 @@
 
 .modal-footer-details {
   display: flex;
-  justify-content: flex-end; /* Alinea los botones a la derecha */
-  gap: 10px; /* Espacio entre los botones */
+  justify-content: flex-end;
+  gap: 10px;
   border-top: 1px solid #eee;
   padding-top: 15px;
   margin-top: 20px;
+  position: sticky; /* ✅ NUEVO: Mantiene el footer en la parte inferior */
+  bottom: 0; /* ✅ NUEVO: Fija el footer al borde inferior */
+  background-color: white; /* ✅ NUEVO: Asegura que el footer no sea transparente */
+  z-index: 10;
 }
 
 .contactar-btn {
-  background-color: #6c63ff; /* Un color primario */
+  background-color: #6c63ff;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -192,8 +198,8 @@
 }
 
 .contactar-btn:disabled {
-  background-color: #cccccc !important; /* Gris claro */
-  color: #666666 !important; /* Texto más oscuro */
+  background-color: #cccccc !important;
+  color: #666666 !important;
   cursor: not-allowed !important;
   opacity: 0.7;
 }

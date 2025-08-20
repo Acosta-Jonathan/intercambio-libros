@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getUserProfile, getUserBooks } from "../services/api";
 import BookCard from "../components/BookCard";
 import BookDetailsModal from "../components/BookDetailsModal";
-import "../styles/UserProfilePage.css"; // Usamos un nuevo archivo CSS
+import "../styles/UserProfilePage.css";
 import { useSelector } from "react-redux";
 import { FaUser, FaEnvelope, FaPhone } from "react-icons/fa";
 
@@ -19,11 +19,9 @@ const UserProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Estados para el modal de detalles de libro
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
 
-  // Efecto para cargar los datos del usuario y sus libros
   useEffect(() => {
     const fetchData = async () => {
       if (!userId) {
@@ -32,7 +30,6 @@ const UserProfilePage = () => {
         return;
       }
 
-      // Si el usuario ve su propio perfil, lo redirigimos a "MisLibrosPage"
       if (loggedInUserId && loggedInUserId.toString() === userId) {
         navigate("/mis-libros");
         return;
@@ -44,6 +41,7 @@ const UserProfilePage = () => {
       try {
         const profileData = await getUserProfile(userId);
         const booksData = await getUserBooks(userId);
+console.log("Datos del perfil:", profileData);
         setUserProfile(profileData);
         setUserBooks(booksData);
       } catch (err) {
@@ -59,7 +57,6 @@ const UserProfilePage = () => {
     fetchData();
   }, [userId, loggedInUserId, navigate]);
 
-  // Efecto para controlar el scroll del body cuando el modal está abierto
   useEffect(() => {
     if (showDetailsModal) {
       document.body.style.overflow = 'hidden';
@@ -98,19 +95,21 @@ const UserProfilePage = () => {
       <div className="perfil-container mb-4">
         <div className="row align-items-center">
           <div className="col-md-9 d-flex align-items-center gap-3">
-            <div className="perfil-avatar d-flex align-items-center justify-content-center">
-              <FaUser className="fa-2x text-white" />
-            </div>
+            {userProfile.profile_picture_url ? (
+              <div className="perfil-avatar">
+                <img
+                  src={`http://localhost:8000${userProfile.profile_picture_url}`}
+                  alt="Foto de perfil"
+                  className="img-fluid"
+                />
+              </div>
+            ) : (
+              <div className="perfil-avatar d-flex align-items-center justify-content-center">
+                <FaUser className="fa-2x text-white" />
+              </div>
+            )}
             <div>
               <h2 className="mb-1">{userProfile.username}</h2>
-              <p className="mb-1">
-                <FaEnvelope className="me-2 text-muted" />
-                {userProfile.email}
-              </p>
-              <p className="mb-0 d-flex align-items-center">
-                <FaPhone className="me-2 text-muted" />
-                {userProfile.telefono || "-"}
-              </p>
             </div>
           </div>
         </div>
@@ -123,25 +122,26 @@ const UserProfilePage = () => {
       </div>
 
       <br />
-      <div className="libros-grid">
+      <div className="row g-4">
         {userBooks.length > 0 ? (
           userBooks.map((libro) => (
-            <BookCard
-              key={libro.id}
-              book={libro}
-              isOwnedByCurrentUser={false}
-              showHighlight={false}
-            >
-              <button
-                className="detalles-btn full-width-btn"
-                onClick={() => handleViewDetails(libro)}
+            <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={libro.id}>
+              <BookCard
+                book={libro}
+                isOwnedByCurrentUser={false}
+                showHighlight={false}
               >
-                Ver detalles
-              </button>
-            </BookCard>
+                <button
+                  className="detalles-btn full-width-btn"
+                  onClick={() => handleViewDetails(libro)}
+                >
+                  Ver detalles
+                </button>
+              </BookCard>
+            </div>
           ))
         ) : (
-          <div className="no-libros-message">Este usuario aún no ha publicado libros.</div>
+          <div className="no-libros-message col-12">Este usuario aún no ha publicado libros.</div>
         )}
       </div>
 

@@ -2,6 +2,7 @@
 
 // Lista de todas las categorías disponibles en la aplicación.
 export const TODAS_LAS_CATEGORIAS = [
+  { id: "accion", nombre: "Acción" },
   { id: "arte", nombre: "Arte" },
   { id: "autoayuda", nombre: "Autoayuda" },
   { id: "aventura", nombre: "Aventura" },
@@ -15,6 +16,12 @@ export const TODAS_LAS_CATEGORIAS = [
   { id: "filosofia", nombre: "Filosofía" },
   { id: "historia", nombre: "Historia" },
   { id: "infantil", nombre: "Infantil" },
+  { id: "juvenil", nombre: "Juvenil" },
+  { id: "infantojuvenil", nombre: "Infantojuvenil" },
+  { id: "clasica", nombre: "Clásica" },
+  { id: "contemporanea", nombre: "Contemporánea" },
+  { id: "literatura", nombre: "Literatura" },
+  { id: "magia", nombre: "Magia" },
   { id: "misterio", nombre: "Misterio" },
   { id: "novela", nombre: "Novela" },
   { id: "poesia", nombre: "Poesía" },

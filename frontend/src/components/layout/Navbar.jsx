@@ -9,7 +9,7 @@ const Navbar = () => {
     const { isAuthenticated } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const location = useLocation(); // ✨ Usa el hook useLocation
+    const location = useLocation();
 
     const [scrolled, setScrolled] = useState(false);
 
@@ -56,7 +56,7 @@ const Navbar = () => {
                 {isAuthenticated ? (
                     <>
                         <NavLink to="/mensajeria" className="btn-mensajes">
-                            <BsChatDotsFill size={24} />
+                            <BsChatDotsFill size={30} />
                         </NavLink>
                         <button onClick={handleLogout} className="btn-secondary me-5">
                             Cerrar sesión
