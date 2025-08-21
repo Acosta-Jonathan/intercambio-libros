@@ -180,33 +180,60 @@
 .libros-header h3 {
     font-size: 1.4rem;
     margin: 0;
-    color: #000;
+    color: #ffffff;
 }
 
-/* ESTILOS DEL BOTÓN QUE REEMPLAZA AL CHECKBOX */
+/* ESTILOS DEL BOTÓN CON ESTILO ARCADE */
 .checkbox-container {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
+    position: relative;
+    width: auto;
+    height: auto;
+    padding: 10px 20px;
+    border: 3px solid #777;
     border-radius: 8px;
-    background-color: #f0f0f0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    user-select: none; /* Evita que el texto sea seleccionado */
+    outline: none;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    user-select: none;
+
+    /* Estado desactivado (levantado) */
+    background: linear-gradient(145deg, #4a4a6a, #2a2a3a);
+    color: #ccc;
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.3);
+    transform: translateY(0px);
 }
 
-.checkbox-container:hover {
-    background-color: #e0e0e0;
+/* Efecto al pasar el cursor (hover) */
+.checkbox-container:hover:not(.pressed-button) {
+    transform: translateY(-2px);
+    box-shadow:
+        0 6px 10px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.15),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.3);
+    border-color: #999;
 }
 
-/* Estilo para el estado "presionado" */
+/* Estado activado (presionado e iluminado) */
 .checkbox-container.pressed-button {
-    background-color: #c9c9c9;
-    border-color: #aaa;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-    transform: translateY(1px); /* Efecto visual de "hundimiento" */
+    background: linear-gradient(145deg, #6c63ff, #a084dc);
+    border: 3px solid #5352ed;
+    color: white;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(108, 99, 255, 0.6),
+        0 0 40px rgba(108, 99, 255, 0.4),
+        inset 0 4px 8px rgba(0, 0, 0, 0.2),
+        inset 0 -2px 4px rgba(255, 255, 255, 0.3);
+    transform: translateY(2px);
+    animation: activeGlowBlue 2s ease-in-out infinite alternate;
 }
 
 /* Oculta el checkbox real para que no se vea */
@@ -219,6 +246,25 @@
     font-weight: 500;
     cursor: pointer;
     margin: 0;
+}
+/* Animación para el efecto de resplandor cuando está activo */
+@keyframes activeGlowBlue {
+    0% {
+        box-shadow:
+            0 2px 6px rgba(0, 0, 0, 0.4),
+            0 0 20px rgba(108, 99, 255, 0.6),
+            0 0 40px rgba(108, 99, 255, 0.4),
+            inset 0 4px 8px rgba(0, 0, 0, 0.2),
+            inset 0 -2px 4px rgba(255, 255, 255, 0.3);
+    }
+    100% {
+        box-shadow:
+            0 2px 6px rgba(0, 0, 0, 0.4),
+            0 0 30px rgba(108, 99, 255, 0.8),
+            0 0 60px rgba(108, 99, 255, 0.6),
+            inset 0 4px 8px rgba(0, 0, 0, 0.2),
+            inset 0 -2px 4px rgba(255, 255, 255, 0.3);
+    }
 }
 
 /* FIN DE LOS NUEVOS ESTILOS */

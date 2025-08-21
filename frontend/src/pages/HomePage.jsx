@@ -288,7 +288,7 @@ const HomePage = () => {
           {/* Contenedor con Flexbox para el título y el checkbox */}
           <div className="libros-header">
             <h3>Libros disponibles</h3>
-            {/* NUEVO: El checkbox ahora está aquí */}
+            {/* El botón ahora es el div completo, y su clase cambia con el estado */}
             {loggedInUserId && (
               <div
                 className={`checkbox-container ${
@@ -298,14 +298,11 @@ const HomePage = () => {
                 role="button"
                 tabIndex="0"
               >
-                <input
-                  type="checkbox"
-                  id="ocultarMisLibros"
-                  checked={ocultarMisLibros}
-                  onChange={() => {}} /* Handler vacío para evitar warnings */
-                  readOnly
-                />
-                <label htmlFor="ocultarMisLibros">Ocultar mis libros</label>
+                <label>
+                  {ocultarMisLibros
+                    ? "Mostrar mis libros"
+                    : "Ocultar mis libros"}
+                </label>
               </div>
             )}
           </div>

@@ -37,6 +37,7 @@ HomePage:
 - Arreglar filtro por categoría
 - Destacar los libros que pertenecen al usuario
 - ver detalles ahora es un modal
+- Boton para ocultar libros propios
 
 sección contacto
 - Al abrir el mail para enviar, que precargue el asunto con "Intercambio de Libro - " + nombre del libro
