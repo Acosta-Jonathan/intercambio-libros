@@ -1,22 +1,37 @@
 # intercambio-libros
 
-# para crear el entorno virtual
-python -m venv venv
+#PRECONFIGURACION
+#crear un archivo ".env" en el directorio raíz completando los siguientes datos:
+SECRET_KEY=[Su-Clave]
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=[numero entero que desee ej: 30]
+DATABASE_URL = 'postgresql://[SU-USUARIO]:[SU-CONTRASEÑA]@localhost:[PUERTO-DE-SU-DDBB]/[NOMBRE-DE-BBDD]?client_encoding=utf8'
 
-# para ejecutar venv
-venv\Scripts\activate
+#BACKEND
+  # para crear el entorno virtual
+  cd ./backend
+  python -m venv venv
 
-# Para generar/actualizar el requirements.txt
-pip freeze > requirements.txt
+  # para ejecutar venv
+  venv\Scripts\activate
 
-# Para ejecutar el backend
-cd ./backend
-uvicorn app.main:app --reload
-# Para finalizarlo
-Ctrl + C
+  # Para instalar todas las dependencias del requirements.txt
+  pip install -r requirements.txt
 
-# para instalar dependencias de Frontend
-npm install
-# Para ejecutar frontend
-cd ./frontend
-npm start
+  # Para generar/actualizar el requirements.txt
+  pip freeze > requirements.txt
+
+  # Para ejecutar el backend
+  cd ./backend
+  uvicorn app.main:app --reload
+
+#FRONTEND
+  # para instalar dependencias de Frontend
+  npm install
+  
+  # Para ejecutar frontend
+  cd ./frontend
+  #opc 1: 
+    npm start
+  #opc 2: 
+    npm run dev
