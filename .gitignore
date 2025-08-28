@@ -26,4 +26,7 @@ venv/
 # Configuración de bases de datos
 database.db
 *.pgdata
+alembic/
+Alembic/
+alembic.ini
 
