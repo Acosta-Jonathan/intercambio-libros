@@ -20,6 +20,7 @@ body {
   --bg-dark: #242424;
   --text-dark: #213547;
   --text-light: #fff;
+  overflow-y: scroll;
 }
 
 
